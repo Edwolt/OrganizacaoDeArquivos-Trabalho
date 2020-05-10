@@ -48,7 +48,7 @@ Registro* registro_newVazio() {
 }
 
 void registro_del(Registro** registro) {
-    // Verifica se objeto já foi apagado
+    // Verifica se objeto ja foi apagado
     if (!registro) return;
     if (!*registro) {
         *registro = NULL;
@@ -83,8 +83,31 @@ void registro_imprimir(Registro* registro) {
         printf("Registro Vazio");
         return;
     }
-    printf("Imprime Registro (Não implementado)");
-};
+
+    char sexo[50];
+    switch (registro->sexoBebe) {
+        case '0':
+            strcpy(sexo, "Ignorados");
+            break;
+
+        case '1':
+            strcpy(sexo, "Masculino");
+            break;
+
+        case '2':
+            strcpy(sexo, "Feminino");
+            break;
+
+        default:
+            strcpy(sexo, "-");
+    }
+
+    printf("Nasceu em %s/%s, em %s, um bebe de sexo %s.\n",
+           (registro->cidadeBebe ? registro->cidadeBebe : "-"),
+           (registro->estadoBebe ? registro->estadoBebe : "-"),
+           (registro->dataNascimento ? registro->dataNascimento : "-"),
+           sexo);
+}
 
 //* ============================ *//
 //* ===== Getter e Setters ===== *//

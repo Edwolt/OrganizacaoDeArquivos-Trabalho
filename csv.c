@@ -8,12 +8,15 @@
 //* ===== Metodos Privados ===== *//
 //* ============================ *//
 
-int leInteiro(CSV* csv) {
+/**
+ * 
+ */
+int leInt(CSV* csv) {
     if (!csv) return INTNULL;
 
     char str[STR_TAM];
 
-    fscanf(csv, " %[^,]%*c", str);
+    fscanf(csv, " %[^,\n]%*c", str);
     trim(str);
 
     if (strlen(str) == 0) return INTNULL;
@@ -21,12 +24,15 @@ int leInteiro(CSV* csv) {
     return atoi(str);
 }
 
-char* leString(CSV* csv) {
+/**
+ * 
+ */
+char* leStr(CSV* csv) {
     if (!csv) return NULL;
 
     char* str = (char*)malloc(STR_TAM * sizeof(char));
 
-    fscanf(" %[^,]%*c", str);
+    fscanf(csv, " %[^,\n]%*c", str);
     trim(str);
 
     if (strlen(str) == 0) {
@@ -37,12 +43,15 @@ char* leString(CSV* csv) {
     return str;
 }
 
+/**
+ * 
+ */
 char leChar(CSV* csv) {
-    if (!csv) return NULL;
+    if (!csv) return '\0';
 
     char str[STR_TAM];
 
-    fscanf(" %[^,]%*c", str);
+    fscanf(csv, " %[^,\n]%*c", str);
     trim(str);
 
     if (strlen(str) != 1) return '\0';
@@ -54,7 +63,7 @@ char leChar(CSV* csv) {
 //* ===== Metodos Publicos ===== *//
 //* ============================ *//
 
-CSV* csv_open(path) {
+CSV* csv_open(char* path) {
     if (path) {
         CSV* csv = fopen(path, "r");
         fscanf(csv, "%*[^\n] ");  // Le uma linha do arquivo sem salvar o valor
@@ -71,6 +80,23 @@ void csv_del(CSV** csv) {
         return;
     }
 
-    fclose(csv);
+    fclose(*csv);
     *csv = NULL;
+}
+
+Registro* csv_lerRegistro(CSV* csv) {
+    char* cidadeMae = leStr(csv);
+    char* cidadeBebe = leStr(csv);
+    int idNascimento = leInt(csv);
+    int idadeMae = leInt(csv);
+    char* dataNascimento = leStr(csv);
+    char sexoBebe = leChar(csv);
+    char* estadoMae = leStr(csv);
+    char* estadoBebe = leStr(csv);
+
+    return registro_new(idNascimento,
+                        idadeMae, dataNascimento,
+                        sexoBebe,
+                        estadoMae, estadoBebe,
+                        cidadeMae, cidadeBebe);
 }

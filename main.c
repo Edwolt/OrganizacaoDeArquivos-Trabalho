@@ -30,6 +30,15 @@ int main() {
     char dest[100];
     int opcao;
 
+    scanf(" %s", src);
+    CSV* csv = csv_open(src);
+    Registro* registro = csv_lerRegistro(csv);
+    registro_imprimir(registro);
+    registro_del(&registro);
+    csv_del(&csv);
+
+    return 0;
+
     while (scanf("%d", &opcao) == 1) {  // Enquanto houver entradas no stdin
         switch (opcao) {
             case 1:
@@ -63,33 +72,32 @@ dest.status = true
 
 binarioNaTela()
 */
-void opcao1(char* src, char* dest) {
-    FILE* csv = fopen(src, "r");
-    FILE* binario = fopen(dest, "wb");
-    Registro* registro;
+// void opcao1(char* src, char* dest) {
+//     FILE* csv = fopen(src, "r");
+//     FILE* bin = fopen(dest, "wb");
+//     Registro* registro;
 
-    binario_setStatus(dest, false);
-    while ((registro = csv_lerRegistro(csv))) {
-        binario_inserir(binario, registro);
-        registro_del(registro);
-    }
-    binario_del(binario);
+//     binario_setStatus(dest, false);
+//     while ((registro = csv_lerRegistro(csv))) {
+//         binario_inserir(bin, registro);
+//         registro_del(&registro);
+//     }
+//     binario_del(&bin);
 
-    binario_setStatus(dest, true);
+//     binario_setStatus(dest, true);
 
-    binarioNaTela(dest);
+//     binarioNaTela(dest);
 
-    fclose(src);
-    fclose(dest);
-}
+//     csv_del(&csv);
+// }
 
-void opcao2(char* path) {
-    Binario* bin = binario_open(path);
-    Registro* registro;
+// void opcao2(char* path) {
+//     Binario* bin = binario_open(path);
+//     Registro* registro;
 
-    while (registro = binario_leRegistro(bin)) {
-        registro_imprimir(registro);
-    }
+//     while ((registro = binario_leRegistro(bin))) {
+//         registro_imprimir(registro);
+//     }
 
-    binario_del(bin);
-}
+//     binario_del(&bin);
+// }
