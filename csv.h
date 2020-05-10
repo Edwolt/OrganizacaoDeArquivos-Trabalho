@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>  // Manipular Arquivos
+#include <string.h>
 
 #include "registro.h"
 
@@ -23,5 +24,10 @@ CSV* csv_open(char* path);
 void csv_del(CSV** csv);
 
 Registro* csv_lerRegistro(CSV* csv);
+
+// TODO Isso sao metodos privados
+int leInteiro(CSV* csv);
+char* leString(CSV* csv);
+char leChar(CSV* csv);
 
 #endif
