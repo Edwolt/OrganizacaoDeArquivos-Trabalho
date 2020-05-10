@@ -1,31 +1,24 @@
 #ifndef CSV_H
 #define CSV_H
 
-#include <stdlib.h>
-
-typedef struct _CSV CSV;
-
-/**
- * Aloca objeto do tipo CSV dinamicamente
- * Retorna NULL se não for possivel
- * 
- * Obs: É necessário usar uma função que desaloca memória
- */
-CSV* csv_new(char* path);
+#include <stdio.h>
+#include <stdlib.h>  // Manipular Arquivos
 
 /**
- * Apaga Estrutura e objetos que estão nela
- * 
- * Obs: Desaloca memória
+ * TAD Arquivo CSV
+ * Por ser um simplesmente um FILE, não tem motivo para cirar um estrutura
  */
-void csv_del(CSV* csv);
+typedef FILE CSV;
 
 /**
- * Apaga Estrutura sem apagar objetos que estão nela
+ * Abre um arquivo com nome path para leitura
+ * Retorna NULL se não for possivel Abrir o arquivo
  * 
- * Obs: Desaloca memória
+ * Obs: Depois, use uma função para destruir o objeto
  */
-void csv_rmv(CSV* csv);
+CSV* csv_open(path);
+
+void csv_del(CSV** csv);
 
 Registro* csv_lerRegistro(CSV* csv);
 
