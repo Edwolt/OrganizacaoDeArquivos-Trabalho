@@ -37,28 +37,28 @@ void registro_imprimir();
 //* ===== Getter e Setters ===== *//
 //* ============================ *//
 
-int registro_getIdNascimento(Registro registro);
-void registro_setIdNascimento(Registro registro, int idNascimento);
+int registro_getIdNascimento(Registro* registro);
+void registro_setIdNascimento(Registro* registro, int idNascimento);
 
-int registro_getIdadeMae(Registro registro);
-void registro_setIdadeMae(Registro registro, int idadeMae);
+int registro_getIdadeMae(Registro* registro);
+void registro_setIdadeMae(Registro* registro, int idadeMae);
 
-char* registro_getDataNascimento(Registro registro);
-void registro_setDataNascimento(Registro registro, char* dataNascimento);
+char* registro_getDataNascimento(Registro* registro);
+void registro_setDataNascimento(Registro* registro, char* dataNascimento);
 
-char registro_getSexoBebe(Registro registro);
-void registro_setSexoBebe(Registro registro, char sexoBebe);
+char registro_getSexoBebe(Registro* registro);
+void registro_setSexoBebe(Registro* registro, char sexoBebe);
 
-char* registro_getEstadoMae(Registro registro);
-void registro_setEstadoMae(Registro registro, char* estadoMae);
+char* registro_getEstadoMae(Registro* registro);
+void registro_setEstadoMae(Registro* registro, char* estadoMae);
 
-char* registro_getEstadoBebe(Registro registro);
-void registro_setEstadoBebe(Registro registro, char* estadoBebe);
+char* registro_getEstadoBebe(Registro* registro);
+void registro_setEstadoBebe(Registro* registro, char* estadoBebe);
 
-char* registro_getCidadeMae(Registro registro);
-void registro_setCidadeMae(Registro registro, char* cidadeMae);
+char* registro_getCidadeMae(Registro* registro);
+void registro_setCidadeMae(Registro* registro, char* cidadeMae);
 
-char* registro_getCidadeBebe(Registro registro);
-void registro_setCidadeBebe(Registro registro, char* cidadeBebe);
+char* registro_getCidadeBebe(Registro* registro);
+void registro_setCidadeBebe(Registro* registro, char* cidadeBebe);
 
 #endif
