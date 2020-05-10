@@ -32,7 +32,7 @@ Registro* registro_new(int idNascimento,
     return registro;
 }
 
-Registro* registro_new() {
+Registro* registro_newVazio() {
     Registro* registro = (Registro*)malloc(sizeof(Registro));
     if (registro) {
         registro->idNascimento = INTNULL;
@@ -46,6 +46,32 @@ Registro* registro_new() {
     }
     return registro;
 }
+
+void registro_del(Registro* registro) {
+    if (!registro) return;
+
+    // Free nas strings
+    if (registro->dataNascimento) free(registro->dataNascimento = NULL);
+    if (registro->estadoMae) free(registro->estadoMae = NULL);
+    if (registro->estadoBebe) free(registro->estadoBebe = NULL);
+    if (registro->cidadeMae) free(registro->cidadeMae = NULL);
+    if (registro->cidadeBebe) free(registro->cidadeBebe = NULL);
+
+    free(registro);
+}
+
+void registro_rmv(Registro* registro) {
+    if (!registro) return;
+    free(registro);
+}
+
+void registro_imprimir(Registro* registro) {
+    if (!registro) {
+        printf("Registro Vazio");
+        return;
+    }
+    printf("Imprime Registro (Não implementado)");
+};
 
 //* ============================ *//
 //* ===== Getter e Setters ===== *//

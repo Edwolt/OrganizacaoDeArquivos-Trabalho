@@ -26,7 +26,7 @@ Registro* registro_new(int idNascimento,
  * 
  * Obs: Depois, use uma função para destruir o objeto
  */
-Registro* registro_newVazio();
+Registro* registro_newVazio(Registro* registro);
 
 void registro_del(Registro* registro);
 void registro_rmv(Registro* registro);
