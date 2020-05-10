@@ -9,22 +9,21 @@ Binario* binario_new(char* path) {
     int inseridos = 0;
     int removidos = 0;
     int atualizados = 0;
-    char lixo = LIXO;
+    char lixo[111];
+    for (int i = 0; i < 111; i++) lixo[i] = LIXO;
 
-    // TODO tirar goto
-    if (fwrite(status, sizeof(status), 1, binario) != 1) goto write_error;  // Status
-    if (fwrite(rrn, sizeof(rrn), 1, binario) != 1) goto write_error;  // Status
-    if (fwrite(inseridos, sizeof(inseridos), 1, binario) != 1) goto write_error;  // Status
-    if (fwrite(removidos, sizeof(removidos), 1, binario) != 1) goto write_error;  // Status
-    if (fwrite(atualizados, sizeof(atualizados), 1, binario) != 1) goto write_error;  // Status
-
+    // TODO sumir com o goto
+    if (fwrite(&status, sizeof(char), 1, binario) != 1) goto fwrite_erro;      // Status
+    if (fwrite(&rrn, sizeof(int), 1, binario) != 1) goto fwrite_erro;          // RRNProxRegistro
+    if (fwrite(&inseridos, sizeof(int), 1, binario) != 1) goto fwrite_erro;    // numeroRegistrosInseridos
+    if (fwrite(&removidos, sizeof(int), 1, binario) != 1) goto fwrite_erro;    // numeroRegistrosRemovidos
+    if (fwrite(&atualizados, sizeof(int), 1, binario) != 1) goto fwrite_erro;  // numeroRegistrosAtualizado
+    if (fwrite(lixo, sizeof(char), 111, binario) != 111) goto fwrite_erro;     // lixo (caracter '$')
 
     return binario;
 
-write_error:
-    if (fwrite(binario, '0') != 1) {
-        printf("Falha no carregamento do arquivo.")
-    }  // Status
+fwrite_erro:
+    printf("Falha no carregamento do arquivo.");
     fclose(binario);
     return NULL;
 }
