@@ -26,20 +26,19 @@ void opcao2(char* path);
 //* ================ *//
 
 int main() {
-    char destPath[100];
-    char srcPath[100];
+    char src[100];
+    char dest[100];
     int opcao;
 
     while (scanf("%d", &opcao) == 1) {  // Enquanto houver entradas no stdin
         switch (opcao) {
             case 1:
-                scanf(" %s %s", srcPath, destPath);
-                opcao1(srcPath, destPath);
+                scanf(" %s %s", src, dest);
+                opcao1(src, dest);
                 break;
 
             case 2:
-                printf("Pintei");
-                scanf(" %s", srcPath);
+                scanf(" %s", src);
                 break;
 
             default:
