@@ -7,6 +7,8 @@
 
 #include "registro.h"
 
+#define LIXO '$';
+
 /**
  * TAD Arquivo binario
  * Por ser um simplesmente um FILE, nao tem motivo para cirar um estrutura
