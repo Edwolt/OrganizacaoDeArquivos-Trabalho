@@ -23,15 +23,33 @@ binarioNaTela()
 int main() {
     char destPath[100];
     char srcPath[100];
+    int opcao;
 
-    scanf("%s %s", srcPath, destPath);
+    scanf("%d", &opcao);
+    switch (opcao) {
+        case 1:
+            scanf("%s %s", srcPath, destPath);
+            opcao1(srcPath, destPath);
+            break;
 
+        case 2:
+            scanf("%s", srcPath);
+            break;
+
+        default:
+            break;
+    }
+
+    return EXIT_SUCCESS;
+}
+
+void opcao1(char* srcPath, char* destPath) {
     CSV* src = csv_new(srcPath);
     Arquivo* dest = arquivo_new(destPath);
     Registro* registro;
 
     arquivo_setStatus(dest, false);
-    arquivo_abrir(dest);
+    arquivo_criar(dest);
     while ((registro = csv_lerRegistro(src))) {
         arquivo_inserir(registro);
         registro_del(registro);
@@ -43,6 +61,4 @@ int main() {
 
     arquivo_del(src);
     csv_del(dest);
-
-    return EXIT_SUCCESS;
 }

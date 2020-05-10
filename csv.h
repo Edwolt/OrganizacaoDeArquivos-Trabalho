@@ -27,6 +27,6 @@ void csv_del(CSV* csv);
  */
 void csv_rmv(CSV* csv);
 
-Registro* csv_lerRegistro(CSV* csv)
+Registro* csv_lerRegistro(CSV* csv);
 
 #endif

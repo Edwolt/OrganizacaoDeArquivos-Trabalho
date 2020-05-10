@@ -11,5 +11,5 @@ Arquivo* arquivo_new(char* path);
 bool arquivo_setStatus(Arquivo* arquivo, bool status);
 void arquivo_salvar(Arquivo* arquivo);
 arquivo_inserir(Registro* registro);
-arquivo_abrir(Arquivo* arquivos);
+arquivo_criar(Arquivo* arquivos);
 #endif
