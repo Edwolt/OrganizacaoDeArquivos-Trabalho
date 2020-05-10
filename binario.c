@@ -10,8 +10,9 @@ Binario* binario_open(char* path) {
     return fopne(path, "rb");
 }
 
-void binario_del(Binario* binario) {
-    if (binario) fclose(binario);
+void binario_del(Binario** binario) {
+    if (binario && *binario) fclose(*binario);
+    *binario = NULL;
 }
 
 bool binario_inserir(Binario* binario, Registro* registro);

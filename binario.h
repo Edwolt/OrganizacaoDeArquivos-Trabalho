@@ -32,7 +32,7 @@ Binario* binario_open(char* path);
  * Destroi o objeto binario
  * (Não apaga o arquivo criado, apenas desaloca memória)
  */
-void binario_del(Binario* binario);
+void binario_del(Binario** binario);
 
 /**
  * Insere um registro no arquivo

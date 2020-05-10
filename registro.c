@@ -47,22 +47,35 @@ Registro* registro_newVazio() {
     return registro;
 }
 
-void registro_del(Registro* registro) {
+void registro_del(Registro** registro) {
+    // Verifica se registro já foi apagado
     if (!registro) return;
+    if (!*registro) {
+        *registro = NULL;
+        return;
+    }
 
     // Free nas strings
-    if (registro->dataNascimento) free(registro->dataNascimento = NULL);
-    if (registro->estadoMae) free(registro->estadoMae = NULL);
-    if (registro->estadoBebe) free(registro->estadoBebe = NULL);
-    if (registro->cidadeMae) free(registro->cidadeMae = NULL);
-    if (registro->cidadeBebe) free(registro->cidadeBebe = NULL);
+    if ((*registro)->dataNascimento) free((*registro)->dataNascimento = NULL);
+    if ((*registro)->estadoMae) free((*registro)->estadoMae = NULL);
+    if ((*registro)->estadoBebe) free((*registro)->estadoBebe = NULL);
+    if ((*registro)->cidadeMae) free((*registro)->cidadeMae = NULL);
+    if ((*registro)->cidadeBebe) free((*registro)->cidadeBebe = NULL);
 
-    free(registro);
+    free((*registro));
+    *registro = NULL;
 }
 
-void registro_rmv(Registro* registro) {
+void registro_rmv(Registro** registro) {
+    // Verifica se registro já foi apagado
     if (!registro) return;
+    if (!*registro) {
+        *registro = NULL;
+        return;
+    }
+
     free(registro);
+    *registro = NULL;
 }
 
 void registro_imprimir(Registro* registro) {

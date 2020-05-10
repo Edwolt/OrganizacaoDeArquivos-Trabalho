@@ -28,8 +28,8 @@ Registro* registro_new(int idNascimento,
  */
 Registro* registro_newVazio(Registro* registro);
 
-void registro_del(Registro* registro);
-void registro_rmv(Registro* registro);
+void registro_del(Registro** registro);
+void registro_rmv(Registro** registro);
 
 void registro_imprimir();
 
