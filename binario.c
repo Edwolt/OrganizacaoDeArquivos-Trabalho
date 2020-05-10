@@ -7,10 +7,17 @@ Binario* binario_new(char* path) {
 
 Binario* binario_open(char* path) {
     if (path) return NULL;
-    return fopne(path, "rb");
+    return fopen(path, "rb");
 }
 
 void binario_del(Binario** binario) {
+    // Verifica se objeto já foi apagado
+    if (!binario) return;
+    if (!*binario) {
+        *binario = NULL;
+        return;
+    }
+
     if (binario && *binario) fclose(*binario);
     *binario = NULL;
 }

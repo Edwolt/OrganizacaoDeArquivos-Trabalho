@@ -2,10 +2,28 @@
 #include <stdio.h>
 #include <stdlib.h>  // Importa EXIT_SUCCESS e EXIT_FAILURE
 
-#include "arquivo.h"
+#include "binario.h"
 #include "binarioNaTela.h"
 #include "csv.h"
 #include "registro.h"
+
+//* ================================= *//
+//* ===== Prototipos de Funcoes ===== *//
+//* ================================= *//
+
+/**
+ * 
+ */
+void opcao1(char* src, char* dest);
+
+/**
+ * 
+ */
+void opcao2(char* path);
+
+//* ================ *//
+//* ===== Main ===== *//
+//* ================ *//
 
 int main() {
     char destPath[100];
@@ -30,6 +48,8 @@ int main() {
     }
     return EXIT_SUCCESS;
 }
+
+//* ===== Funcoes ===== *//
 
 /*
 leia destPath, srcPath
@@ -64,14 +84,13 @@ void opcao1(char* src, char* dest) {
     fclose(dest);
 }
 
-void opcao2(char* srcPath) {
-    FILE* arquivo = fopen(srcPath, "rb");
+void opcao2(char* path) {
+    Binario* bin = binario_open(path);
     Registro* registro;
 
-    arquivo_abrir(arquivo);
-    while (registro = arquivo_leRegistro(arquivo)) {
+    while (registro = binario_leRegistro(bin)) {
         registro_imprimir(registro);
     }
 
-    arquivo_fechar(arquivo);
+    binario_del(bin);
 }

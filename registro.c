@@ -48,7 +48,7 @@ Registro* registro_newVazio() {
 }
 
 void registro_del(Registro** registro) {
-    // Verifica se registro já foi apagado
+    // Verifica se objeto já foi apagado
     if (!registro) return;
     if (!*registro) {
         *registro = NULL;

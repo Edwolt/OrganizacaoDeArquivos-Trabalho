@@ -10,9 +10,9 @@ typedef struct _registro Registro;
 
 /**
  * Cria um novo registro
- * Retorna NULL se não for possivel criar o objeto
+ * Retorna NULL se nao for possivel criar o objeto
  * 
- * Obs: Depois, use uma função para destruir o objeto
+ * Obs: Depois, use uma funcao para destruir o objeto
  */
 Registro* registro_new(int idNascimento,
                        int idadeMae, char* dataNascimento,
@@ -22,11 +22,11 @@ Registro* registro_new(int idNascimento,
 
 /**
  * Cria um novo registro sem nenhum dado
- * Retorna NULL se não for possivel criar o objeto
+ * Retorna NULL se nao for possivel criar o objeto
  * 
- * Obs: Depois, use uma função para destruir o objeto
+ * Obs: Depois, use uma funcao para destruir o objeto
  */
-Registro* registro_newVazio(Registro* registro);
+Registro* registro_newVazio();
 
 void registro_del(Registro** registro);
 void registro_rmv(Registro** registro);
