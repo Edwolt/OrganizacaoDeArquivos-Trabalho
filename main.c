@@ -7,6 +7,30 @@
 #include "csv.h"
 #include "registro.h"
 
+int main() {
+    char destPath[100];
+    char srcPath[100];
+    int opcao;
+
+    while (scanf("%d", &opcao) == 1) {  // Enquanto houver entradas no stdin
+        switch (opcao) {
+            case 1:
+                scanf(" %s %s", srcPath, destPath);
+                opcao1(srcPath, destPath);
+                break;
+
+            case 2:
+                printf("Pintei");
+                scanf(" %s", srcPath);
+                break;
+
+            default:
+                break;
+        }
+    }
+    return EXIT_SUCCESS;
+}
+
 /*
 leia destPath, srcPath
 CSV src = new CSV(srcPath)
@@ -20,45 +44,34 @@ dest.status = true
 
 binarioNaTela()
 */
-int main() {
-    char destPath[100];
-    char srcPath[100];
-    int opcao;
-
-    scanf("%d", &opcao);
-    switch (opcao) {
-        case 1:
-            scanf("%s %s", srcPath, destPath);
-            opcao1(srcPath, destPath);
-            break;
-
-        case 2:
-            scanf("%s", srcPath);
-            break;
-
-        default:
-            break;
-    }
-
-    return EXIT_SUCCESS;
-}
-
-void opcao1(char* srcPath, char* destPath) {
-    CSV* src = csv_new(srcPath);
-    Arquivo* dest = arquivo_new(destPath);
+void opcao1(char* src, char* dest) {
+    FILE* csv = fopen(src, "r");
+    FILE* binario = fopen(dest, "wb");
     Registro* registro;
 
-    arquivo_setStatus(dest, false);
-    arquivo_criar(dest);
-    while ((registro = csv_lerRegistro(src))) {
-        arquivo_inserir(registro);
+    binario_setStatus(dest, false);
+    while ((registro = csv_lerRegistro(csv))) {
+        binario_inserir(binario, registro);
         registro_del(registro);
     }
-    arquivo_salvar(dest);
-    arquivo_setStatus(dest, true);
+    binario_del(binario);
 
-    binarioNaTela(destPath);
+    binario_setStatus(dest, true);
 
-    arquivo_del(src);
-    csv_del(dest);
+    binarioNaTela(dest);
+
+    fclose(src);
+    fclose(dest);
+}
+
+void opcao2(char* srcPath) {
+    FILE* arquivo = fopen(srcPath, "rb");
+    Registro* registro;
+
+    arquivo_abrir(arquivo);
+    while (registro = arquivo_leRegistro(arquivo)) {
+        registro_imprimir(registro);
+    }
+
+    arquivo_fechar(arquivo);
 }
