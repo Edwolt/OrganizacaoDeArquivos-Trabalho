@@ -43,7 +43,7 @@ int main() {
                 break;
 
             default:
-                printf("Opção invalida");
+                printf("Opção invalida\n");
                 return EXIT_FAILURE;
         }
     }
@@ -99,9 +99,27 @@ void opcao1(char* src, char* dest) {
 }
 
 void opcao2(char* path) {
+    bool status;
+    int inseridos;
+    bool getted = binario_getCabecalho(path, &status, NULL, &inseridos, NULL, NULL);
+    if (!getted) {
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
+
+    if (!status) {
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
+
+    if (inseridos == 0) {
+        printf("Registro inexistente.\n");
+        return;
+    }
+
     Binario* bin = binario_open(path);
     if (!bin) {
-        printf("Registro inexistente.\n");
+        printf("Falha no processamento do arquivo.\n");
         return;
     }
 
