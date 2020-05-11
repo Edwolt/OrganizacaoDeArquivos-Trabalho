@@ -83,7 +83,7 @@ bool binario_atualizaCabecalho(char* path,
                                int* inseridos, int* removidos, int* atualizados);
 
 /**
- * Peda o cabecalho de um arquivo
+ * Pega os valores do cabecalho de um arquivo
  * O valor que for NULL nao sera lido do arquivo
  * 
  * status      = Status
