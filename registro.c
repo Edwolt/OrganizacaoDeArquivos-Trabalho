@@ -84,29 +84,32 @@ void registro_imprimir(Registro* registro) {
         return;
     }
 
+    unsigned char acento0 = 0xc3;
+    unsigned char acento1 = 0xaa;
+
     char sexo[50];
     switch (registro->sexoBebe) {
         case '0':
-            strcpy(sexo, "Ignorado");
+            strcpy(sexo, "IGNORADO");
             break;
 
         case '1':
-            strcpy(sexo, "Masculino");
+            strcpy(sexo, "MASCULINO");
             break;
 
         case '2':
-            strcpy(sexo, "Feminino");
+            strcpy(sexo, "FEMININO");
             break;
 
         default:
             strcpy(sexo, "-");
     }
 
-    printf("Nasceu em %s/%s, em %s, um bebe de sexo %s.\n",
-           (registro->cidadeBebe ? registro->cidadeBebe : "-"),
+    printf("Nasceu em %s/%s, em %s, um beb%c%c de sexo %s.\n",
+           (registro->cidadeBebe != NULL ? registro->cidadeBebe : "-"),
            (registro->estadoBebe ? registro->estadoBebe : "-"),
            (registro->dataNascimento ? registro->dataNascimento : "-"),
-           sexo);
+           acento0, acento1, sexo);
 }
 
 //* ============================ *//
