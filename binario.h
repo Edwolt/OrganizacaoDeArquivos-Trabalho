@@ -8,8 +8,6 @@
 #include "csv.h"
 #include "registro.h"
 
-// TODO verificar registros logicamente removido
-
 /**
  * TAD Arquivo binario
  * Manipula um arquivo binario de registros
