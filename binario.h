@@ -43,7 +43,9 @@ Binario* binario_open(char* path);
 
 /**
  * Destroi o objeto
- * (Não apaga o arquivo criado, apenas desaloca memoria)
+ * 
+ * Obs: Não apaga o arquivo, apenas desaloca memoria
+ * Obs: Se for um arquivo de escrita, depois da execucao (senao ocorre erros) arquivo estara em disco
  */
 void binario_del(Binario** binario);
 
