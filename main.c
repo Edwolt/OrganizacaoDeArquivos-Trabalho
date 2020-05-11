@@ -60,36 +60,39 @@ int main() {
 //* ===== Funcoes ===== *//
 
 /*
-leia destPath, srcPath
-CSV src = new CSV(srcPath)
-Arquivo dest = new Arquivo(destPath)
+CSV csv = new CSV(src)
+Binario bin = new Binario(dest)
 
-dest.status = false
+bin.status = false
 Enquanto houver registros {
-    arquivo.write(csv.getRegistro())
+    bin.write(csv.getRegistro())
 }
-dest.status = true
+bin.status = true
 
 binarioNaTela()
 */
-// void opcao1(char* src, char* dest) {
-//     FILE* csv = fopen(src, "r");
-//     FILE* bin = fopen(dest, "wb");
-//     Registro* registro;
+void opcao1(char* src, char* dest) {
+    FILE* csv = fopen(src, "r");
+    FILE* bin = fopen(dest, "wb");
+    Registro* registro;
+    int cont = 0; // Quantidade de Registros escritos
+    
+    bool status = false;
+    binario_atualizaCabecalho(dest, &status, NULL, NULL, NULL, NULL);
+    while ((registro = csv_lerRegistro(csv))) {
+        binario_inserir(bin, registro);
+        registro_del(&registro);
+        cont++;
+    }
+    binario_del(&bin);
 
-//     binario_setStatus(dest, false);
-//     while ((registro = csv_lerRegistro(csv))) {
-//         binario_inserir(bin, registro);
-//         registro_del(&registro);
-//     }
-//     binario_del(&bin);
+    status = true;
+    binario_atualizaCabecalho(dest, &status, &cont, &cont, NULL, NULL);
 
-//     binario_setStatus(dest, true);
+    binarioNaTela(dest);
 
-//     binarioNaTela(dest);
-
-//     csv_del(&csv);
-// }
+    csv_del(&csv);
+}
 
 // void opcao2(char* path) {
 //     Binario* bin = binario_open(path);
