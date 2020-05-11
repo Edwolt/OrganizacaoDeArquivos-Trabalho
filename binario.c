@@ -287,6 +287,10 @@ fread_error:  // Tratando erros ao ler do arquivo
     return NULL;
 }
 
+//* ============================== *//
+//* ===== Registro Cabecalho ===== *//
+//* ============================== *//
+
 bool binario_atualizaCabecalho(char* path,
                                bool* status, int* rrn,
                                int* inseridos, int* removidos, int* atualizados) {

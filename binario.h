@@ -9,9 +9,9 @@
 
 /**
  * TAD Arquivo binario
- * Manipula um arquivo binario
+ * Manipula um arquivo binario de registros
  * 
- * Por ser simples, nao tem motivo para cirar um estrutura
+ * Por ser simples, nao tem motivo para cirar uma estrutura
  * por isso usei apenas um typedef
  */
 typedef FILE Binario;
@@ -61,6 +61,10 @@ bool binario_inserir(Binario* binario, Registro* registro);
  * Obs: Destrua o registro depois de usar
  */
 Registro* binario_leRegistro(Binario* binario, bool* erro);
+
+//* ============================== *//
+//* ===== Registro Cabecalho ===== *//
+//* ============================== *//
 
 /**
  * Atuliza o cabeçalho do arquivo
