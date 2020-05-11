@@ -22,6 +22,7 @@ void leCampo(CSV* csv, char* str) {
         fscanf(csv, "%c", &c);
     }
     str[i] = '\0';
+    trim(str);
 }
 
 /**
@@ -33,7 +34,6 @@ int leInt(CSV* csv) {
     char str[STR_TAM];
 
     leCampo(csv, str);
-    trim(str);
 
     if (strlen(str) == 0) return INTNULL;
 
@@ -50,7 +50,6 @@ char* leStr(CSV* csv) {
     char* str = (char*)malloc(STR_TAM * sizeof(char));
 
     leCampo(csv, str);
-    trim(str);
 
     if (strlen(str) == 0) {
         free(str);
@@ -69,7 +68,6 @@ char leChar(CSV* csv) {
     char str[STR_TAM];
 
     leCampo(csv, str);
-    trim(str);
 
     if (strlen(str) != 1) return '\0';
 
