@@ -1,7 +1,8 @@
 Ignore/
 TesteIn/
-enduser
+enduser*
 *.bin
+teste.in
 
 # Prerequisites
 *.d
