@@ -2,12 +2,16 @@
 
 #include "binarioNaTela.h"
 
-#define STR_TAM 106  // Maior String que pode ser lida
+#define STR_TAM 97  // Maior String que pode ser lida
 
 //* ============================ *//
 //* ===== Metodos Privados ===== *//
 //* ============================ *//
 
+/**
+ * Le um campo do CSV (até uma ',' ou um '\n')
+ * Consome a ',' ou '\n'
+ */
 void leCampo(CSV* csv, char* str) {
     char c;
     int i = 0;
@@ -21,7 +25,7 @@ void leCampo(CSV* csv, char* str) {
 }
 
 /**
- * Le um inteiro do arquivo e consome a virgula
+ * Le um inteiro do arquivo
  */
 int leInt(CSV* csv) {
     if (!csv) return INTNULL;
@@ -38,7 +42,7 @@ int leInt(CSV* csv) {
 
 /**
  * Le uma string do arquivo e consome a virgula
- * usa alocacao dinamica
+ * Usa alocacao dinamica
  */
 char* leStr(CSV* csv) {
     if (!csv) return NULL;
@@ -82,9 +86,8 @@ CSV* csv_open(char* path) {
     CSV* csv = fopen(path, "r");
     if (!csv) return NULL;  // Testa se o arquivo foi aberto com sucesso
 
-    fscanf(csv, "%*[^\n] ");  // Le uma linha do arquivo sem salvar o valor
+    fscanf(csv, "%*[^\n] ");  // Pula a primeira linha do arquivo (e os whitespace subsequente)
     return csv;
-    return NULL;
 }
 
 void csv_del(CSV** csv) {
@@ -105,12 +108,14 @@ Registro* csv_lerRegistro(CSV* csv) {
 
     char* cidadeBebe = leStr(csv);
     if (feof(csv)) {
+        // Desaloca o que já foi alocado
         free(cidadeMae);
         return NULL;
     }
 
     int idNascimento = leInt(csv);
     if (feof(csv)) {
+        // Desaloca o que já foi alocado
         free(cidadeMae);
         free(cidadeBebe);
         return NULL;
@@ -118,6 +123,7 @@ Registro* csv_lerRegistro(CSV* csv) {
 
     int idadeMae = leInt(csv);
     if (feof(csv)) {
+        // Desaloca o que já foi alocado
         free(cidadeMae);
         free(cidadeBebe);
         return NULL;
@@ -125,6 +131,7 @@ Registro* csv_lerRegistro(CSV* csv) {
 
     char* dataNascimento = leStr(csv);
     if (feof(csv)) {
+        // Desaloca o que já foi alocado
         free(cidadeMae);
         free(cidadeBebe);
         return NULL;
@@ -132,6 +139,7 @@ Registro* csv_lerRegistro(CSV* csv) {
 
     char sexoBebe = leChar(csv);
     if (feof(csv)) {
+        // Desaloca o que já foi alocado
         free(cidadeMae);
         free(cidadeBebe);
         free(dataNascimento);
@@ -140,6 +148,7 @@ Registro* csv_lerRegistro(CSV* csv) {
 
     char* estadoMae = leStr(csv);
     if (feof(csv)) {
+        // Desaloca o que já foi alocado
         free(cidadeMae);
         free(cidadeBebe);
         free(dataNascimento);
@@ -148,6 +157,7 @@ Registro* csv_lerRegistro(CSV* csv) {
 
     char* estadoBebe = leStr(csv);
     if (feof(csv)) {
+        // Desaloca o que já foi alocado
         free(cidadeMae);
         free(cidadeBebe);
         free(dataNascimento);
