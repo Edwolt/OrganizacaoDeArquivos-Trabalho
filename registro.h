@@ -7,6 +7,10 @@
 
 #define INTNULL -1
 
+/**
+ * TAD Registro
+ * Armazena dados de um registro
+ */
 typedef struct _registro Registro;
 
 /**
