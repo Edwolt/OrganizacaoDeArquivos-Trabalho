@@ -9,7 +9,7 @@
 //* ============================ *//
 
 /**
- * 
+ * Le um inteiro do arquivo e consome a virgula
  */
 int leInt(CSV* csv) {
     if (!csv) return INTNULL;
@@ -25,7 +25,8 @@ int leInt(CSV* csv) {
 }
 
 /**
- * 
+ * Le uma string do arquivo e consome a virgula
+ * usa alocacao dinamica
  */
 char* leStr(CSV* csv) {
     if (!csv) return NULL;
@@ -44,7 +45,7 @@ char* leStr(CSV* csv) {
 }
 
 /**
- * 
+ * Le um char do arquivo e consome a virgula
  */
 char leChar(CSV* csv) {
     if (!csv) return '\0';
@@ -64,11 +65,13 @@ char leChar(CSV* csv) {
 //* ============================ *//
 
 CSV* csv_open(char* path) {
-    if (path) {
-        CSV* csv = fopen(path, "r");
-        fscanf(csv, "%*[^\n] ");  // Le uma linha do arquivo sem salvar o valor
-        return csv;
-    };
+    if (!path) return NULL;
+
+    CSV* csv = fopen(path, "r");
+    if (!csv) return NULL; // Testa se o arquivo foi aberto com sucesso
+
+    fscanf(csv, "%*[^\n] ");  // Le uma linha do arquivo sem salvar o valor
+    return csv;
     return NULL;
 }
 
@@ -86,13 +89,59 @@ void csv_del(CSV** csv) {
 
 Registro* csv_lerRegistro(CSV* csv) {
     char* cidadeMae = leStr(csv);
+    if (!cidadeMae) return NULL;
+
     char* cidadeBebe = leStr(csv);
+    if (!cidadeBebe) {
+        free(cidadeMae);
+        return NULL;
+    }
+
     int idNascimento = leInt(csv);
+    if (idNascimento == INTNULL) {
+        free(cidadeMae);
+        free(cidadeBebe);
+        return NULL;
+    }
+
     int idadeMae = leInt(csv);
+    if (idadeMae == INTNULL) {
+        free(cidadeMae);
+        free(cidadeBebe);
+        return NULL;
+    }
+
     char* dataNascimento = leStr(csv);
+    if (!dataNascimento) {
+        free(cidadeMae);
+        free(cidadeBebe);
+        return NULL;
+    }
+
     char sexoBebe = leChar(csv);
+    if (sexoBebe == '\0') {
+        free(cidadeMae);
+        free(cidadeBebe);
+        free(dataNascimento);
+        return NULL;
+    }
+
     char* estadoMae = leStr(csv);
+    if (!estadoMae) {
+        free(cidadeMae);
+        free(cidadeBebe);
+        free(dataNascimento);
+        return NULL;
+    }
+
     char* estadoBebe = leStr(csv);
+    if (!estadoBebe) {
+        free(cidadeMae);
+        free(cidadeBebe);
+        free(dataNascimento);
+        free(estadoMae);
+        return NULL;
+    }
 
     return registro_new(idNascimento,
                         idadeMae, dataNascimento,

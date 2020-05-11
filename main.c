@@ -30,14 +30,17 @@ int main() {
     char dest[100];
     int opcao;
 
-    scanf(" %s", src);
-    CSV* csv = csv_open(src);
-    Registro* registro = csv_lerRegistro(csv);
-    registro_imprimir(registro);
-    registro_del(&registro);
-    csv_del(&csv);
+    CSV* csv = csv_open("Dados.csv");
 
-    return 0;
+    Registro* registro;
+    int cont = 0;
+    while ((registro = csv_lerRegistro(csv))) {
+        printf("%d ", cont++);
+        registro_imprimir(registro);
+        registro_del(&registro);
+    }
+
+    return EXIT_SUCCESS;
 
     while (scanf("%d", &opcao) == 1) {  // Enquanto houver entradas no stdin
         switch (opcao) {
@@ -72,11 +75,11 @@ bin.status = true
 binarioNaTela()
 */
 void opcao1(char* src, char* dest) {
-    FILE* csv = fopen(src, "r");
-    FILE* bin = fopen(dest, "wb");
+    FILE* csv = csv_open(src);
+    FILE* bin = binario_open(dest);
     Registro* registro;
-    int cont = 0; // Quantidade de Registros escritos
-    
+    int cont = 0;  // Quantidade de Registros escritos
+
     bool status = false;
     binario_atualizaCabecalho(dest, &status, NULL, NULL, NULL, NULL);
     while ((registro = csv_lerRegistro(csv))) {

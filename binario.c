@@ -9,7 +9,10 @@
 
 Binario* binario_new(char* path) {
     if (!path) return NULL;
+
     Binario* binario = fopen(path, "wb");
+    if(!binario) return NULL;
+    
     int i;  // Iteradores
 
     char status = '1';
