@@ -51,8 +51,17 @@ bool binario_inserir(Binario* binario, Registro* registro);
 Registro* binario_leRegistro(Binario* binario);
 
 /**
- * Muda o status do arquivo no caminho path
+ * Atuliza o cabeçalho do arquivo
+ * O valor que for NULL não será atualizado
+ * 
+ * status      = Status
+ * rrn         = RRNProxRegistro
+ * inseridos   = numeroRegistrosInseridos
+ * removidos   = numeroRegistrosRemovidos  
+ * atualizados = numeroRegistrosAtualizado
  */
-bool binario_setStatus(char* path, bool status);
+bool binario_atualizaCabecalho(char* path,
+                               bool* status, int* rrn,
+                               int* inseridos, int* removidos, int* atualizados);
 
 #endif
