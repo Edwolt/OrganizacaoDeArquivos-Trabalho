@@ -10,6 +10,11 @@
 /**
  * TAD Registro
  * Armazena dados de um registro
+ * 
+ * Valores para campos nulos:
+ * - Strings: NULL
+ * - Inteiros: INTNULL
+ * - Chars: '\0'
  */
 typedef struct _registro Registro;
 
@@ -33,9 +38,23 @@ Registro* registro_new(int idNascimento,
  */
 Registro* registro_newVazio();
 
+/**
+ * Destroi o objeto
+ * Destroi os objetos e desaloca variaveis que estiver dentro dele
+ */
 void registro_del(Registro** registro);
+
+/**
+ * Destroi o objeto
+ * 
+ * Os objetos que estiver dentro dele continuam existindo
+ * E as variávei dinamicamente alocada continuam alocadas
+ */
 void registro_rmv(Registro** registro);
 
+/**
+ * Escreve no stdin os dados do registro usando as informacoes mais importantes
+ */
 void registro_imprimir();
 
 //* ============================ *//

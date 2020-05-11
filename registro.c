@@ -1,16 +1,16 @@
 #include "registro.h"
 
 struct _registro {
-    int idNascimento;      // Int
-    int idadeMae;          // Int
+    int idNascimento;  // Int
+    int idadeMae;  // Int
     char* dataNascimento;  // string: AAAA-MM-DD
-    char sexoBebe;         // '0', '1', ou '2'
-    char* estadoMae;       // 2 chars
-    char* estadoBebe;      // 2 chars
+    char sexoBebe;  // Ignorado ('0'), Masculino ('1'), ou Feminino ('2')
+    char* estadoMae;  // 2 chars (string)
+    char* estadoBebe;  // 2 chars (string)
 
-    // Campos de Tamanho Variável
-    char* cidadeMae;   // string, maximo 105
-    char* cidadeBebe;  // string, maximo 105
+    // Campos de Tamanho Variavel
+    char* cidadeMae;  // string (campo de tamanho variavel)
+    char* cidadeBebe;  // string (campo de tamanho variavel)
 };
 
 Registro* registro_new(int idNascimento,
@@ -79,14 +79,16 @@ void registro_rmv(Registro** registro) {
 }
 
 void registro_imprimir(Registro* registro) {
-    if (!registro) {
-        printf("Registro Vazio\n");
+    if (!registro) {  // Verifica se o registro Existe
+        printf("Registro Inexistente\n");
         return;
     }
 
-    unsigned char acento0 = 0xc3;
-    unsigned char acento1 = 0xaa;
+    // Para imprimir a letra 'e' com o acento circunflexo
+    const unsigned char ACENTO0 = 0xc3;
+    const unsigned char ACENTO1 = 0xaa;
 
+    // String com o sexo do bebe
     char sexo[50];
     switch (registro->sexoBebe) {
         case '0':
@@ -109,7 +111,7 @@ void registro_imprimir(Registro* registro) {
            (registro->cidadeBebe != NULL ? registro->cidadeBebe : "-"),
            (registro->estadoBebe ? registro->estadoBebe : "-"),
            (registro->dataNascimento ? registro->dataNascimento : "-"),
-           acento0, acento1, sexo);
+           ACENTO0, ACENTO1, sexo);
 }
 
 //* ============================ *//
