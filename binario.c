@@ -169,13 +169,19 @@ Registro* binario_leRegistro(Binario* binario, bool* erro) {
 
     int qtdeLixo = 97 - tamCidadeMae - tamCidadeBebe;
 
-    char* cidadeMae = (char*)malloc(106 * sizeof(char));
-    TRYFREAD(cidadeMae, char, tamCidadeMae, binario);
-    cidadeMae[tamCidadeMae] = '\0';
+    char* cidadeMae = NULL;
+    if (tamCidadeMae > 0) {
+        cidadeMae = (char*)malloc(106 * sizeof(char));
+        TRYFREAD(cidadeMae, char, tamCidadeMae, binario);
+        cidadeMae[tamCidadeMae] = '\0';
+    }
 
-    char* cidadeBebe = (char*)malloc(106 * sizeof(char));
-    TRYFREAD(cidadeBebe, char, tamCidadeBebe, binario);
-    cidadeBebe[tamCidadeBebe] = '\0';
+    char* cidadeBebe = NULL;
+    if (tamCidadeBebe > 0) {
+        cidadeBebe = (char*)malloc(106 * sizeof(char));
+        TRYFREAD(cidadeBebe, char, tamCidadeBebe, binario);
+        cidadeBebe[tamCidadeBebe] = '\0';
+    }
 
     fseek(binario, qtdeLixo, SEEK_CUR);
 
@@ -187,7 +193,12 @@ Registro* binario_leRegistro(Binario* binario, bool* erro) {
 
     char* dataNascimento = (char*)malloc(11 * sizeof(char));
     TRYFREAD(dataNascimento, char, 10, binario);
-    dataNascimento[10] = '\0';
+    if (strlen(dataNascimento) > 0) {
+        dataNascimento[10] = '\0';
+    } else {
+        free(dataNascimento);
+        dataNascimento = NULL;
+    }
 
     char sexoBebe;
     TRYFREAD(&sexoBebe, char, 1, binario);
@@ -195,10 +206,18 @@ Registro* binario_leRegistro(Binario* binario, bool* erro) {
     char* estadoMae = (char*)malloc(3 * sizeof(char));
     TRYFREAD(estadoMae, char, 2, binario);
     estadoMae[2] = '\0';
+    if (strlen(estadoMae) == 0) {
+        free(estadoMae);
+        estadoMae = NULL;
+    }
 
     char* estadoBebe = (char*)malloc(3 * sizeof(char));
     TRYFREAD(estadoBebe, char, 2, binario);
     estadoBebe[2] = '\0';
+    if (strlen(estadoBebe) == 0) {
+        free(estadoBebe);
+        estadoBebe = NULL;
+    }
 
     return registro_new(idNascimento,
                         idadeMae, dataNascimento,
