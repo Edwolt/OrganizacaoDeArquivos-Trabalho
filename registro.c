@@ -80,14 +80,14 @@ void registro_rmv(Registro** registro) {
 
 void registro_imprimir(Registro* registro) {
     if (!registro) {
-        printf("Registro Vazio");
+        printf("Registro Vazio\n");
         return;
     }
 
     char sexo[50];
     switch (registro->sexoBebe) {
         case '0':
-            strcpy(sexo, "Ignorados");
+            strcpy(sexo, "Ignorado");
             break;
 
         case '1':

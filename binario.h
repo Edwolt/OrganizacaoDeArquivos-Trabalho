@@ -48,11 +48,25 @@ bool binario_inserir(Binario* binario, Registro* registro);
  * 
  * Obs: Destrua o registro depois de usar
  */
-Registro* binario_leRegistro(Binario* binario);
+Registro* binario_leRegistro(Binario* binario, bool* erro);
 
 /**
  * Atuliza o cabeçalho do arquivo
- * O valor que for NULL não será atualizado
+ * O valor que for NULL nao sera atualizado
+ * 
+ * status      = Status
+ * rrn         = RRNProxRegistro
+ * inseridos   = numeroRegistrosInseridos
+ * removidos   = numeroRegistrosRemovidos  
+ * atualizados = numeroRegistrosAtualizado
+ */
+bool binario_atualizaCabecalho(char* path,
+                               bool* status, int* rrn,
+                               int* inseridos, int* removidos, int* atualizados);
+
+/**
+ * Peda o cabecalho de um arquivo
+ * O valor que for NULL nao sera lido do arquivo
  * 
  * status      = Status
  * rrn         = RRNProxRegistro

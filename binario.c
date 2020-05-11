@@ -12,7 +12,7 @@
  * Se não der certo, desvia para o label fread_error
  */
 #define TRYFREAD(ptr, type, qtde, file) \
-    if (fwrite((ptr), sizeof(type), (qtde), (file)) != ((size_t)qtde)) goto fread_error
+    if (fread((ptr), sizeof(type), (qtde), (file)) != ((size_t)qtde)) goto fread_error
 
 Binario* binario_new(char* path) {
     if (!path) return NULL;
@@ -45,8 +45,13 @@ fwrite_error:
 }
 
 Binario* binario_open(char* path) {
-    if (path) return NULL;
-    return fopen(path, "rb");
+    if (!path) return NULL;
+
+    Binario* binario = fopen(path, "rb");
+    if (!binario) return NULL;
+
+    fseek(binario, 128, SEEK_SET);  // Passa do Cabeçalho
+    return binario;
 }
 
 void binario_del(Binario** binario) {
@@ -150,7 +155,12 @@ fwrite_error:
     return false;
 }
 
-Registro* binario_leRegistro(Binario* binario) {
+Registro* binario_leRegistro(Binario* binario, bool* erro) {
+    if (!binario) {
+        *erro = true;
+        return NULL;
+    }
+
     int tamCidadeMae;
     TRYFREAD(&tamCidadeMae, int, 1, binario);
 
@@ -175,27 +185,29 @@ Registro* binario_leRegistro(Binario* binario) {
     int idadeMae;
     TRYFREAD(&idadeMae, int, 1, binario);
 
-    char* dataNascimento = (char*)malloc(6 * sizeof(char));
-    TRYFREAD(dataNascimento, char, 5, binario);
-    dataNascimento[5] = '\0';
+    char* dataNascimento = (char*)malloc(11 * sizeof(char));
+    TRYFREAD(dataNascimento, char, 10, binario);
+    dataNascimento[10] = '\0';
 
     char sexoBebe;
     TRYFREAD(&sexoBebe, char, 1, binario);
 
     char* estadoMae = (char*)malloc(3 * sizeof(char));
+    TRYFREAD(estadoMae, char, 2, binario);
     estadoMae[2] = '\0';
 
     char* estadoBebe = (char*)malloc(3 * sizeof(char));
-    fread(estadoBebe, sizeof(char), 2, binario);
+    TRYFREAD(estadoBebe, char, 2, binario);
     estadoBebe[2] = '\0';
 
-    Registro* registro_new(int idNascimento,
-                           int idadeMae, char* dataNascimento,
-                           char sexoBebe,
-                           char* estadoMae, char* estadoBebe,
-                           char* cidadeMae, char* cidadeBebe);
+    return registro_new(idNascimento,
+                        idadeMae, dataNascimento,
+                        sexoBebe,
+                        estadoMae, estadoBebe,
+                        cidadeMae, cidadeBebe);
 
 fread_error:
+    *erro = true;
     return NULL;
 }
 
@@ -221,19 +233,19 @@ bool binario_atualizaCabecalho(char* path,
     }
 
     if (inseridos) {
-        TRYFWRITE(inseridos, int, 1, binario);
+        TRYFWRITE(&inseridos, int, 1, binario);
     } else {
         fseek(binario, sizeof(int), SEEK_CUR);
     }
 
     if (removidos) {
-        TRYFWRITE(removidos, int, 1, binario);
+        TRYFWRITE(&removidos, int, 1, binario);
     } else {
         fseek(binario, sizeof(int), SEEK_CUR);
     }
 
     if (atualizados) {
-        TRYFWRITE(atualizados, int, 1, binario);
+        TRYFWRITE(&atualizados, int, 1, binario);
     } else {
         fseek(binario, sizeof(int), SEEK_CUR);
     }
@@ -242,6 +254,54 @@ bool binario_atualizaCabecalho(char* path,
     return true;
 
 fwrite_error:
+    fclose(binario);
+    return false;
+}
+
+bool binario_getCabecalho(char* path,
+                          bool* status, int* rrn,
+                          int* inseridos, int* removidos, int* atualizados) {
+    if (!path) return false;
+
+    Binario* binario = fopen(path, "rb");
+    if (!binario) return false;
+
+    if (status) {
+        char aux;
+        TRYFREAD(&aux, char, 1, binario);
+        *status = (aux == '1');
+    } else {
+        fseek(binario, sizeof(char), SEEK_CUR);
+    }
+
+    if (rrn) {
+        TRYFREAD(rrn, int, 1, binario);
+    } else {
+        fseek(binario, sizeof(int), SEEK_CUR);
+    }
+
+    if (inseridos) {
+        TRYFREAD(inseridos, int, 1, binario);
+    } else {
+        fseek(binario, sizeof(int), SEEK_CUR);
+    }
+
+    if (removidos) {
+        TRYFREAD(removidos, int, 1, binario);
+    } else {
+        fseek(binario, sizeof(int), SEEK_CUR);
+    }
+
+    if (atualizados) {
+        TRYFREAD(atualizados, int, 1, binario);
+    } else {
+        fseek(binario, sizeof(int), SEEK_CUR);
+    }
+
+    fclose(binario);
+    return true;
+
+fread_error:
     fclose(binario);
     return false;
 }

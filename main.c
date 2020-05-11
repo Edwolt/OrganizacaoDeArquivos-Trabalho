@@ -39,10 +39,12 @@ int main() {
 
             case 2:
                 scanf(" %s", src);
+                opcao2(src);
                 break;
 
             default:
-                break;
+                printf("Opção invalida");
+                return EXIT_FAILURE;
         }
     }
     return EXIT_SUCCESS;
@@ -98,9 +100,22 @@ void opcao1(char* src, char* dest) {
 
 void opcao2(char* path) {
     Binario* bin = binario_open(path);
-    Registro* registro;
+    if (!bin) {
+        printf("Registro inexistente.\n");
+        return;
+    }
 
-    while ((registro = binario_leRegistro(bin))) {
+    Registro* registro;
+    bool erro;
+
+    int cont = 2;
+    while ((registro = binario_leRegistro(bin, &erro))) {
+        if (erro) {
+            printf("Falha no processamento do arquivo.\n");
+            return;
+        }
+        printf("%d ", cont++);
+
         registro_imprimir(registro);
         registro_del(&registro);
     }
