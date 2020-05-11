@@ -99,9 +99,11 @@ void opcao1(char* src, char* dest) {
 }
 
 void opcao2(char* path) {
+    int i;  // Iteradores
     bool status;
     int inseridos;
-    bool getted = binario_getCabecalho(path, &status, NULL, &inseridos, NULL, NULL);
+    int rrn;
+    bool getted = binario_getCabecalho(path, &status, &rrn, &inseridos, NULL, NULL);
     if (!getted) {
         printf("Falha no processamento do arquivo.\n");
         return;
@@ -126,11 +128,15 @@ void opcao2(char* path) {
     Registro* registro;
     bool erro;
 
-    while ((registro = binario_leRegistro(bin, &erro))) {
+    for (i = 0; i < rrn; i++) {
+        registro = binario_leRegistro(bin, &erro);
+
         if (erro) {
             printf("Falha no processamento do arquivo.\n");
             return;
         }
+
+        if (registro == NULL) continue;
 
         registro_imprimir(registro);
         registro_del(&registro);

@@ -4,6 +4,8 @@
 //* ===== Constantes ===== *//
 //* ====================== *//
 
+#define REMOVIDO -1
+
 /**
  * Tamanho do registro
  */
@@ -218,6 +220,9 @@ Registro* binario_leRegistro(Binario* binario, bool* erro) {
     // Le Campos Variaveis
     int tamCidadeMae;
     TRYFREAD(&tamCidadeMae, int, 1, binario);
+
+    // Verifica se o registro esta removido
+    if (tamCidadeMae == REMOVIDO) return NULL;
 
     int tamCidadeBebe;
     TRYFREAD(&tamCidadeBebe, int, 1, binario);
