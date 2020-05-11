@@ -233,19 +233,19 @@ bool binario_atualizaCabecalho(char* path,
     }
 
     if (inseridos) {
-        TRYFWRITE(&inseridos, int, 1, binario);
+        TRYFWRITE(inseridos, int, 1, binario);
     } else {
         fseek(binario, sizeof(int), SEEK_CUR);
     }
 
     if (removidos) {
-        TRYFWRITE(&removidos, int, 1, binario);
+        TRYFWRITE(removidos, int, 1, binario);
     } else {
         fseek(binario, sizeof(int), SEEK_CUR);
     }
 
     if (atualizados) {
-        TRYFWRITE(&atualizados, int, 1, binario);
+        TRYFWRITE(atualizados, int, 1, binario);
     } else {
         fseek(binario, sizeof(int), SEEK_CUR);
     }

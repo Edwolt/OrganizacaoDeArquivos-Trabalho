@@ -1,5 +1,6 @@
 Ignore/
 TesteIn/
+Testes
 
 #Compilado
 enduser
@@ -7,12 +8,6 @@ enduser.zip
 
 # Saida do programa
 *.bin
-
-# Arquivos para teste
-arq*.csv
-teste.in
-*.dump
-*.in
 
 # Prerequisites
 *.d
