@@ -7,18 +7,21 @@
 
 #include "registro.h"
 
-#define LIXO '$';
-
 /**
  * TAD Arquivo binario
- * Por ser um simplesmente um FILE, nao tem motivo para cirar um estrutura
+ * Manipula um arquivo binario
+ * 
+ * Por ser simples, nao tem motivo para cirar um estrutura
+ * por isso usei apenas um typedef
  */
 typedef FILE Binario;
 
 /**
  * Cria um novo arquivo com nome path
  * Se o arquivo ja existir cria, sobrescreve ele com um arquivo novo
+ * Retorna o arquivo para escrita
  * Retorna NULL se nao for possivel criar o arquivo
+ * Retorna NULL se nao receber um path
  * 
  * Obs: Depois, use uma função para destruir o objeto
  */
@@ -40,6 +43,7 @@ void binario_del(Binario** binario);
 
 /**
  * Insere um registro no arquivo
+ * Retorna se foi ou nao possivel inserir o registro no arquivo
  */
 bool binario_inserir(Binario* binario, Registro* registro);
 
