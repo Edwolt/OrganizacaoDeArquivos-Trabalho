@@ -74,7 +74,7 @@ bool binario_atualizaCabecalho(char* path,
  * removidos   = numeroRegistrosRemovidos  
  * atualizados = numeroRegistrosAtualizado
  */
-bool binario_atualizaCabecalho(char* path,
+bool binario_getCabecalho(char* path,
                                bool* status, int* rrn,
                                int* inseridos, int* removidos, int* atualizados);
 
