@@ -12,12 +12,13 @@
 //* ================================= *//
 
 /**
- * 
+ * Le um arquivo csv com nome src
+ * e transforma em um arquivo binario e salva com nome dest
  */
 void opcao1(char* src, char* dest);
 
 /**
- * 
+ * Imprime registros de um arquivo binario com nome path
  */
 void opcao2(char* path);
 
@@ -100,21 +101,23 @@ void opcao1(char* src, char* dest) {
 
 void opcao2(char* path) {
     int i;  // Iteradores
+
     bool status;
     int inseridos;
-    int rrn;
+    int rrn;  // Quantidade de registros de dados no arquivo contando os removidos
     bool getted = binario_getCabecalho(path, &status, &rrn, &inseridos, NULL, NULL);
-    if (!getted) {
+
+    if (!getted) {  // Ocorreu uma falha ao ler o registro cabecalho
         printf("Falha no processamento do arquivo.\n");
         return;
     }
 
-    if (!status) {
+    if (!status) {  // O arquivo esta inconsistente
         printf("Falha no processamento do arquivo.\n");
         return;
     }
 
-    if (inseridos == 0) {
+    if (inseridos == 0) {  // O arquivo nao possui dados
         printf("Registro inexistente.\n");
         return;
     }

@@ -77,6 +77,12 @@ bool binario_inserir(Binario* binario, Registro* registro);
 /**
  * Le um registro do arquivo binario
  * 
+ * Salva em erro se ocorreu um erro
+ * Retorna NULL se ocorrer um erro
+ * 
+ * Retorna o Registro lido
+ * Retorna NULL se o registro estiver logicamente removido
+ * 
  * Obs: Destrua o registro depois de usar
  */
 Registro* binario_leRegistro(Binario* binario, bool* erro);
