@@ -17,9 +17,12 @@
 typedef FILE Binario;
 
 /**
- * Cria um novo arquivo com nome path
+ * Cria um novo arquivo binário de registros com nome path ja com o registro cabecalho
  * Se o arquivo ja existir cria, sobrescreve ele com um arquivo novo
+ * 
  * Retorna o arquivo para escrita
+ * Obs: Nao eh necessario pular o registro cabecalho
+ * 
  * Retorna NULL se nao for possivel criar o arquivo
  * Retorna NULL se nao receber um path
  * 
@@ -28,22 +31,27 @@ typedef FILE Binario;
 Binario* binario_new(char* path);
 
 /**
- * Abre um arquivo com nome path para leitura
+ * Abre um arquivo binario de registros com nome path para leitura
+ * Obs: Nao eh necessario pular o registro cabecalho
+ * 
  * Retorna NULL se nao for possivel Abrir o arquivo
+ * Retorna NULL se nao receber um path
  * 
  * Obs: Depois, use uma funcao para destruir o objeto
  */
 Binario* binario_open(char* path);
 
 /**
- * Destroi o objeto binario
+ * Destroi o objeto
  * (Não apaga o arquivo criado, apenas desaloca memoria)
  */
 void binario_del(Binario** binario);
 
 /**
  * Insere um registro no arquivo
- * Retorna se foi ou nao possivel inserir o registro no arquivo
+ * Obs: Nao verifica se esta no final do arquivo
+ * 
+ * Retorna se foi possivel inserir o registro no arquivo
  */
 bool binario_inserir(Binario* binario, Registro* registro);
 
@@ -79,7 +87,7 @@ bool binario_atualizaCabecalho(char* path,
  * atualizados = numeroRegistrosAtualizado
  */
 bool binario_getCabecalho(char* path,
-                               bool* status, int* rrn,
-                               int* inseridos, int* removidos, int* atualizados);
+                          bool* status, int* rrn,
+                          int* inseridos, int* removidos, int* atualizados);
 
 #endif
