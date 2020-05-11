@@ -217,6 +217,8 @@ Registro* binario_leRegistro(Binario* binario, bool* erro) {
         return NULL;
     }
 
+    *erro = false;  // Salva erro como false, pois caso não ocarra nenhum erro deve valer false
+
     // Le Campos Variaveis
     int tamCidadeMae;
     TRYFREAD(&tamCidadeMae, int, 1, binario);
