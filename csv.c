@@ -8,6 +8,18 @@
 //* ===== Metodos Privados ===== *//
 //* ============================ *//
 
+void leCampo(CSV* csv, char* str) {
+    char c;
+    int i = 0;
+
+    fscanf(csv, "%c", &c);
+    while (!feof(csv) && c != ',' && c != '\n') {
+        str[i++] = c;
+        fscanf(csv, "%c", &c);
+    }
+    str[i] = '\0';
+}
+
 /**
  * Le um inteiro do arquivo e consome a virgula
  */
@@ -16,7 +28,7 @@ int leInt(CSV* csv) {
 
     char str[STR_TAM];
 
-    fscanf(csv, " %[^,\n]%*c", str);
+    leCampo(csv, str);
     trim(str);
 
     if (strlen(str) == 0) return INTNULL;
@@ -33,7 +45,7 @@ char* leStr(CSV* csv) {
 
     char* str = (char*)malloc(STR_TAM * sizeof(char));
 
-    fscanf(csv, " %[^,\n]%*c", str);
+    leCampo(csv, str);
     trim(str);
 
     if (strlen(str) == 0) {
@@ -52,7 +64,7 @@ char leChar(CSV* csv) {
 
     char str[STR_TAM];
 
-    fscanf(csv, " %[^,\n]%*c", str);
+    leCampo(csv, str);
     trim(str);
 
     if (strlen(str) != 1) return '\0';
@@ -68,7 +80,7 @@ CSV* csv_open(char* path) {
     if (!path) return NULL;
 
     CSV* csv = fopen(path, "r");
-    if (!csv) return NULL; // Testa se o arquivo foi aberto com sucesso
+    if (!csv) return NULL;  // Testa se o arquivo foi aberto com sucesso
 
     fscanf(csv, "%*[^\n] ");  // Le uma linha do arquivo sem salvar o valor
     return csv;
@@ -89,37 +101,37 @@ void csv_del(CSV** csv) {
 
 Registro* csv_lerRegistro(CSV* csv) {
     char* cidadeMae = leStr(csv);
-    if (!cidadeMae) return NULL;
+    if (feof(csv)) return NULL;
 
     char* cidadeBebe = leStr(csv);
-    if (!cidadeBebe) {
+    if (feof(csv)) {
         free(cidadeMae);
         return NULL;
     }
 
     int idNascimento = leInt(csv);
-    if (idNascimento == INTNULL) {
+    if (feof(csv)) {
         free(cidadeMae);
         free(cidadeBebe);
         return NULL;
     }
 
     int idadeMae = leInt(csv);
-    if (idadeMae == INTNULL) {
+    if (feof(csv)) {
         free(cidadeMae);
         free(cidadeBebe);
         return NULL;
     }
 
     char* dataNascimento = leStr(csv);
-    if (!dataNascimento) {
+    if (feof(csv)) {
         free(cidadeMae);
         free(cidadeBebe);
         return NULL;
     }
 
     char sexoBebe = leChar(csv);
-    if (sexoBebe == '\0') {
+    if (feof(csv)) {
         free(cidadeMae);
         free(cidadeBebe);
         free(dataNascimento);
@@ -127,7 +139,7 @@ Registro* csv_lerRegistro(CSV* csv) {
     }
 
     char* estadoMae = leStr(csv);
-    if (!estadoMae) {
+    if (feof(csv)) {
         free(cidadeMae);
         free(cidadeBebe);
         free(dataNascimento);
@@ -135,7 +147,7 @@ Registro* csv_lerRegistro(CSV* csv) {
     }
 
     char* estadoBebe = leStr(csv);
-    if (!estadoBebe) {
+    if (feof(csv)) {
         free(cidadeMae);
         free(cidadeBebe);
         free(dataNascimento);

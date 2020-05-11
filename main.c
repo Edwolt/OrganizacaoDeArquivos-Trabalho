@@ -33,7 +33,7 @@ int main() {
     CSV* csv = csv_open("Dados.csv");
 
     Registro* registro;
-    int cont = 0;
+    int cont = 2;
     while ((registro = csv_lerRegistro(csv))) {
         printf("%d ", cont++);
         registro_imprimir(registro);
@@ -76,9 +76,22 @@ binarioNaTela()
 */
 void opcao1(char* src, char* dest) {
     FILE* csv = csv_open(src);
+    if (!csv) {
+        printf("Falha no carregamento do arquivo.\n");
+        return;
+    }
+
     FILE* bin = binario_open(dest);
+    if (!bin) {
+        csv_del(csv);
+        printf("Falha no carregamento do arquivo.\n");
+        return;
+    }
+
     Registro* registro;
     int cont = 0;  // Quantidade de Registros escritos
+
+    printf("oi");
 
     bool status = false;
     binario_atualizaCabecalho(dest, &status, NULL, NULL, NULL, NULL);
