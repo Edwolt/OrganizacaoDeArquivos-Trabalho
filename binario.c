@@ -7,12 +7,19 @@
 #define TRYFWRITE(ptr, type, qtde, file) \
     if (fwrite((ptr), sizeof(type), (qtde), (file)) != ((size_t)qtde)) goto fwrite_error
 
+/**
+ * Tenta ler qtde valores do tipo type a parte de ptr em file
+ * Se não der certo, desvia para o label fread_error
+ */
+#define TRYFREAD(ptr, type, qtde, file) \
+    if (fwrite((ptr), sizeof(type), (qtde), (file)) != ((size_t)qtde)) goto fread_error
+
 Binario* binario_new(char* path) {
     if (!path) return NULL;
 
     Binario* binario = fopen(path, "wb");
-    if(!binario) return NULL;
-    
+    if (!binario) return NULL;
+
     int i;  // Iteradores
 
     char status = '1';
@@ -23,7 +30,6 @@ Binario* binario_new(char* path) {
     char lixo[111];
     for (i = 0; i < 111; i++) lixo[i] = LIXO;
 
-    // TODO sumir com o goto
     TRYFWRITE(&status, char, 1, binario);
     TRYFWRITE(&rrn, int, 1, binario);
     TRYFWRITE(&inseridos, int, 1, binario);
@@ -65,8 +71,9 @@ bool binario_inserir(Binario* binario, Registro* registro) {
     // Extraindo dados do registro
     char* cidadeMae = registro_getCidadeMae(registro);
     char* cidadeBebe = registro_getCidadeBebe(registro);
-    int tamCidadeMae = strlen(cidadeMae);
-    int tamCidadeBebe = strlen(cidadeBebe);
+
+    int tamCidadeMae = cidadeMae ? strlen(cidadeMae) : 0;
+    int tamCidadeBebe = cidadeBebe ? strlen(cidadeBebe) : 0;
     int idNascimento = registro_getIdNascimento(registro);
     int idadeMae = registro_getIdadeMae(registro);
     char* dataNascimento = registro_getDataNascimento(registro);
@@ -80,40 +87,61 @@ bool binario_inserir(Binario* binario, Registro* registro) {
     for (i = 0; i < 97; i++) lixo[i] = LIXO;
 
     // Quantidade de lixo no campo variável
-    int qtdeLixo = 97 - tamCidadeBebe - tamCidadeMae;
+    int qtdeLixo = 97 - tamCidadeMae - tamCidadeBebe;
 
     TRYFWRITE(&tamCidadeMae, int, 1, binario);
     TRYFWRITE(&tamCidadeBebe, int, 1, binario);
-    TRYFWRITE(cidadeMae, char, tamCidadeMae, binario);
-    TRYFWRITE(cidadeBebe, int, tamCidadeBebe, binario);
+    if (cidadeMae) {
+        TRYFWRITE(cidadeMae, char, tamCidadeMae, binario);
+    }
+    if (cidadeBebe) {
+        TRYFWRITE(cidadeBebe, char, tamCidadeBebe, binario);
+    }
     TRYFWRITE(lixo, char, qtdeLixo, binario);
+
     TRYFWRITE(&idNascimento, int, 1, binario);
     TRYFWRITE(&idadeMae, int, 1, binario);
 
-    tamDado = strlen(dataNascimento);
-    TRYFWRITE(dataNascimento, char, tamDado, binario);
-    if (tamDado < 10) {
+    if (dataNascimento) {
+        tamDado = strlen(dataNascimento);
+        TRYFWRITE(dataNascimento, char, tamDado, binario);
+        if (tamDado < 10) {
+            TRYFWRITE(&CHARNULO, char, 1, binario);
+            qtdeLixo = 10 - tamDado - 1;
+            TRYFWRITE(lixo, char, qtdeLixo, binario);
+        }
+    } else {
         TRYFWRITE(&CHARNULO, char, 1, binario);
-        qtdeLixo = 10 - tamDado - 1;
-        TRYFWRITE(lixo, char, qtdeLixo, binario);
+        TRYFWRITE(lixo, char, 9, binario);
     }
 
+    sexoBebe = sexoBebe ? sexoBebe : '0';
     TRYFWRITE(&sexoBebe, char, 1, binario);
 
-    tamDado = strlen(estadoMae);
-    TRYFWRITE(estadoMae, char, tamDado, binario);
-    if (tamDado < 2) {
+    if (estadoMae) {
+        tamDado = strlen(estadoMae);
+        TRYFWRITE(estadoMae, char, tamDado, binario);
+        if (tamDado < 2) {
+            TRYFWRITE(&CHARNULO, char, 1, binario);
+            qtdeLixo = 2 - tamDado - 1;
+            TRYFWRITE(lixo, char, qtdeLixo, binario);
+        }
+    } else {
         TRYFWRITE(&CHARNULO, char, 1, binario);
-        qtdeLixo = 2 - tamDado - 1;
-        TRYFWRITE(lixo, char, qtdeLixo, binario);
+        TRYFWRITE(lixo, char, 1, binario);
     }
 
-    tamDado = strlen(estadoMae);
-    TRYFWRITE(estadoBebe, char, tamDado, binario);
-    if (tamDado < 2) {
+    if (estadoBebe) {
+        tamDado = strlen(estadoBebe);
+        TRYFWRITE(estadoBebe, char, tamDado, binario);
+        if (tamDado < 2) {
+            TRYFWRITE(&CHARNULO, char, 1, binario);
+            qtdeLixo = 2 - tamDado - 1;
+            TRYFWRITE(lixo, char, qtdeLixo, binario);
+        }
+    } else {
         TRYFWRITE(&CHARNULO, char, 1, binario);
-        qtdeLixo = 2 - tamDado - 1;
-        TRYFWRITE(lixo, char, qtdeLixo, binario);
+        TRYFWRITE(lixo, char, 1, binario);
     }
 
     return true;
@@ -123,8 +151,52 @@ fwrite_error:
 }
 
 Registro* binario_leRegistro(Binario* binario) {
-    binario;
-    return registro_newVazio();
+    int tamCidadeMae;
+    TRYFREAD(&tamCidadeMae, int, 1, binario);
+
+    int tamCidadeBebe;
+    TRYFREAD(&tamCidadeBebe, int, 1, binario);
+
+    int qtdeLixo = 97 - tamCidadeMae - tamCidadeBebe;
+
+    char* cidadeMae = (char*)malloc(106 * sizeof(char));
+    TRYFREAD(cidadeMae, char, tamCidadeMae, binario);
+    cidadeMae[tamCidadeMae] = '\0';
+
+    char* cidadeBebe = (char*)malloc(106 * sizeof(char));
+    TRYFREAD(cidadeBebe, char, tamCidadeBebe, binario);
+    cidadeBebe[tamCidadeBebe] = '\0';
+
+    fseek(binario, qtdeLixo, SEEK_CUR);
+
+    int idNascimento;
+    TRYFREAD(&idNascimento, int, 1, binario);
+
+    int idadeMae;
+    TRYFREAD(&idadeMae, int, 1, binario);
+
+    char* dataNascimento = (char*)malloc(6 * sizeof(char));
+    TRYFREAD(dataNascimento, char, 5, binario);
+    dataNascimento[5] = '\0';
+
+    char sexoBebe;
+    TRYFREAD(&sexoBebe, char, 1, binario);
+
+    char* estadoMae = (char*)malloc(3 * sizeof(char));
+    estadoMae[2] = '\0';
+
+    char* estadoBebe = (char*)malloc(3 * sizeof(char));
+    fread(estadoBebe, sizeof(char), 2, binario);
+    estadoBebe[2] = '\0';
+
+    Registro* registro_new(int idNascimento,
+                           int idadeMae, char* dataNascimento,
+                           char sexoBebe,
+                           char* estadoMae, char* estadoBebe,
+                           char* cidadeMae, char* cidadeBebe);
+
+fread_error:
+    return NULL;
 }
 
 bool binario_atualizaCabecalho(char* path,
@@ -169,7 +241,6 @@ bool binario_atualizaCabecalho(char* path,
     fclose(binario);
     return true;
 
-    // TODO sumir com o goto
 fwrite_error:
     fclose(binario);
     return false;

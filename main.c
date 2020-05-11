@@ -30,18 +30,6 @@ int main() {
     char dest[100];
     int opcao;
 
-    CSV* csv = csv_open("Dados.csv");
-
-    Registro* registro;
-    int cont = 2;
-    while ((registro = csv_lerRegistro(csv))) {
-        printf("%d ", cont++);
-        registro_imprimir(registro);
-        registro_del(&registro);
-    }
-
-    return EXIT_SUCCESS;
-
     while (scanf("%d", &opcao) == 1) {  // Enquanto houver entradas no stdin
         switch (opcao) {
             case 1:
@@ -81,17 +69,15 @@ void opcao1(char* src, char* dest) {
         return;
     }
 
-    FILE* bin = binario_open(dest);
+    FILE* bin = binario_new(dest);
     if (!bin) {
-        csv_del(csv);
+        csv_del(&csv);
         printf("Falha no carregamento do arquivo.\n");
         return;
     }
 
     Registro* registro;
     int cont = 0;  // Quantidade de Registros escritos
-
-    printf("oi");
 
     bool status = false;
     binario_atualizaCabecalho(dest, &status, NULL, NULL, NULL, NULL);
@@ -110,13 +96,14 @@ void opcao1(char* src, char* dest) {
     csv_del(&csv);
 }
 
-// void opcao2(char* path) {
-//     Binario* bin = binario_open(path);
-//     Registro* registro;
+void opcao2(char* path) {
+    Binario* bin = binario_open(path);
+    Registro* registro;
 
-//     while ((registro = binario_leRegistro(bin))) {
-//         registro_imprimir(registro);
-//     }
+    while ((registro = binario_leRegistro(bin))) {
+        registro_imprimir(registro);
+        registro_del(&registro);
+    }
 
-//     binario_del(&bin);
-// }
+    binario_del(&bin);
+}
