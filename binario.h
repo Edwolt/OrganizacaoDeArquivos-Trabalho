@@ -5,7 +5,10 @@
 #include <stdio.h>  // Manipular arquivos
 #include <stdlib.h>
 
+#include "csv.h"
 #include "registro.h"
+
+// TODO verificar registros logicamente removido
 
 /**
  * TAD Arquivo binario
@@ -17,8 +20,22 @@
 typedef FILE Binario;
 
 /**
+ * Cria um novo arquivo binário de registros
+ * a partir dos dados de um arquivo .csv usando o TAD CSV
+ * 
+ * Se o arquivo ja existir, sobrescreve ele com um arquivo novo
+ * 
+ * Retorna o arquivo para escrita
+ * Retorna NULL se nao for possivel criar o arquivo
+ * Retorna NULL se nao receber um path
+ * 
+ * Obs: Depois, use uma função para destruir o objeto
+ */
+Binario* binario_newCSV(CSV* csv);
+
+/**
  * Cria um novo arquivo binário de registros com nome path ja com o registro cabecalho
- * Se o arquivo ja existir cria, sobrescreve ele com um arquivo novo
+ * Se o arquivo ja existir, sobrescreve ele com um arquivo novo
  * 
  * Retorna o arquivo para escrita
  * Obs: Nao eh necessario pular o registro cabecalho
