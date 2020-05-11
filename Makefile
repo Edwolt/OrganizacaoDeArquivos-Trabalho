@@ -19,7 +19,7 @@ TEST_OUT := TesteOut/
 #Flags
 CFLAGS   := -Wall -lm -Wextra -pedantic -Werror=implicit-function-declaration
 RMFLAGS  := -f -v
-IN       := 1..11
+IN       := 1..7
 
 
 #Actions
@@ -47,7 +47,11 @@ clean:
 
 #Debug
 test:
-	echo "for i in {$(IN)}; do ./$(EXEC) < $(TEST_IN)\$$i.in > $(TEST_OUT)\$$i.out || break; done" | bash
+	cp $(TEST_IN)* $(TEST_OUT)
+	cp $(EXEC) $(TEST_OUT)
+	cd $(TEST_OUT)
+	echo "for i in {$(IN)}; do ./$(EXEC) < \$$i.in > \$$i.res || break; done" | bash
+	cd ..
 
 debug: $(OBJ)
 	$(CC) -g -o $(DEBUG) $(SRC)
