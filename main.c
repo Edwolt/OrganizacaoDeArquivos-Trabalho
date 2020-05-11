@@ -108,13 +108,11 @@ void opcao2(char* path) {
     Registro* registro;
     bool erro;
 
-    int cont = 2;
     while ((registro = binario_leRegistro(bin, &erro))) {
         if (erro) {
             printf("Falha no processamento do arquivo.\n");
             return;
         }
-        printf("%d ", cont++);
 
         registro_imprimir(registro);
         registro_del(&registro);
