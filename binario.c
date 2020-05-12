@@ -210,7 +210,7 @@ Binario* binario_abrirLeitura(char* path) {
     Binario* binario = fopen(path, "rb");
     if (!binario) return NULL;  // Verifica se o arquivo foi aberto com sucesso
 
-    fseek(binario, TAM_REG + 1, SEEK_SET);  // Pula o registro cabecalho
+    fseek(binario, TAM_REG, SEEK_SET);  // Pula o registro cabecalho
     return binario;
 }
 
@@ -220,7 +220,7 @@ Binario* binario_abrirEscrita(char* path) {
     Binario* binario = fopen(path, "rb+");
     if (!binario) return NULL;  // Verifica se o arquivo foi aberto com sucesso
 
-    fseek(binario, TAM_REG + 1, SEEK_SET);  // Pula o registro cabecalho
+    fseek(binario, TAM_REG, SEEK_SET);  // Pula o registro cabecalho
     return binario;
 }
 
