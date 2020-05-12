@@ -9,3 +9,5 @@ FONTES, W.S.; COUTINHO, F. QualiSUS: um dataset sobre dados da Saúde Pública
 Av. Trabalhador São-carlense, 400 . centro . São Carlos - SP cep 13566-590 . Brasil . www.icmc.usp.br
 no Brasil. In Proceedings Companion of the 34rd Brazilian Symposium on Databases,
 p. 418-428, 2019. 
+
+O arquivo BinarioNaTela foi disponibilizado para realização desse trabalho
