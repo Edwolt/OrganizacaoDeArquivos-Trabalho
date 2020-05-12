@@ -286,14 +286,14 @@ Registro* binario_leRegistro(Binario* binario, bool* erro) {
         cidadeMae = (char*)malloc((TAM_CVAR + 1) * sizeof(char));
         TRYFREAD(cidadeMae, char, tamCidadeMae, binario);
         cidadeMae[tamCidadeMae] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera altarada (O arquivo tera o '\0')
-    }  // Se tem uma cidade armazenada ela foi lida, senao ela eh cidadeMae eh NULL
+    }  // Se tem uma cidade armazenada ela foi lida, senao cidadeMae eh NULL
 
     char* cidadeBebe = NULL;
     if (tamCidadeBebe > 0) {
         cidadeBebe = (char*)malloc((TAM_CVAR + 1) * sizeof(char));
         TRYFREAD(cidadeBebe, char, tamCidadeBebe, binario);
         cidadeBebe[tamCidadeBebe] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera altarada (O arquivo tera o '\0')
-    }  // Se tem uma cidade armazenada ela foi lida, senao ela eh cidadeBebe eh NULL
+    }  // Se tem uma cidade armazenada ela foi lida, senao cidadeBebe eh NULL
 
     // Pula lixo
     int qtdeLixo = TAM_CVAR - tamCidadeMae - tamCidadeBebe;

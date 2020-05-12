@@ -9,7 +9,7 @@
 //* ============================ *//
 
 /**
- * Le um campo do CSV (até uma ',' ou um '\n')
+ * Le um campo do CSV (ate uma ',' ou um '\n')
  * Consome a ',' ou '\n'
  */
 void leCampo(CSV* csv, char* str) {
@@ -89,7 +89,7 @@ CSV* csv_abrir(char* path) {
 }
 
 void csv_fechar(CSV** csv) {
-    // Verifica se objeto já foi apagado
+    // Verifica se objeto ja foi apagado
     if (!csv) return;
     if (!*csv) {
         *csv = NULL;
@@ -106,14 +106,14 @@ Registro* csv_lerRegistro(CSV* csv) {
 
     char* cidadeBebe = leStr(csv);
     if (feof(csv)) {
-        // Desaloca o que já foi alocado
+        // Desaloca o que ja foi alocado
         free(cidadeMae);
         return NULL;
     }
 
     int idNascimento = leInt(csv);
     if (feof(csv)) {
-        // Desaloca o que já foi alocado
+        // Desaloca o que ja foi alocado
         free(cidadeMae);
         free(cidadeBebe);
         return NULL;
@@ -121,7 +121,7 @@ Registro* csv_lerRegistro(CSV* csv) {
 
     int idadeMae = leInt(csv);
     if (feof(csv)) {
-        // Desaloca o que já foi alocado
+        // Desaloca o que ja foi alocado
         free(cidadeMae);
         free(cidadeBebe);
         return NULL;
@@ -129,7 +129,7 @@ Registro* csv_lerRegistro(CSV* csv) {
 
     char* dataNascimento = leStr(csv);
     if (feof(csv)) {
-        // Desaloca o que já foi alocado
+        // Desaloca o que ja foi alocado
         free(cidadeMae);
         free(cidadeBebe);
         return NULL;
@@ -137,7 +137,7 @@ Registro* csv_lerRegistro(CSV* csv) {
 
     char sexoBebe = leChar(csv);
     if (feof(csv)) {
-        // Desaloca o que já foi alocado
+        // Desaloca o que ja foi alocado
         free(cidadeMae);
         free(cidadeBebe);
         free(dataNascimento);
@@ -146,7 +146,7 @@ Registro* csv_lerRegistro(CSV* csv) {
 
     char* estadoMae = leStr(csv);
     if (feof(csv)) {
-        // Desaloca o que já foi alocado
+        // Desaloca o que ja foi alocado
         free(cidadeMae);
         free(cidadeBebe);
         free(dataNascimento);
@@ -155,7 +155,7 @@ Registro* csv_lerRegistro(CSV* csv) {
 
     char* estadoBebe = leStr(csv);
     if (feof(csv)) {
-        // Desaloca o que já foi alocado
+        // Desaloca o que ja foi alocado
         free(cidadeMae);
         free(cidadeBebe);
         free(dataNascimento);

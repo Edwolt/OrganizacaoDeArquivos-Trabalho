@@ -18,7 +18,7 @@
 typedef FILE Binario;
 
 /**
- * Cria um novo arquivo binário com nome path
+ * Cria um novo arquivo binario com nome path
  * Cria nele o registro cabecalho
  * Se o arquivo ja existir, sobrescreve ele com um arquivo novo
  * 

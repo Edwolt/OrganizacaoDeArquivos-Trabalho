@@ -56,7 +56,7 @@ void opcao2(char* path) {
     }
 
     Binario* bin = binario_abrirLeitura(path);
-    if (!bin) {
+    if (!bin) {  // O arquivo nao abriu
         printf("Falha no processamento do arquivo.\n");
         return;
     }
