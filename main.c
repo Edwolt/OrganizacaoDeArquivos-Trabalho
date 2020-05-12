@@ -7,6 +7,8 @@
 #include "csv.h"
 #include "registro.h"
 
+// TODO atualizar documentacao
+
 //* ================================= *//
 //* ===== Prototipos de Funcoes ===== *//
 //* ================================= *//

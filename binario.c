@@ -91,7 +91,7 @@ fwrite_error:  // Tratando erros ao escrever no arquivo
     return NULL;
 }
 
-Binario* binario_criarDoCSV(char* path, CSV* csv) {
+Binario* binario_gerarDoCSV(char* path, CSV* csv) {
     Binario* binario = binario_criar(path);
     if (!binario) return NULL;  // Verifica se o arquivo foi criado
 

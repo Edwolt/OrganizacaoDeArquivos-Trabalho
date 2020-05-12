@@ -8,6 +8,8 @@
 #include "csv.h"
 #include "registro.h"
 
+// TODO atualizar documentacao
+
 /**
  * TAD Arquivo binario
  * Manipula um arquivo binario de registros
@@ -43,7 +45,7 @@ Binario* binario_criar(char* path);
  * 
  * Obs: Depois, use uma função para destruir o objeto
  */
-Binario* binario_criarDoCSV(char* path, CSV* csv);
+Binario* binario_gerarDoCSV(char* path, CSV* csv);
 
 /**
  * Abre um arquivo binario de registros com nome path para leitura

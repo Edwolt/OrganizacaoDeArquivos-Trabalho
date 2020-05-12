@@ -7,6 +7,8 @@
 
 #define INTNULL -1
 
+// TODO atualizar documentacao
+
 /**
  * TAD Registro
  * Armazena dados de um registro
