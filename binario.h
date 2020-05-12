@@ -45,7 +45,7 @@ Binario* binario_criar(char* path);
  * 
  * Obs: Depois, use uma função para destruir o objeto
  */
-Binario* binario_gerarDoCSV(char* path, CSV* csv);
+bool binario_gerarDoCSV(char* path, CSV* csv);
 
 /**
  * Abre um arquivo binario de registros com nome path para leitura
@@ -74,7 +74,7 @@ void binario_fechar(Binario** binario);
  * 
  * Retorna se foi possivel inserir o registro no arquivo
  */
-bool binario_inserir(Binario* binario, Registro* registro);
+bool binario_inserir(char* path, Registro* registro);
 
 /**
  * Le um registro do arquivo binario

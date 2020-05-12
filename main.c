@@ -64,17 +64,14 @@ void opcao1(char* src, char* dest) {
         return;
     }
 
-    FILE* bin = binario_criarDoCSV(dest, csv);
-    if (!bin) {
+    bool ok = binario_gerarDoCSV(dest, csv);
+    if (!ok) {
         csv_fechar(&csv);
         printf("Falha no carregamento do arquivo.\n");
         return;
     }
 
-    binario_fechar(&bin);
-
     binarioNaTela(dest);
-
     csv_fechar(&csv);
 }
 

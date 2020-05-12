@@ -9,7 +9,7 @@
 /**
  * Tamanho do registro
  */
-#define TAM_REG 127
+#define TAM_REG 128
 
 /**
  * Tamanho resevado para campos variaveis (excluido indicadores de tamanho)
@@ -32,10 +32,10 @@
 #define TAM_LIXOC 111
 
 /**
- * Vetor com $ para preencher espaços vazios
- * O tamanho da string eh 127 para ser o tamanho de um registro
+ * Vetor com $ para preencher espacos vazios
+ * O tamanho da string eh do tamanho de um registro para ter certeza que sera suficiente
  */
-const char LIXO[TAM_REG + 1] = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
+const char LIXO[TAM_REG + 1] = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
 
 //* ================== *//
 //* ===== Macros ===== *//
@@ -60,93 +60,10 @@ Macros para reduzir trechos de código repetitivo
     if (fread((ptr), sizeof(type), (qtde), (file)) != ((size_t)qtde)) goto fread_error
 
 //* ============================ *//
-//* ===== Métodos Publicos ===== *//
+//* ===== Métodos Privados ===== *//
 //* ============================ *//
 
-Binario* binario_criar(char* path) {
-    if (!path) return NULL;  // Verifica se recebeu o caminho
-
-    Binario* binario = fopen(path, "wb");
-    if (!binario) return NULL;  // Verifica se o arquivo foi aberto com sucesso
-
-    // Criando Cabeçalho
-    char status = '1';
-    int rrn = 0;
-    int inseridos = 0;
-    int removidos = 0;
-    int atualizados = 0;
-
-    // Escrevendo o cabeçalho no arquivo
-    TRYFWRITE(&status, char, 1, binario);
-    TRYFWRITE(&rrn, int, 1, binario);
-    TRYFWRITE(&inseridos, int, 1, binario);
-    TRYFWRITE(&removidos, int, 1, binario);
-    TRYFWRITE(&atualizados, int, 1, binario);
-    TRYFWRITE(LIXO, char, 111, binario);
-
-    return binario;
-
-fwrite_error:  // Tratando erros ao escrever no arquivo
-    fclose(binario);
-    return NULL;
-}
-
-Binario* binario_gerarDoCSV(char* path, CSV* csv) {
-    Binario* binario = binario_criar(path);
-    if (!binario) return NULL;  // Verifica se o arquivo foi criado
-
-    Registro* registro;
-    int cont = 0;
-
-    bool status = false;
-    binario_atualizaCabecalho(path, &status, NULL, NULL, NULL, NULL);
-    while ((registro = csv_lerRegistro(csv))) {
-        binario_inserir(binario, registro);
-        registro_apagar(&registro);
-        cont++;
-    }
-    binario_fechar(&binario);
-
-    status = true;
-    binario_atualizaCabecalho(path, &status, &cont, &cont, NULL, NULL);
-
-    return binario_abrirEscrita(path);
-}
-
-Binario* binario_abrirLeitura(char* path) {
-    if (!path) return NULL;  // Verifica se recebeu o caminho
-
-    Binario* binario = fopen(path, "rb");
-    if (!binario) return NULL;  // Verifica se o arquivo foi aberto com sucesso
-
-    fseek(binario, TAM_REG + 1, SEEK_SET);  // Pula o registro cabecalho
-    return binario;
-}
-
-Binario* binario_abrirEscrita(char* path) {
-    if (!path) return NULL;  // Verifica se recebeu o caminho
-
-    Binario* binario = fopen(path, "rb+");
-    if (!binario) return NULL;  // Verifica se o arquivo foi aberto com sucesso
-
-    fseek(binario, TAM_REG + 1, SEEK_SET);  // Pula o registro cabecalho
-    return binario;
-}
-
-void binario_fechar(Binario** binario) {
-    // Verifica se objeto já foi apagado
-    if (!binario) return;
-    if (!*binario) {
-        *binario = NULL;
-        return;
-    }
-
-    // Fecha o arquivo
-    if (binario && *binario) fclose(*binario);
-    *binario = NULL;
-}
-
-bool binario_inserir(Binario* binario, Registro* registro) {
+bool escreverRegistro(Binario* binario, Registro* registro) {
     if (!binario) return false;  // Verifica se recebeu um arquivo
 
     const char CHARNULO = '\0';  // Guarda '\0'
@@ -243,6 +160,119 @@ fwrite_error:  // Tratando erros ao escrever no arquivo
     return false;
 }
 
+//* ============================ *//
+//* ===== Métodos Publicos ===== *//
+//* ============================ *//
+
+Binario* binario_criar(char* path) {
+    if (!path) return NULL;  // Verifica se recebeu o caminho
+
+    Binario* binario = fopen(path, "wb");
+    if (!binario) return NULL;  // Verifica se o arquivo foi aberto com sucesso
+
+    // Criando Cabeçalho
+    char status = '1';
+    int rrn = 0;
+    int inseridos = 0;
+    int removidos = 0;
+    int atualizados = 0;
+
+    // Escrevendo o cabeçalho no arquivo
+    TRYFWRITE(&status, char, 1, binario);
+    TRYFWRITE(&rrn, int, 1, binario);
+    TRYFWRITE(&inseridos, int, 1, binario);
+    TRYFWRITE(&removidos, int, 1, binario);
+    TRYFWRITE(&atualizados, int, 1, binario);
+    TRYFWRITE(LIXO, char, 111, binario);
+
+    return binario;
+
+fwrite_error:  // Tratando erros ao escrever no arquivo
+    fclose(binario);
+    return NULL;
+}
+
+bool binario_gerarDoCSV(char* path, CSV* csv) {
+    Binario* binario = binario_criar(path);
+    if (!binario) return false;  // Verifica se o arquivo foi criado
+    binario_fechar(&binario);
+
+    Registro* registro;
+    int cont = 0;
+
+    bool atualizado;
+
+    bool status = false;
+    atualizado = binario_atualizaCabecalho(path, &status, NULL, NULL, NULL, NULL);
+    if (!atualizado) return false;
+
+    binario = binario_abrirEscrita(path);
+    while ((registro = csv_lerRegistro(csv))) {
+        escreverRegistro(binario, registro);
+        registro_apagar(&registro);
+        cont++;
+    }
+    binario_fechar(&binario);
+
+    status = true;
+    binario_atualizaCabecalho(path, &status, &cont, &cont, NULL, NULL);
+    if (!atualizado) return false;
+
+    return true;
+}
+
+Binario* binario_abrirLeitura(char* path) {
+    if (!path) return NULL;  // Verifica se recebeu o caminho
+
+    Binario* binario = fopen(path, "rb");
+    if (!binario) return NULL;  // Verifica se o arquivo foi aberto com sucesso
+
+    fseek(binario, TAM_REG + 1, SEEK_SET);  // Pula o registro cabecalho
+    return binario;
+}
+
+Binario* binario_abrirEscrita(char* path) {
+    if (!path) return NULL;  // Verifica se recebeu o caminho
+
+    Binario* binario = fopen(path, "rb+");
+    if (!binario) return NULL;  // Verifica se o arquivo foi aberto com sucesso
+
+    fseek(binario, TAM_REG + 1, SEEK_SET);  // Pula o registro cabecalho
+    return binario;
+}
+
+void binario_fechar(Binario** binario) {
+    // Verifica se objeto já foi apagado
+    if (!binario) return;
+    if (!*binario) {
+        *binario = NULL;
+        return;
+    }
+
+    // Fecha o arquivo
+    if (binario && *binario) fclose(*binario);
+    *binario = NULL;
+}
+
+bool binario_inserir(char* path, Registro* registro) {
+    bool status;
+    int rrn;
+    binario_getCabecalho(path, &status, &rrn, NULL, NULL, NULL);
+
+    if (!status) return false;
+
+    Binario* binario = binario_abrirEscrita(path);
+    fseek(binario, rrn * TAM_REG, SEEK_SET);
+    
+    /*
+    bool ok = escreverRegistro(binario, registro);
+    if(!ok) return false;
+
+    return true;
+    */
+    return escreverRegistro(binario, registro);
+}
+
 Registro* binario_leRegistro(Binario* binario, bool* erro) {
     if (!binario) {  // Verifica se recebeu um arquivo
         *erro = true;
@@ -316,10 +346,10 @@ Registro* binario_leRegistro(Binario* binario, bool* erro) {
 
     // Cria o objeto registro e retorna
     return registro_criar(idNascimento,
-                        idadeMae, dataNascimento,
-                        sexoBebe,
-                        estadoMae, estadoBebe,
-                        cidadeMae, cidadeBebe);
+                          idadeMae, dataNascimento,
+                          sexoBebe,
+                          estadoMae, estadoBebe,
+                          cidadeMae, cidadeBebe);
 
 fread_error:  // Tratando erros ao ler do arquivo
     *erro = true;
