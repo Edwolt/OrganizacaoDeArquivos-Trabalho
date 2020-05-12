@@ -1,8 +1,8 @@
 #include "registro.h"
 
 struct _registro {
-    int idNascimento;  // Int
-    int idadeMae;  // Int
+    int idNascimento;  // int
+    int idadeMae;  // int
     char* dataNascimento;  // string: AAAA-MM-DD
     char sexoBebe;  // Ignorado ('0'), Masculino ('1'), ou Feminino ('2')
     char* estadoMae;  // 2 chars (string)
@@ -14,10 +14,10 @@ struct _registro {
 };
 
 Registro* registro_criar(int idNascimento,
-                       int idadeMae, char* dataNascimento,
-                       char sexoBebe,
-                       char* estadoMae, char* estadoBebe,
-                       char* cidadeMae, char* cidadeBebe) {
+                         int idadeMae, char* dataNascimento,
+                         char sexoBebe,
+                         char* estadoMae, char* estadoBebe,
+                         char* cidadeMae, char* cidadeBebe) {
     Registro* registro = (Registro*)malloc(sizeof(Registro));
     if (registro) {
         registro->idNascimento = idNascimento;
