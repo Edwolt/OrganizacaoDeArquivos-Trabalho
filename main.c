@@ -38,9 +38,9 @@ void opcao2(char* path) {
     bool status;
     int inseridos;
     int rrn;  // Quantidade de registros de dados no arquivo contando os removidos
-    bool getted = binario_getCabecalho(path, &status, &rrn, &inseridos, NULL, NULL);
+    bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, NULL, NULL);
 
-    if (!getted) {  // Ocorreu uma falha ao ler o registro cabecalho
+    if (!ok) {  // Ocorreu uma falha ao ler o registro cabecalho
         printf("Falha no processamento do arquivo.\n");
         return;
     }
