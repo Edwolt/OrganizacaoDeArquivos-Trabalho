@@ -37,7 +37,7 @@ void csv_fechar(CSV** csv);
 /**
  * Le um registro do arquivo csv
  * 
- * Retorna NULL se não foi possivel ler o registro 
+ * Retorna NULL se nao foi possivel ler o registro 
  * pode ser causado pelo fim do arquivo ou por um erro durante a leitura
  * 
  * A ordem dos dados do arquivo csv deve ser a seguinte:
