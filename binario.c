@@ -203,7 +203,7 @@ bool binario_gerarDoCSV(char* path, CSV* csv) {
     bool atualizado;
 
     bool status = false;
-    atualizado = binario_atualizaCabecalho(path, &status, NULL, NULL, NULL, NULL);
+    atualizado = binario_setCabecalho(path, &status, NULL, NULL, NULL, NULL);
     if (!atualizado) return false;
 
     binario = binario_abrirEscrita(path);
@@ -215,7 +215,7 @@ bool binario_gerarDoCSV(char* path, CSV* csv) {
     binario_fechar(&binario);
 
     status = true;
-    binario_atualizaCabecalho(path, &status, &cont, &cont, NULL, NULL);
+    atualizado = binario_setCabecalho(path, &status, &cont, &cont, NULL, NULL);
     if (!atualizado) return false;
 
     return true;
@@ -261,16 +261,20 @@ bool binario_inserir(char* path, Registro* registro) {
 
     if (!status) return false;
 
+    status = false;
+    binario_getCabecalho(path, &status, NULL, NULL, NULL, NULL);
+
     Binario* binario = binario_abrirEscrita(path);
     fseek(binario, rrn * TAM_REG, SEEK_SET);
-    
-    /*
+
     bool ok = escreverRegistro(binario, registro);
-    if(!ok) return false;
+    if (!ok) return false;
+
+    rrn++;
+    status = true;
+    binario_setCabecalho(path, &status, &rrn, NULL, NULL, NULL);
 
     return true;
-    */
-    return escreverRegistro(binario, registro);
 }
 
 Registro* binario_leRegistro(Binario* binario, bool* erro) {
@@ -360,7 +364,7 @@ fread_error:  // Tratando erros ao ler do arquivo
 //* ===== Registro Cabecalho ===== *//
 //* ============================== *//
 
-bool binario_atualizaCabecalho(char* path,
+bool binario_setCabecalho(char* path,
                                bool* status, int* rrn,
                                int* inseridos, int* removidos, int* atualizados) {
     if (!path) return false;  // Verifica se recebeu o caminho

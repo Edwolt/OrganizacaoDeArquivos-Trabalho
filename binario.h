@@ -103,7 +103,7 @@ Registro* binario_leRegistro(Binario* binario, bool* erro);
  * removidos   = numeroRegistrosRemovidos  
  * atualizados = numeroRegistrosAtualizado
  */
-bool binario_atualizaCabecalho(char* path,
+bool binario_setCabecalho(char* path,
                                bool* status, int* rrn,
                                int* inseridos, int* removidos, int* atualizados);
 
