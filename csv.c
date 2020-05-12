@@ -78,7 +78,7 @@ char leChar(CSV* csv) {
 //* ===== Metodos Publicos ===== *//
 //* ============================ *//
 
-CSV* csv_open(char* path) {
+CSV* csv_abrir(char* path) {
     if (!path) return NULL;
 
     CSV* csv = fopen(path, "r");
@@ -88,7 +88,7 @@ CSV* csv_open(char* path) {
     return csv;
 }
 
-void csv_del(CSV** csv) {
+void csv_fechar(CSV** csv) {
     // Verifica se objeto já foi apagado
     if (!csv) return;
     if (!*csv) {
@@ -163,9 +163,9 @@ Registro* csv_lerRegistro(CSV* csv) {
         return NULL;
     }
 
-    return registro_new(idNascimento,
-                        idadeMae, dataNascimento,
-                        sexoBebe,
-                        estadoMae, estadoBebe,
-                        cidadeMae, cidadeBebe);
+    return registro_criar(idNascimento,
+                          idadeMae, dataNascimento,
+                          sexoBebe,
+                          estadoMae, estadoBebe,
+                          cidadeMae, cidadeBebe);
 }

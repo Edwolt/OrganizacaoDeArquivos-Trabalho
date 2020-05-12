@@ -63,7 +63,7 @@ Macros para reduzir trechos de código repetitivo
 //* ===== Métodos Publicos ===== *//
 //* ============================ *//
 
-Binario* binario_new(char* path) {
+Binario* binario_criar(char* path) {
     if (!path) return NULL;  // Verifica se recebeu o caminho
 
     Binario* binario = fopen(path, "wb");
@@ -91,7 +91,29 @@ fwrite_error:  // Tratando erros ao escrever no arquivo
     return NULL;
 }
 
-Binario* binario_open(char* path) {
+Binario* binario_criarDoCSV(char* path, CSV* csv) {
+    Binario* binario = binario_criar(path);
+    if (!binario) return NULL;  // Verifica se o arquivo foi criado
+
+    Registro* registro;
+    int cont = 0;
+
+    bool status = false;
+    binario_atualizaCabecalho(path, &status, NULL, NULL, NULL, NULL);
+    while ((registro = csv_lerRegistro(csv))) {
+        binario_inserir(binario, registro);
+        registro_apagar(&registro);
+        cont++;
+    }
+    binario_fechar(&binario);
+
+    status = true;
+    binario_atualizaCabecalho(path, &status, &cont, &cont, NULL, NULL);
+
+    return binario_abrirEscrita(path);
+}
+
+Binario* binario_abrirLeitura(char* path) {
     if (!path) return NULL;  // Verifica se recebeu o caminho
 
     Binario* binario = fopen(path, "rb");
@@ -101,7 +123,17 @@ Binario* binario_open(char* path) {
     return binario;
 }
 
-void binario_del(Binario** binario) {
+Binario* binario_abrirEscrita(char* path) {
+    if (!path) return NULL;  // Verifica se recebeu o caminho
+
+    Binario* binario = fopen(path, "rb+");
+    if (!binario) return NULL;  // Verifica se o arquivo foi aberto com sucesso
+
+    fseek(binario, TAM_REG + 1, SEEK_SET);  // Pula o registro cabecalho
+    return binario;
+}
+
+void binario_fechar(Binario** binario) {
     // Verifica se objeto já foi apagado
     if (!binario) return;
     if (!*binario) {
@@ -283,7 +315,7 @@ Registro* binario_leRegistro(Binario* binario, bool* erro) {
     }
 
     // Cria o objeto registro e retorna
-    return registro_new(idNascimento,
+    return registro_criar(idNascimento,
                         idadeMae, dataNascimento,
                         sexoBebe,
                         estadoMae, estadoBebe,

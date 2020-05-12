@@ -18,20 +18,6 @@
 typedef FILE Binario;
 
 /**
- * Cria um novo arquivo binário de registros
- * a partir dos dados de um arquivo .csv usando o TAD CSV
- * 
- * Se o arquivo ja existir, sobrescreve ele com um arquivo novo
- * 
- * Retorna o arquivo para escrita
- * Retorna NULL se nao for possivel criar o arquivo
- * Retorna NULL se nao receber um path
- * 
- * Obs: Depois, use uma função para destruir o objeto
- */
-Binario* binario_newCSV(CSV* csv);
-
-/**
  * Cria um novo arquivo binário de registros com nome path ja com o registro cabecalho
  * Se o arquivo ja existir, sobrescreve ele com um arquivo novo
  * 
@@ -43,7 +29,21 @@ Binario* binario_newCSV(CSV* csv);
  * 
  * Obs: Depois, use uma função para destruir o objeto
  */
-Binario* binario_new(char* path);
+Binario* binario_criar(char* path);
+
+/**
+ * Cria um novo arquivo binário de registros
+ * a partir dos dados de um arquivo .csv usando o TAD CSV
+ * 
+ * Se o arquivo ja existir, sobrescreve ele com um arquivo novo
+ * 
+ * Retorna o arquivo para escrita
+ * Retorna NULL se nao for possivel criar o arquivo
+ * Retorna NULL se nao receber um path
+ * 
+ * Obs: Depois, use uma função para destruir o objeto
+ */
+Binario* binario_criarDoCSV(char* path, CSV* csv);
 
 /**
  * Abre um arquivo binario de registros com nome path para leitura
@@ -54,7 +54,9 @@ Binario* binario_new(char* path);
  * 
  * Obs: Depois, use uma funcao para destruir o objeto
  */
-Binario* binario_open(char* path);
+Binario* binario_abrirLeitura(char* path);
+
+Binario* binario_abrirEscrita(char* path);
 
 /**
  * Destroi o objeto
@@ -62,7 +64,7 @@ Binario* binario_open(char* path);
  * Obs: Não apaga o arquivo, apenas desaloca memoria
  * Obs: Se for um arquivo de escrita, depois da execucao (senao ocorre erros) arquivo estara em disco
  */
-void binario_del(Binario** binario);
+void binario_fechar(Binario** binario);
 
 /**
  * Insere um registro no arquivo

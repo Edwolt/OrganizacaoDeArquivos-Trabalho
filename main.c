@@ -51,52 +51,29 @@ int main() {
     return EXIT_SUCCESS;
 }
 
+//* =================== *//
 //* ===== Funcoes ===== *//
+//* =================== *//
 
-/*
-CSV csv = new CSV(src)
-Binario bin = new Binario(dest)
-
-bin.status = false
-Enquanto houver registros {
-    bin.write(csv.getRegistro())
-}
-bin.status = true
-
-binarioNaTela()
-*/
 void opcao1(char* src, char* dest) {
-    FILE* csv = csv_open(src);
+    FILE* csv = csv_abrir(src);
     if (!csv) {
         printf("Falha no carregamento do arquivo.\n");
         return;
     }
 
-    FILE* bin = binario_new(dest);
+    FILE* bin = binario_criarDoCSV(dest, csv);
     if (!bin) {
-        csv_del(&csv);
+        csv_fechar(&csv);
         printf("Falha no carregamento do arquivo.\n");
         return;
     }
 
-    Registro* registro;
-    int cont = 0;  // Quantidade de Registros escritos
-
-    bool status = false;
-    binario_atualizaCabecalho(dest, &status, NULL, NULL, NULL, NULL);
-    while ((registro = csv_lerRegistro(csv))) {
-        binario_inserir(bin, registro);
-        registro_del(&registro);
-        cont++;
-    }
-    binario_del(&bin);
-
-    status = true;
-    binario_atualizaCabecalho(dest, &status, &cont, &cont, NULL, NULL);
+    binario_fechar(&bin);
 
     binarioNaTela(dest);
 
-    csv_del(&csv);
+    csv_fechar(&csv);
 }
 
 void opcao2(char* path) {
@@ -122,7 +99,7 @@ void opcao2(char* path) {
         return;
     }
 
-    Binario* bin = binario_open(path);
+    Binario* bin = binario_abrirLeitura(path);
     if (!bin) {
         printf("Falha no processamento do arquivo.\n");
         return;
@@ -142,8 +119,8 @@ void opcao2(char* path) {
         if (registro == NULL) continue;
 
         registro_imprimir(registro);
-        registro_del(&registro);
+        registro_apagar(&registro);
     }
 
-    binario_del(&bin);
+    binario_fechar(&bin);
 }

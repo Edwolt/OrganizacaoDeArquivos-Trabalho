@@ -13,7 +13,7 @@ struct _registro {
     char* cidadeBebe;  // string (campo de tamanho variavel)
 };
 
-Registro* registro_new(int idNascimento,
+Registro* registro_criar(int idNascimento,
                        int idadeMae, char* dataNascimento,
                        char sexoBebe,
                        char* estadoMae, char* estadoBebe,
@@ -32,7 +32,7 @@ Registro* registro_new(int idNascimento,
     return registro;
 }
 
-Registro* registro_newVazio() {
+Registro* registro_criarVazio() {
     Registro* registro = (Registro*)malloc(sizeof(Registro));
     if (registro) {
         registro->idNascimento = INTNULL;
@@ -47,7 +47,7 @@ Registro* registro_newVazio() {
     return registro;
 }
 
-void registro_del(Registro** registro) {
+void registro_apagar(Registro** registro) {
     // Verifica se objeto ja foi apagado
     if (!registro) return;
     if (!*registro) {
@@ -66,7 +66,7 @@ void registro_del(Registro** registro) {
     *registro = NULL;
 }
 
-void registro_rmv(Registro** registro) {
+void registro_destruir(Registro** registro) {
     // Verifica se registro já foi apagado
     if (!registro) return;
     if (!*registro) {

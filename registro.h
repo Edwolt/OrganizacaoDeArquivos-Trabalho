@@ -24,11 +24,11 @@ typedef struct _registro Registro;
  * 
  * Obs: Depois, use uma funcao para destruir o objeto
  */
-Registro* registro_new(int idNascimento,
-                       int idadeMae, char* dataNascimento,
-                       char sexoBebe,
-                       char* estadoMae, char* estadoBebe,
-                       char* cidadeMae, char* cidadeBebe);
+Registro* registro_criar(int idNascimento,
+                         int idadeMae, char* dataNascimento,
+                         char sexoBebe,
+                         char* estadoMae, char* estadoBebe,
+                         char* cidadeMae, char* cidadeBebe);
 
 /**
  * Cria um novo registro sem nenhum dado
@@ -36,13 +36,13 @@ Registro* registro_new(int idNascimento,
  * 
  * Obs: Depois, use uma funcao para destruir o objeto
  */
-Registro* registro_newVazio();
+Registro* registro_criarVazio();
 
 /**
  * Destroi o objeto
  * Destroi os objetos e desaloca variaveis que estiver dentro dele
  */
-void registro_del(Registro** registro);
+void registro_apagar(Registro** registro);
 
 /**
  * Destroi o objeto
@@ -50,7 +50,7 @@ void registro_del(Registro** registro);
  * Os objetos que estiver dentro dele continuam existindo
  * E as variávei dinamicamente alocada continuam alocadas
  */
-void registro_rmv(Registro** registro);
+void registro_destruir(Registro** registro);
 
 /**
  * Escreve no stdin os dados do registro usando as informacoes mais importantes

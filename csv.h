@@ -26,13 +26,13 @@ typedef FILE CSV;
  * 
  * Obs: Depois, use uma função para destruir o objeto
  */
-CSV* csv_open(char* path);
+CSV* csv_abrir(char* path);
 
 /**
  * Destroi o objeto
  * Obs: Não apaga o arquivo, apenas desaloca memoria
  */
-void csv_del(CSV** csv);
+void csv_fechar(CSV** csv);
 
 /**
  * Le um registro do arquivo csv
