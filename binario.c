@@ -65,9 +65,9 @@ bool escreverRegistro(Binario* binario, Registro* registro) {
     char* estadoBebe = registro_getEstadoBebe(registro);
 
     // Calculando tamanho dos campos variaveis
-    // Mesmo que if(cidade != NULL) tamCidade = strlen(cidade) else tamCidade = 0
-    int tamCidadeMae = cidadeMae ? strlen(cidadeMae) : 0;
-    int tamCidadeBebe = cidadeBebe ? strlen(cidadeBebe) : 0;
+    // Mesmo que tamCidadee = (cidade != NULL ? strlen(cidade) : 0);
+    int tamCidadeMae = (cidadeMae ? strlen(cidadeMae) : 0);
+    int tamCidadeBebe = (cidadeBebe ? strlen(cidadeBebe) : 0);
 
     // Escrevendo campos variaveis
     qtdeLixo = TAM_CVAR;  // Espaco disponivel para campos variaveis
@@ -79,13 +79,12 @@ bool escreverRegistro(Binario* binario, Registro* registro) {
     qtdeLixo -= tamCidadeMae + tamCidadeBebe;
     TRYFWRITE(LIXO, char, qtdeLixo, binario);  // Preenche com lixo o restante
 
-    // Escrevendo campos inteiros
+    // Escrevendo campos fixos
     TRYFWRITE(&idNascimento, int, 1, binario);
     TRYFWRITE(&idadeMae, int, 1, binario);
 
-    // Escrevendo demais campos
     qtdeLixo = TAM_DATA;
-    if (dataNascimento) {  // Se dataNascimento não for NULL
+    if (dataNascimento) {  // Se dataNascimento nao for NULL
         tamDado = strlen(dataNascimento);
         TRYFWRITE(dataNascimento, char, tamDado, binario);
         qtdeLixo -= tamDado;  // Descontando o que foi escrito
@@ -176,30 +175,33 @@ fwrite_error:  // Tratando erros ao escrever no arquivo
 }
 
 bool binario_gerarDoCSV(char* path, CSV* csv) {
+    // Criar arquivo com o regitro cabecalho
     Binario* binario = binario_criar(path);
     if (!binario) return false;  // Verifica se o arquivo foi criado
     binario_fechar(&binario);
 
-    Registro* registro;
-    int cont = 0;
+    Registro* registro;  // Variavel para armazenar registro lido
+    int cont = 0;  // Conta quantos registro foram escritos
+    bool ok;  // Armazena se o setCabecalho deu cert
 
-    bool atualizado;
-
+    // Coloca status como inconsistente
     bool status = false;
-    atualizado = binario_setCabecalho(path, &status, NULL, NULL, NULL, NULL);
-    if (!atualizado) return false;
+    ok = binario_setCabecalho(path, &status, NULL, NULL, NULL, NULL);
+    if (!ok) return false;
 
+    // Escreve registros no arquivo
     binario = binario_abrirEscrita(path);
-    while ((registro = csv_lerRegistro(csv))) {
+    while ((registro = csv_lerRegistro(csv))) {  // Enquanto houver registros para ler
         escreverRegistro(binario, registro);
         registro_apagar(&registro);
         cont++;
     }
     binario_fechar(&binario);
 
+    // Coloca status como consistente
     status = true;
-    atualizado = binario_setCabecalho(path, &status, &cont, &cont, NULL, NULL);
-    if (!atualizado) return false;
+    ok = binario_setCabecalho(path, &status, &cont, &cont, NULL, NULL);
+    if (!ok) return false;
 
     return true;
 }
@@ -242,10 +244,11 @@ bool binario_inserir(char* path, Registro* registro) {
     int rrn;
     binario_getCabecalho(path, &status, &rrn, NULL, NULL, NULL);
 
-    if (!status) return false;
+    if (!status) return false;  // Arquivo inconsistente
 
+    // Coloca status como inconsistente
     status = false;
-    binario_getCabecalho(path, &status, NULL, NULL, NULL, NULL);
+    binario_setCabecalho(path, &status, NULL, NULL, NULL, NULL);
 
     Binario* binario = binario_abrirEscrita(path);
     fseek(binario, rrn * TAM_REG, SEEK_SET);
@@ -253,6 +256,7 @@ bool binario_inserir(char* path, Registro* registro) {
     bool ok = escreverRegistro(binario, registro);
     if (!ok) return false;
 
+    // Atualiza RRNProx e coloca status como consistente
     rrn++;
     status = true;
     binario_setCabecalho(path, &status, &rrn, NULL, NULL, NULL);
@@ -266,19 +270,16 @@ Registro* binario_leRegistro(Binario* binario, bool* erro) {
         return NULL;
     }
 
-    *erro = false;  // Salva erro como false, pois caso não ocarra nenhum erro deve valer false
+    *erro = false;  // Salva erro como false, pois caso nao ocarra nenhum erro deve valer false
 
     // Le Campos Variaveis
     int tamCidadeMae;
     TRYFREAD(&tamCidadeMae, int, 1, binario);
 
-    // Verifica se o registro esta removido
-    if (tamCidadeMae == REMOVIDO) return NULL;
+    if (tamCidadeMae == REMOVIDO) return NULL;  // Verifica se o registro esta removido
 
     int tamCidadeBebe;
     TRYFREAD(&tamCidadeBebe, int, 1, binario);
-
-    int qtdeLixo = TAM_CVAR - tamCidadeMae - tamCidadeBebe;  // Calcula quanto lixo ficou nos campos variaveis
 
     char* cidadeMae = NULL;
     if (tamCidadeMae > 0) {
@@ -294,16 +295,17 @@ Registro* binario_leRegistro(Binario* binario, bool* erro) {
         cidadeBebe[tamCidadeBebe] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera altarada (O arquivo tera o '\0')
     }  // Se tem uma cidade armazenada ela foi lida, senao ela eh cidadeBebe eh NULL
 
-    fseek(binario, qtdeLixo, SEEK_CUR);  // Pula lixo
+    // Pula lixo
+    int qtdeLixo = TAM_CVAR - tamCidadeMae - tamCidadeBebe;
+    fseek(binario, qtdeLixo, SEEK_CUR);
 
-    // Le campos inteiros
+    // Le campos fixos
     int idNascimento;
     TRYFREAD(&idNascimento, int, 1, binario);
 
     int idadeMae;
     TRYFREAD(&idadeMae, int, 1, binario);
 
-    // Le demais campos
     char* dataNascimento = (char*)malloc((TAM_DATA + 1) * sizeof(char));
     TRYFREAD(dataNascimento, char, TAM_DATA, binario);
     dataNascimento[TAM_DATA] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera altarada (O arquivo tera o '\0')
