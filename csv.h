@@ -7,8 +7,6 @@
 
 #include "registro.h"
 
-// TODO atualizar documentacao
-
 /**
  * TAD Arquivo CSV
  * Manipula um arquivo .csv com os dados do registro
