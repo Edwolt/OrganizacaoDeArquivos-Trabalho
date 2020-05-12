@@ -4,32 +4,12 @@
 //* ===== Constantes ===== *//
 //* ====================== *//
 
-#define REMOVIDO -1
-
-/**
- * Tamanho do registro
- */
-#define TAM_REG 128
-
-/**
- * Tamanho resevado para campos variaveis (excluido indicadores de tamanho)
- */
-#define TAM_CVAR 97
-
-/**
- * Tamanho da string estado
- */
-#define TAM_ESTADO 2
-
-/**
- * Tamanho da string data
- */
-#define TAM_DATA 10
-
-/**
- * Tamanho do espaco vazio no final do registro cabecalho
- */
-#define TAM_LIXOC 111
+#define REMOVIDO -1  // Valor do campo 1 se o registro estiver logicamente removido
+#define TAM_REG 128  // Tamanho do registro
+#define TAM_CVAR 97  // Tamanho resevado para campos variaveis (excluido indicadores de tamanho)
+#define TAM_ESTADO 2  // Tamanho da string estado
+#define TAM_DATA 10  //Tamanho da string data
+#define TAM_LIXOC 111  //Tamanho do espaco vazio no final do registro cabecalho
 
 /**
  * Vetor com $ para preencher espacos vazios
@@ -40,10 +20,7 @@ const char LIXO[TAM_REG + 1] = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 //* ================== *//
 //* ===== Macros ===== *//
 //* ================== *//
-
-/*
-Macros para reduzir trechos de código repetitivo
-*/
+// Para reduzir trechos de código repetitivos
 
 /**
  * Tenta escrever qtde valores do tipo type a partir ponteiro ptr no arquivo file
@@ -63,6 +40,12 @@ Macros para reduzir trechos de código repetitivo
 //* ===== Métodos Privados ===== *//
 //* ============================ *//
 
+/**
+ * Insere um registro no arquivo
+ * Obs: Nao verifica se esta no final do arquivo
+ * 
+ * Retorna se foi possivel inserir o registro no arquivo
+ */
 bool escreverRegistro(Binario* binario, Registro* registro) {
     if (!binario) return false;  // Verifica se recebeu um arquivo
 
@@ -365,8 +348,8 @@ fread_error:  // Tratando erros ao ler do arquivo
 //* ============================== *//
 
 bool binario_setCabecalho(char* path,
-                               bool* status, int* rrn,
-                               int* inseridos, int* removidos, int* atualizados) {
+                          bool* status, int* rrn,
+                          int* inseridos, int* removidos, int* atualizados) {
     if (!path) return false;  // Verifica se recebeu o caminho
 
     Binario* binario = fopen(path, "rb+");

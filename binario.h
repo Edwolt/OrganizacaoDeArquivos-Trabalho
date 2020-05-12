@@ -8,8 +8,6 @@
 #include "csv.h"
 #include "registro.h"
 
-// TODO atualizar documentacao
-
 /**
  * TAD Arquivo binario
  * Manipula um arquivo binario de registros
@@ -20,7 +18,8 @@
 typedef FILE Binario;
 
 /**
- * Cria um novo arquivo binário de registros com nome path ja com o registro cabecalho
+ * Cria um novo arquivo binário com nome path
+ * Cria nele o registro cabecalho
  * Se o arquivo ja existir, sobrescreve ele com um arquivo novo
  * 
  * Retorna o arquivo para escrita
@@ -34,21 +33,17 @@ typedef FILE Binario;
 Binario* binario_criar(char* path);
 
 /**
- * Cria um novo arquivo binário de registros
+ * Cria um novo arquivo binário com nome path
  * a partir dos dados de um arquivo .csv usando o TAD CSV
  * 
  * Se o arquivo ja existir, sobrescreve ele com um arquivo novo
  * 
- * Retorna o arquivo para escrita
- * Retorna NULL se nao for possivel criar o arquivo
- * Retorna NULL se nao receber um path
- * 
- * Obs: Depois, use uma função para destruir o objeto
+ * Retorna se foi possivel gerar
  */
 bool binario_gerarDoCSV(char* path, CSV* csv);
 
 /**
- * Abre um arquivo binario de registros com nome path para leitura
+ * Abre um arquivo binario com nome path para leitura
  * Obs: Nao eh necessario pular o registro cabecalho
  * 
  * Retorna NULL se nao for possivel Abrir o arquivo
@@ -58,6 +53,15 @@ bool binario_gerarDoCSV(char* path, CSV* csv);
  */
 Binario* binario_abrirLeitura(char* path);
 
+/**
+ * Abre um arquivo binario com nome path para leitura
+ * Obs: Nao eh necessario pular o registro cabecalho
+ * 
+ * Retorna NULL se nao for possivel Abrir o arquivo
+ * Retorna NULL se nao receber um path
+ * 
+ * Obs: Depois, use uma funcao para destruir o objeto
+ */
 Binario* binario_abrirEscrita(char* path);
 
 /**
@@ -69,10 +73,8 @@ Binario* binario_abrirEscrita(char* path);
 void binario_fechar(Binario** binario);
 
 /**
- * Insere um registro no arquivo
- * Obs: Nao verifica se esta no final do arquivo
- * 
- * Retorna se foi possivel inserir o registro no arquivo
+ * Insere um registro no arquivo com nome path
+ * Atualiza o registro cabecalho
  */
 bool binario_inserir(char* path, Registro* registro);
 
@@ -104,8 +106,8 @@ Registro* binario_leRegistro(Binario* binario, bool* erro);
  * atualizados = numeroRegistrosAtualizado
  */
 bool binario_setCabecalho(char* path,
-                               bool* status, int* rrn,
-                               int* inseridos, int* removidos, int* atualizados);
+                          bool* status, int* rrn,
+                          int* inseridos, int* removidos, int* atualizados);
 
 /**
  * Pega os valores do cabecalho de um arquivo
