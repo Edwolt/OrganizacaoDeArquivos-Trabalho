@@ -79,7 +79,7 @@ void registro_destruir(Registro** registro) {
 }
 
 void registro_imprimir(Registro* registro) {
-    if (!registro) {  // Verifica se o registro Existe
+    if (!registro) {  // Verifica se o registro existe
         printf("Registro Inexistente\n");
         return;
     }
@@ -107,8 +107,9 @@ void registro_imprimir(Registro* registro) {
             strcpy(sexo, "-");
     }
 
+    // (ptr ? x : y) eh o mesmo que (ptr != NULL? x : y)
     printf("Nasceu em %s/%s, em %s, um beb%c%c de sexo %s.\n",
-           (registro->cidadeBebe != NULL ? registro->cidadeBebe : "-"),
+           (registro->cidadeBebe ? registro->cidadeBebe : "-"),
            (registro->estadoBebe ? registro->estadoBebe : "-"),
            (registro->dataNascimento ? registro->dataNascimento : "-"),
            ACENTO0, ACENTO1, sexo);
