@@ -1,62 +1,16 @@
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>  // Importa EXIT_SUCCESS e EXIT_FAILURE
+#include <stdlib.h>  // EXIT_SUCCESS e EXIT_FAILURE
 
 #include "binario.h"
 #include "binarioNaTela.h"
 #include "csv.h"
 #include "registro.h"
 
-// TODO atualizar documentacao
-
-//* ================================= *//
-//* ===== Prototipos de Funcoes ===== *//
-//* ================================= *//
-
 /**
  * Le um arquivo csv com nome src
  * e transforma em um arquivo binario e salva com nome dest
  */
-void opcao1(char* src, char* dest);
-
-/**
- * Imprime registros de um arquivo binario com nome path
- */
-void opcao2(char* path);
-
-//* ================ *//
-//* ===== Main ===== *//
-//* ================ *//
-
-int main() {
-    char src[100];
-    char dest[100];
-    int opcao;
-
-    while (scanf("%d", &opcao) == 1) {  // Enquanto houver entradas no stdin
-        switch (opcao) {
-            case 1:
-                scanf(" %s %s", src, dest);
-                opcao1(src, dest);
-                break;
-
-            case 2:
-                scanf(" %s", src);
-                opcao2(src);
-                break;
-
-            default:
-                printf("Opção invalida\n");
-                return EXIT_FAILURE;
-        }
-    }
-    return EXIT_SUCCESS;
-}
-
-//* =================== *//
-//* ===== Funcoes ===== *//
-//* =================== *//
-
 void opcao1(char* src, char* dest) {
     FILE* csv = csv_abrir(src);
     if (!csv) {
@@ -75,6 +29,9 @@ void opcao1(char* src, char* dest) {
     csv_fechar(&csv);
 }
 
+/**
+ * Imprime registros de um arquivo binario com nome path
+ */
 void opcao2(char* path) {
     int i;  // Iteradores
 
@@ -122,4 +79,29 @@ void opcao2(char* path) {
     }
 
     binario_fechar(&bin);
+}
+
+int main() {
+    char src[100];
+    char dest[100];
+    int opcao;
+
+    while (scanf("%d", &opcao) == 1) {  // Enquanto houver entradas no stdin
+        switch (opcao) {
+            case 1:
+                scanf(" %s %s", src, dest);
+                opcao1(src, dest);
+                break;
+
+            case 2:
+                scanf(" %s", src);
+                opcao2(src);
+                break;
+
+            default:
+                printf("Opção invalida\n");
+                return EXIT_FAILURE;
+        }
+    }
+    return EXIT_SUCCESS;
 }
