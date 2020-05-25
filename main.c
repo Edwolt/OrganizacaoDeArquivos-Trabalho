@@ -1,6 +1,6 @@
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>  // EXIT_SUCCESS e EXIT_FAILURE
+#include <stdlib.h>  // EXIT_SUCCESS, EXIT_FAILURE
 
 #include "binario.h"
 #include "binarioNaTela.h"

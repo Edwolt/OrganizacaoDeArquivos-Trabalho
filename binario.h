@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 #include <stdio.h>  // Manipular arquivos
-#include <stdlib.h>
+#include <stdlib.h>  // Alocacao Dinamica
 
 #include "csv.h"
 #include "registro.h"
