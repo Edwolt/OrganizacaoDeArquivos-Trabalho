@@ -84,10 +84,6 @@ void registro_imprimir(Registro* registro) {
         return;
     }
 
-    // Para imprimir a letra 'e' com o acento circunflexo
-    const unsigned char ACENTO0 = 0xc3;
-    const unsigned char ACENTO1 = 0xaa;
-
     // String com o sexo do bebe
     char sexo[50];
     switch (registro->sexoBebe) {
@@ -107,12 +103,15 @@ void registro_imprimir(Registro* registro) {
             strcpy(sexo, "-");
     }
 
+    // O acento tam bytes 0xc3aa
+    // Em UTF-8 eh o caracter U+00EA
+    // Para escrever pelo Linux Mint pode se usar ctrl+shift+u seguido do codigo no UTF8 (00EA)
     // (ptr ? x : y) eh o mesmo que (ptr != NULL? x : y)
-    printf("Nasceu em %s/%s, em %s, um beb%c%c de sexo %s.\n",
+    printf("Nasceu em %s/%s, em %s, um bebê de sexo %s.\n",
            (registro->cidadeBebe ? registro->cidadeBebe : "-"),
            (registro->estadoBebe ? registro->estadoBebe : "-"),
            (registro->dataNascimento ? registro->dataNascimento : "-"),
-           ACENTO0, ACENTO1, sexo);
+            sexo);
 }
 
 //* ============================ *//
