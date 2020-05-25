@@ -82,8 +82,8 @@ void opcao2(char* path) {
 }
 
 int main() {
-    char src[100];
-    char dest[100];
+    char arq1[100];
+    char arq2[100];
     int opcao;
 
     while (scanf("%d", &opcao) == 1) {  // Enquanto houver entradas no stdin
@@ -96,8 +96,8 @@ int main() {
              * Cria arquivo binario dest com os dados do arquivo CSV src
              */
             case 1:
-                scanf(" %s %s", src, dest);
-                opcao1(src, dest);
+                scanf(" %s %s", arq1, arq2);
+                opcao1(arq1, arq2);
                 break;
 
             /** 
@@ -107,86 +107,93 @@ int main() {
              * Imprime os dados do arquivo binario src
              */
             case 2:
-                scanf(" %s", src);
-                opcao2(src);
+                scanf(" %s", arq1);
+                opcao2(arq1);
                 break;
 
             /**
-             * 3 src m campo_1 valor_1 ... campo_m valor_m
-             * src: arquivo binario de registros
-             * m: inteiro
-             * campo_i: string
-             * valor_i: depende do campo
+             * 3 bin m campo[1] valor[1] ... campo[m] valor[m]
+             * bin: arquivo binario de registros
+             * m: numero de duplas campo-valor que tem na linha
+             * campo[i]: string
+             * valor[i]: depende do campo[i]
              * 
-             * Faz uma busca paramentrizada pelo arquivo src
-             * que cada campo_i tenha o valor_i 
+             * Faz uma busca paramentrizada pelo arquivo bin
+             * que cada campo[i] tenha o valor[i]
              */
             case 3:
                 printf("Operação não implementada :(\n");
                 break;
 
             /**
-             * 4 src rrn
-             * src: nome do arquivo binario
+             * 4 bin rrn
+             * bin: nome do arquivo binario
              * rrn: RRN do regitro a ser recuperado
              * 
-             * Imprime o valor do regitro de RRN igual a rrn do arquivo binario src
+             * Imprime o valor do regitro de RRN igual a rrn do arquivo binario bin
              */
             case 4:
                 printf("Operação não implementada :(\n");
                 break;
 
             /**
-             * 5 src n
-             * m_1 campo_11 valor11 ... campo_(1 m_1) valor_(1 m_1)
-             * m_2 nome21 valor21 [nome22 valor22 [ ... ]]
+             * 5 bin n
+             * m[1] campo[1][1] valor[1][1] ... campo[1][m[1]] valor[1][m[1]]
+             * m[2] campo[2][1] valor[2][1] ... campo[2][m[2]] valor[2][m[2]]
              * ...
-             * m_n nomen1 valorn1 [nomen2 valorn2 [ ... ]]
+             * m[n] campo[n][1] valor[n][1] ... campo[n][m[n]] valor[n][m[n]]
              * 
-             * src: nome do arquivo binario
-             * n: numero de registros
-             * m: numero de dupla campo-valor
+             * bin: arquivo binario de registros
+             * n: numero de linhas abaixo
+             * m[i]: numero de duplas campo valor que tem na linha
+             * campo[i][j]: string
+             * valor[i][j]: depende do campo[i][j]
              * 
-             * Remove registros seguindo n criterios diferentes
+             * Remove registros seguindo n criterios diferentes do arquivo binario bin
              * Cada linha subsequente diz o criterio de remoção
-             * m_j diz quantas duplas campo-valor tem naquela linha
-             * Para um registro passar pelo críterio o campo_ij deve ter valor_ij
+             * Para um registro passar pelo criterio e ser removido
+             * No arquivo src o campo[i][j] deve valer valor[i][j]
              */
             case 5:
                 printf("Operação não implementada :(\n");
                 break;
 
             /**
-             * 6 src n
-             * cidadeMae1 cidadeBebe1 idNascimento1 idadeMae1 dataNascimento1 sexoBebe1 estadoMae1 estadoBebe1
-             * cidadeMae2 cidadeBebe2 idNascimento2 idadeMae2 dataNascimento2 sexoBebe2 estadoMae2 estadoBebe2
+             * 6 bin n
+             * dados[1]
+             * dados[2]
              * ...
-             * cidadeMaen cidadeBeben idNascimenton idadeMaen dataNascimenton sexoBeben estadoMaen estadoBeben
+             * dados[n]
              * 
-             * src: nome do arquivo binario
-             * n: numero de registro
+             * bin: nome do arquivo binario
+             * n: numero de linhas abaixo
+             * dados[i]: composto por valores de cada campo do registro, deve ficar assim:
+             * cidadeMae[i] cidadeBebe[i] idNascimento[i] idadeMae[i] dataNascimento[i] sexoBebe[i] estadoMae[i] estadoBebe[i]
              * 
-             * Insere n registros no arquivo binario src
-             * embaixo segue o dados de cada registro
+             * Insere n registros no arquivo binario bin
+             * O conteudo de cada registro inserido eh dados[i]
              */
             case 6:
                 printf("Operação não implementada :(\n");
                 break;
 
             /**
-             * 7 src n
-             * rrn1 m1 campo11 valor11 [nome12 valor12 [ ... ]]
-             * rrn2 m2 nome21 valor21 [nome22 valor22 [ ... ]]
+             * 7 bin n
+             * rrn[1] m[1] campo[1][1] valor[1][1] ... campo[1][m[1]] valor[1][m[1]]
+             * rrn[2] m[2] campo[2][1] valor[2][1] ... campo[2][m[2]] valor[1][m[2]]
              * ...
-             * rrn3 mn nomen1 valorn1 [nomen2 valorn2 [ ... ]]
+             * rrn[n] m[n] campo[n][1] valor[n][1] ... campo[n][m[n]] valor[n][m[n]]
              * 
-             * src: nome do arquivo binario
-             * n: numero de registro
-             * rrn: RRN do registro
-             * m: numero de duplas campo-valor
+             * bin: arquivo binario
+             * n: numero de linhas abaixo
+             * rrn[i]: inteiro
+             * m[i]: numero de duplas campo-valor
+             * campo[i][j]: string
+             * valor[i][j]: depende do campo[i][j]
              * 
-             * Atualiza n registros de rrn_i mudando o valor de m_i campos,
-             * fazendo que o campo_ij tenha valor_ij
+             * Atualiza n registros do arquivo binario bin
+             * O registro de valor rrn[i] passa a tem o valor dos seus campos mudados
+             * sendo que o campo[i][j] passa a valer valor[i][j]
              */
             case 7:
                 printf("Operação não implementada :(\n");
