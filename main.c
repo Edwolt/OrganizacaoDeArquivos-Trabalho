@@ -10,6 +10,13 @@
 #define PATH_TAM 100  // Tamanho do nome do arquivo
 
 /**
+ * Ponteiro para vetor de funcoes
+ * 
+ * Cada funcao deve ler os parametros necessarios para execucao do stdin
+ */
+typedef void Opcao();
+
+/**
  * 1 src dest
  * 
  * src: arquivo csv
@@ -19,7 +26,7 @@
  * e armazena os dados lidos em um arquivo binario de registros,
  * salvando-o com o nome dest
  */
-opcao1() {
+void opcao1() {
     char src[PATH_TAM];
     char dest[PATH_TAM];
     scanf(" %s %s", src, dest);
@@ -190,41 +197,16 @@ void opcao7() {
     printf("Operação não implementada :(\n");
 }
 
+Opcao* funcOpcoes[] = {opcao1, opcao2, opcao3, opcao4, opcao5, opcao6, opcao7};
+
 int main() {
     int opcao;
     while (scanf("%d", &opcao) == 1) {  // Enquanto houver entradas no stdin
-        switch (opcao) {
-            case 1:
-                opcao1();
-                break;
-
-            case 2:
-                opcao2();
-                break;
-
-            case 3:
-                opcao3();
-                break;
-
-            case 4:
-                opcao4();
-                break;
-
-            case 5:
-                opcao5();
-                break;
-
-            case 6:
-                opcao6();
-                break;
-
-            case 7:
-                opcao7();
-                break;
-
-            default:
-                printf("Opção invalida\n");
-                return EXIT_FAILURE;
+        if (0 < opcao && opcao < (sizeof(funcOpcoes) / sizeof(Opcao*))) {
+            (*funcOpcoes[opcao - 1])();  // Executa funcOpoes na com valor opcao
+        } else {
+            printf("Opção invalida\n");
+            return EXIT_FAILURE;
         }
     }
     return EXIT_SUCCESS;
