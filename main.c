@@ -197,6 +197,10 @@ void opcao7() {
     printf("Operação não implementada :(\n");
 }
 
+/**
+ * Vetor com todas as funcoes de cada uma das opcoes para facilitar
+ * Usei isso para facilitar a execucao da opcao apena usando o indice dela
+ */
 Opcao* funcOpcoes[] = {opcao1, opcao2, opcao3, opcao4, opcao5, opcao6, opcao7};
 
 int main() {
