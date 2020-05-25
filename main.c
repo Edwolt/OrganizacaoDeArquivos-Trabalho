@@ -90,8 +90,8 @@ int main() {
         switch (opcao) {
             /**
              * 1 src dest
-             * src: nome do arquivo CSV de origem
-             * dest: nome do arquivo binario de destino
+             * src: arquivo csv
+             * dest:arquivo binario de registros
              * 
              * Cria arquivo binario dest com os dados do arquivo CSV src
              */
@@ -102,9 +102,9 @@ int main() {
 
             /** 
              * 2 src
-             * src: nome do arquivo binario
+             * src: arquivo binario de registros
              * 
-             * Imprime os dados de um arquivo binario de registros
+             * Imprime os dados do arquivo binario src
              */
             case 2:
                 scanf(" %s", src);
@@ -112,12 +112,13 @@ int main() {
                 break;
 
             /**
-             * 3 src m campo1 valor1 [campo2 valor2 [ ... ]]
-             * src: nome do arquivo binario
-             * m: numero de duplas campo-valor
-             * campo valor: campo (string) seguido de um valor (depende do campo)
+             * 3 src m campo_1 valor_1 ... campo_m valor_m
+             * src: arquivo binario de registros
+             * m: inteiro
+             * campo_i: string
+             * valor_i: depende do campo
              * 
-             * Faz uma busca paramentrizada pelo arquivo buscando registros
+             * Faz uma busca paramentrizada pelo arquivo src
              * que cada campo_i tenha o valor_i 
              */
             case 3:
@@ -129,7 +130,7 @@ int main() {
              * src: nome do arquivo binario
              * rrn: RRN do regitro a ser recuperado
              * 
-             * Imprime o valor do regitro com RRN igual ao passado
+             * Imprime o valor do regitro de RRN igual a rrn do arquivo binario src
              */
             case 4:
                 printf("Operação não implementada :(\n");
@@ -137,10 +138,10 @@ int main() {
 
             /**
              * 5 src n
-             * m1 nome11 valor11 [nome12 valor12 [ ... ]]
-             * m2 nome21 valor21 [nome22 valor22 [ ... ]]
+             * m_1 campo_11 valor11 ... campo_(1 m_1) valor_(1 m_1)
+             * m_2 nome21 valor21 [nome22 valor22 [ ... ]]
              * ...
-             * mn nomen1 valorn1 [nomen2 valorn2 [ ... ]]
+             * m_n nomen1 valorn1 [nomen2 valorn2 [ ... ]]
              * 
              * src: nome do arquivo binario
              * n: numero de registros
