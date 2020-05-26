@@ -8,6 +8,10 @@ enduser.zip
 # Saida do programa
 *.bin
 
+####################
+##### Template #####
+####################
+
 # Prerequisites
 *.d
 
