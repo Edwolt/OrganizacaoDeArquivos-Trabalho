@@ -9,56 +9,6 @@
  */
 typedef void Opcao();
 
-typedef struct _dupla dupla;
-struct _dupla {
-    enum {
-        IDNASCIMENTO,
-        IDADEMAE,
-        DATANASCIMENTO,
-        SEXOBEBE,
-        ESTADOMAE,
-        ESTADOBEBE,
-        CIDADEMAE,
-        CIDADEBEBE,
-    } campo;
-
-    union {
-        int inteiro;
-        char caracter;
-        char* string;
-    } valor;
-};
-
-struct dupla numCampo(char* strCampo, char* strVal) {
-    int campo;
-    if (strcmp(strCampo, "idNascimento") == 0) {
-        campo = IDNASCIMENTO
-    } else if (strcmp(strCampo, "idadeMae") == 0) {
-        campo = IDADEMAE;
-    }
-    if (strcmp(str, "dataNascimento") == 0) {
-        campo = str;
-    }
-    if (strcmp(str, "sexoBebe") == 0) {
-        return SEXOBEBE;
-    }
-    if (strcmp(str, "estadoMae") == 0) {
-        return ESTADOMAE;
-    }
-    if (strcmp(str, "estadoBebe") == 0) {
-        return ESTADOBEBE;
-    }
-    if (strcmp(str, "cidadeMae") == 0) {
-        return CIDADEMAE;
-    }
-    if (strcmp(str, "cidadeBebe") == 0) {
-        return CIDADEMAE;
-    }
-
-    dupla res;
-    return res;
-}
-
 //* ============================ *//
 //* ===== Métodos Privados ===== *//
 //* ============================ *//
