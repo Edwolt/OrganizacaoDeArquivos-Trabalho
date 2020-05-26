@@ -29,15 +29,15 @@ struct _dupla {
     } valor;
 };
 
-struct dupla numCampo(char* str) {
-    if (strcmp(str, "idNascimento") == 0) {
-        scanf("%d", 1)
-    }
-    if (strcmp(str, "idadeMae") == 0) {
-        return IDADEMAE;
+struct dupla numCampo(char* strCampo, char* strVal) {
+    int campo;
+    if (strcmp(strCampo, "idNascimento") == 0) {
+        campo = IDNASCIMENTO
+    } else if (strcmp(strCampo, "idadeMae") == 0) {
+        campo = IDADEMAE;
     }
     if (strcmp(str, "dataNascimento") == 0) {
-        return DATANASCIMENTO;
+        campo = str;
     }
     if (strcmp(str, "sexoBebe") == 0) {
         return SEXOBEBE;
@@ -54,6 +54,9 @@ struct dupla numCampo(char* str) {
     if (strcmp(str, "cidadeBebe") == 0) {
         return CIDADEMAE;
     }
+
+    dupla res;
+    return res;
 }
 
 //* ============================ *//
