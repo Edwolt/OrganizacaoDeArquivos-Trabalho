@@ -1,7 +1,5 @@
 #include "csv.h"
 
-#define STR_TAM 97  // Maior String que pode ser lida
-
 //* ============================ *//
 //* ===== Metodos Privados ===== *//
 //* ============================ *//

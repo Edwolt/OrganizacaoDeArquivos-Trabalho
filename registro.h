@@ -6,6 +6,8 @@
 #include <string.h>
 
 #define INTNULL -1
+#define STR_TAM 97  // Tamanho maximo de um campo string
+
 
 /**
  * TAD Registro
