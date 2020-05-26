@@ -1,5 +1,9 @@
 #include "registro.h"
 
+#define SEXO_IGNORADO '0'
+#define SEXO_MASCULINO '1'
+#define SEXO_FEMININO '2'
+
 struct _registro {
     int idNascimento;  // int
     int idadeMae;  // int
@@ -87,15 +91,15 @@ void registro_imprimir(Registro* registro) {
     // String com o sexo do bebe
     char sexo[50];
     switch (registro->sexoBebe) {
-        case '0':
+        case SEXO_IGNORADO:
             strcpy(sexo, "IGNORADO");
             break;
 
-        case '1':
+        case SEXO_MASCULINO:
             strcpy(sexo, "MASCULINO");
             break;
 
-        case '2':
+        case SEXO_FEMININO:
             strcpy(sexo, "FEMININO");
             break;
 
@@ -111,7 +115,7 @@ void registro_imprimir(Registro* registro) {
            (registro->cidadeBebe ? registro->cidadeBebe : "-"),
            (registro->estadoBebe ? registro->estadoBebe : "-"),
            (registro->dataNascimento ? registro->dataNascimento : "-"),
-            sexo);
+           sexo);
 }
 
 //* ============================ *//
