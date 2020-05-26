@@ -15,7 +15,7 @@
  * Vetor com $ para preencher espacos vazios
  * O tamanho da string eh do tamanho de um registro para ter certeza que sera suficiente
  */
-const char LIXO[TAM_REG + 1] = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
+static const char LIXO[TAM_REG + 1] = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
 
 //* ================== *//
 //* ===== Macros ===== *//
@@ -46,7 +46,7 @@ const char LIXO[TAM_REG + 1] = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
  * 
  * Retorna se foi possivel inserir o registro no arquivo
  */
-bool escreverRegistro(Binario* binario, Registro* registro) {
+static bool escreverRegistro(Binario* binario, Registro* registro) {
     if (!binario) return false;  // Verifica se recebeu um arquivo
 
     const char CHARNULO = '\0';  // Guarda '\0'

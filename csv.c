@@ -10,7 +10,7 @@
  * Le um campo do CSV (ate uma ',' ou um '\n')
  * Consome a ',' ou '\n'
  */
-void leCampo(CSV* csv, char* str) {
+static void leCampo(CSV* csv, char* str) {
     char c;
     int i = 0;
 
@@ -26,7 +26,7 @@ void leCampo(CSV* csv, char* str) {
 /**
  * Le um inteiro do arquivo
  */
-int leInt(CSV* csv) {
+static int leInt(CSV* csv) {
     if (!csv) return INTNULL;
 
     char str[STR_TAM];
@@ -42,7 +42,7 @@ int leInt(CSV* csv) {
  * Le uma string do arquivo e consome a virgula
  * Usa alocacao dinamica
  */
-char* leStr(CSV* csv) {
+static char* leStr(CSV* csv) {
     if (!csv) return NULL;
 
     char* str = (char*)malloc(STR_TAM * sizeof(char));
@@ -60,7 +60,7 @@ char* leStr(CSV* csv) {
 /**
  * Le um char do arquivo e consome a virgula
  */
-char leChar(CSV* csv) {
+static char leChar(CSV* csv) {
     if (!csv) return '\0';
 
     char str[STR_TAM];
