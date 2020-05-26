@@ -211,7 +211,7 @@ static Opcao* funcOpcoes[] = {opcao1,
 //* ============================ *//
 
 bool opcoes_executar(int n) {
-    int length = (sizeof(funcOpcoes) / sizeof(Opcao*));
+    int length = (sizeof(funcOpcoes) / sizeof(Opcao*));  // Tamanho do vetor de funcoes
     if (0 < n && n <= length) {
         (*funcOpcoes[n - 1])();  // Executa funcOpoes na com valor opcao
         return true;
