@@ -9,6 +9,53 @@
  */
 typedef void Opcao();
 
+typedef struct _dupla dupla;
+struct _dupla {
+    enum {
+        IDNASCIMENTO,
+        IDADEMAE,
+        DATANASCIMENTO,
+        SEXOBEBE,
+        ESTADOMAE,
+        ESTADOBEBE,
+        CIDADEMAE,
+        CIDADEBEBE,
+    } campo;
+
+    union {
+        int inteiro;
+        char caracter;
+        char* string;
+    } valor;
+};
+
+struct dupla numCampo(char* str) {
+    if (strcmp(str, "idNascimento") == 0) {
+        scanf("%d", 1)
+    }
+    if (strcmp(str, "idadeMae") == 0) {
+        return IDADEMAE;
+    }
+    if (strcmp(str, "dataNascimento") == 0) {
+        return DATANASCIMENTO;
+    }
+    if (strcmp(str, "sexoBebe") == 0) {
+        return SEXOBEBE;
+    }
+    if (strcmp(str, "estadoMae") == 0) {
+        return ESTADOMAE;
+    }
+    if (strcmp(str, "estadoBebe") == 0) {
+        return ESTADOBEBE;
+    }
+    if (strcmp(str, "cidadeMae") == 0) {
+        return CIDADEMAE;
+    }
+    if (strcmp(str, "cidadeBebe") == 0) {
+        return CIDADEMAE;
+    }
+}
+
 //* ============================ *//
 //* ===== Métodos Privados ===== *//
 //* ============================ *//
@@ -116,7 +163,28 @@ static void opcao2() {
  * que cada campo[i] tenha o valor[i]
  */
 static void opcao3() {
-    printf("Operação não implementada :(\n");
+    int i;  // Iteradores
+
+    char path[PATH_TAM];
+    scanf(" %s", path);
+
+    int m;
+    scanf(" %d", &m);
+
+    char** campos = (char**)malloc(m * sizeof(char*));
+    for (i = 0; i < m; i++) campos[i] = (char*)malloc(STR_TAM * sizeof(char));
+    char** valor = (char**)malloc(m * sizeof(char*));
+    for (i = 0; i < m; i++) valor[i] = (char*)malloc(STR_TAM * sizeof(char));
+
+    for (i = 0; i < m; i++) {
+        scanf("%s ", campos[i]);
+        scan_quote_string(valor[i]);
+    }
+
+    for (i = 0; i < m; i++) free(campos[i]);
+    free(campos);
+    for (i = 0; i < m; i++) free(valor[i]);
+    free(valor);
 }
 
 /**
