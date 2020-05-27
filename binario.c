@@ -5,6 +5,7 @@
 //* ====================== *//
 
 #define REMOVIDO -1  // Valor do campo 1 se o registro estiver logicamente removido
+
 #define TAM_REG 128  // Tamanho do registro
 #define TAM_CVAR 97  // Tamanho resevado para campos variaveis (excluido indicadores de tamanho)
 #define TAM_ESTADO 2  // Tamanho da string estado
