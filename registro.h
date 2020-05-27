@@ -47,14 +47,6 @@ Registro* registro_criarVazio();
 void registro_apagar(Registro** registro);
 
 /**
- * Destroi o objeto
- * 
- * Os objetos que estiver dentro dele continuam existindo
- * E as variávei dinamicamente alocada continuam alocadas
- */
-void registro_destruir(Registro** registro);
-
-/**
  * Escreve no stdin os dados do registro usando as informacoes mais importantes
  */
 void registro_imprimir();

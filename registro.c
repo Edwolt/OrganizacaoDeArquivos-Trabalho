@@ -67,15 +67,6 @@ void registro_apagar(Registro** registro) {
     *registro = NULL;
 }
 
-void registro_destruir(Registro** registro) {
-    // Verifica se registro já foi apagado
-    if (!registro) return;
-    if (!*registro) return;
-
-    free(registro);
-    *registro = NULL;
-}
-
 void registro_imprimir(Registro* registro) {
     if (!registro) {  // Verifica se o registro existe
         printf("Registro Inexistente\n");
