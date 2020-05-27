@@ -81,15 +81,6 @@ void dupla_apagar(Dupla** dupla) {
     *dupla = NULL;
 }
 
-void dupla_destruir(Dupla** dupla) {
-    // Verifica se registro já foi apagado
-    if (!dupla) return;
-    if (!*dupla) return;
-
-    free(*dupla);
-    *dupla = NULL;
-}
-
 int dupla_tipo(Dupla* dupla) {
     switch (dupla->campo) {
         // Campo Inteiro

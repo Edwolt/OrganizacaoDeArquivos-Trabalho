@@ -23,15 +23,41 @@
  */
 typedef struct _dupla Dupla;
 
+/**
+ * Cria um novo objeto dupla
+ * Retorna NULL se nao for possivel criar o objeto
+ * 
+ * Obs: Depois, use uma funcao para destruir o objeto
+ */
 Dupla* dupla_criar(char* campo, char* valor);
 
+/**
+ * Destroi o objeto
+ * Destroi os objetos e desaloca variaveis que estiver dentro dele
+ */
 void dupla_apagar(Dupla** dupla);
-void dupla_destruir(Dupla** dupla);
 
+/**
+ * Retorn qual tipo de dado esta em valor
+ */
 int dupla_tipo(Dupla* dupla);
 
+/**
+ * Retorna o valor inteiro que esta armazenado
+ * Se nao estiver armazenado um valor inteiro retorna um valor qualquer
+ */
 int dupla_getInteiro(Dupla* dupla);
+
+/**
+ * Retorna o valor caracter que esta armazenado
+ * Se nao estiver armazenado um valor caracter retorna um valor qualquer
+ */
 char dupla_getCaracter(Dupla* dupla);
+
+/**
+ * Retorna o valor string que esta armazenado
+ * Se nao estiver armazenado um valor string retorna um valor qualquer
+ */
 char* dupla_getString(Dupla* dupla);
 
 #endif
