@@ -53,8 +53,7 @@ Registro* registro_criarVazio() {
 
 void registro_apagar(Registro** registro) {
     // Verifica se objeto ja foi apagado
-    if (!registro) return;
-    if (!*registro) return;
+    if (!registro || !*registro) return;
 
     // Free nas strings
     if ((*registro)->dataNascimento) free((*registro)->dataNascimento = NULL);
@@ -65,6 +64,55 @@ void registro_apagar(Registro** registro) {
 
     free((*registro));
     *registro = NULL;
+}
+
+bool registro_satisfaz(Registro* registro, Dupla** duplas, int n) {
+    if (!registro || !duplas) return NULL;
+
+    int i;  // Iteradores
+
+    for (i = 0; i < n; i++) {
+        switch (dupla_getCampo(duplas[i])) {
+            case DUPLA_IDNASCIMENTO:
+                if (registro->idNascimento != dupla_getInteiro(duplas[i])) return false;
+                break;
+
+            case DUPLA_IDADEMAE:
+                if (registro->idadeMae != dupla_getInteiro(duplas[i])) return false;
+                break;
+
+            // Campo Char
+            case DUPLA_SEXOBEBE:
+                if (registro->sexoBebe != dupla_getCaracter(duplas[i])) return false;
+                break;
+
+            // Campo String
+            case DUPLA_DATANASCIMENTO:
+                if (strcmp(registro->dataNascimento, dupla_getString(duplas[i])) != 0) return false;
+                break;
+
+            case DUPLA_ESTADOMAE:
+                if (strcmp(registro->estadoMae, dupla_getString(duplas[i])) != 0) return false;
+                break;
+
+            case DUPLA_ESTADOBEBE:
+                if (strcmp(registro->estadoBebe, dupla_getString(duplas[i])) != 0) return false;
+                break;
+
+            case DUPLA_CIDADEMAE:
+                if (strcmp(registro->cidadeMae, dupla_getString(duplas[i])) != 0) return false;
+                break;
+
+            case DUPLA_CIDADEBEBE:
+                if (strcmp(registro->cidadeBebe, dupla_getString(duplas[i])) != 0) return false;
+                break;
+
+            default:
+                return false;
+        }
+    }
+
+    return true;
 }
 
 void registro_imprimir(Registro* registro) {

@@ -1,9 +1,12 @@
 #ifndef REGISTRO_H
 #define REGISTRO_H
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "dupla.h"
 
 #define INTNULL -1
 #define STR_TAM 97  // Tamanho maximo de um campo string
@@ -44,6 +47,15 @@ Registro* registro_criarVazio();
  * Destroi os objetos e desaloca variaveis que estiver dentro dele
  */
 void registro_apagar(Registro** registro);
+
+/**
+ * Retorna se um registro satisfaz os criterios
+ * Os criterios sao duplas, onde o campo e valor do registro devem ser igual
+ * Duplas eh o array de duplas e n o tamanho do array
+ * 
+ * Retorna false se registro ou duplas for NULL
+ */
+bool registro_satisfaz(Registro* registro, Dupla** duplas, int n);
 
 /**
  * Escreve no stdin os dados do registro usando as informacoes mais importantes
