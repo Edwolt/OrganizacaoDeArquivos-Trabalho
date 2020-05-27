@@ -116,7 +116,7 @@ static void opcao2() {
  * que cada campo[i] tenha o valor[i]
  */
 static void opcao3() {
-    int i;  // Iteradores
+    int i, j;  // Iteradores
 
     char path[PATH_TAM];
     scanf(" %s", path);
@@ -155,6 +155,52 @@ static void opcao3() {
             }
             printf("Dupla não alocado\n");
         }
+    }
+
+    bool status;
+    int inseridos, removidos;
+    int rrn;  // Quantidade de registros de dados no arquivo contando os removidos
+    bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, &removidos, NULL);
+
+    if (!ok) {  // Ocorreu uma falha ao ler o registro cabecalho
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
+
+    if (!status) {  // O arquivo esta inconsistente
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
+
+    if (inseridos - removidos == 0) {  // O arquivo nao possui dados
+        // TODO retorna ao usuario que nada foi encontrado
+        printf("Registro inexistente.\n");
+        return;
+    }
+
+    Binario* bin = binario_abrirEscrita(path);
+    Registro* registro;
+    bool* erro;
+
+    for (i = 0; i < rrn; i++) {
+        registro = binario_leRegistro(bin, &erro);
+
+        if (erro) {
+            printf("Falha no processamento do arquivo.\n");
+            return;
+        }
+
+        if (registro == NULL) continue;
+
+        bool verifica = true;
+        for (j = 0; j < m; j++) {
+            // TODO verificar se registro atende duplas[j]
+            verifica = false;
+        }
+
+        if (verifica) registro_imprimir(registro);
+
+        registro_apagar(&registro);
     }
 
     for (i = 0; i < m; i++) dupla_apagar(&duplas[i]);
