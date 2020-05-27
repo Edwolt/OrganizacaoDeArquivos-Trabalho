@@ -113,3 +113,18 @@ int dupla_tipo(Dupla* dupla) {
             return DUPLA_INVALIDO;
     }
 }
+
+int dupla_getInteiro(Dupla* dupla) {
+    if (!dupla) return 0;
+    return dupla->valor.inteiro;
+}
+
+char dupla_getCaracter(Dupla* dupla) {
+    if (!dupla) return '\0';
+    return dupla->valor.caracter;
+}
+
+char* dupla_getString(Dupla* dupla) {
+    if (!dupla) return NULL;
+    return dupla->valor.string;
+}

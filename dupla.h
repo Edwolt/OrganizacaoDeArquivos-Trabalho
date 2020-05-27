@@ -30,4 +30,8 @@ void dupla_destruir(Dupla** dupla);
 
 int dupla_tipo(Dupla* dupla);
 
+int dupla_getInteiro(Dupla* dupla);
+char dupla_getCaracter(Dupla* dupla);
+char* dupla_getString(Dupla* dupla);
+
 #endif
