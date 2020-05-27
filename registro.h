@@ -50,9 +50,9 @@ void registro_apagar(Registro** registro);
  */
 void registro_imprimir();
 
-//* ============================ *//
-//* ===== Getter e Setters ===== *//
-//* ============================ *//
+//* ============================= *//
+//* ===== Getters e Setters ===== *//
+//* ============================= *//
 
 // Se o registro for NULL, em um getter, retorna uma valor qualquer
 // Se o registro for NULL, em um setter, nada eh feito

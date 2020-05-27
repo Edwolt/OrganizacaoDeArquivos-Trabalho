@@ -24,7 +24,11 @@
 typedef struct _dupla Dupla;
 
 /**
- * Cria um novo objeto dupla
+ * Cria um novo objeto dupla a partir de duas strings
+ * a string campo e valor devem ter sido alocada dinamicamente
+ * depois de criar a dupla, as strings sao desalocadas
+ * Obs: Depois de usar os valores da variavel campo e valor ficarao inacessiveis
+ * 
  * Retorna NULL se nao for possivel criar o objeto
  * 
  * Obs: Depois, use uma funcao para destruir o objeto
@@ -41,6 +45,10 @@ void dupla_apagar(Dupla** dupla);
  * Retorn qual tipo de dado esta em valor
  */
 int dupla_tipo(Dupla* dupla);
+
+//* =================== *//
+//* ===== Getters ===== *//
+//* =================== *//
 
 /**
  * Retorna o valor inteiro que esta armazenado

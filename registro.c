@@ -103,9 +103,9 @@ void registro_imprimir(Registro* registro) {
            sexo);
 }
 
-//* ============================ *//
-//* ===== Getter e Setters ===== *//
-//* ============================ *//
+//* ============================= *//
+//* ===== Getters e Setters ===== *//
+//* ============================= *//
 
 int registro_getIdNascimento(Registro* registro) {
     if (!registro) return INTNULL;

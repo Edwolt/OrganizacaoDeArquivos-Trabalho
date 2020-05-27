@@ -38,7 +38,7 @@ Dupla* dupla_criar(char* campo, char* valor) {
 
     if (!valor) {
         if (campo) free(campo);
-        return NULL
+        return NULL;
     }
 
     Dupla* dupla = (Dupla*)malloc(sizeof(Dupla));
@@ -104,6 +104,10 @@ int dupla_tipo(Dupla* dupla) {
             return DUPLA_INVALIDO;
     }
 }
+
+//* =================== *//
+//* ===== Getters ===== *//
+//* =================== *//
 
 int dupla_getInteiro(Dupla* dupla) {
     if (!dupla) return 0;
