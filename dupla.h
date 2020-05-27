@@ -41,14 +41,21 @@ Dupla* dupla_criar(char* campo, char* valor);
  */
 void dupla_apagar(Dupla** dupla);
 
-/**
- * Retorn qual tipo de dado esta em valor
- */
-int dupla_tipo(Dupla* dupla);
-
 //* =================== *//
 //* ===== Getters ===== *//
 //* =================== *//
+
+/**
+ * Retorn qual o valor do dupla
+ * Se dupla for NULL retorna DUPLA_INVALIDO
+ */
+int dupla_getCampo(Dupla* dupla);
+
+/**
+ * Retorn qual tipo de dado esta em valor
+ * Se dupla for NULL retorna DUPLA_INVALIDO
+ */
+int dupla_getTipo(Dupla* dupla);
 
 /**
  * Retorna o valor inteiro que esta armazenado

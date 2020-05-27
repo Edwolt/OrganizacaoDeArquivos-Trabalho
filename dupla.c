@@ -46,7 +46,7 @@ Dupla* dupla_criar(char* campo, char* valor) {
 
     dupla->campo = hash(campo);
 
-    switch (dupla_tipo(dupla)) {
+    switch (dupla_getTipo(dupla)) {
         // Campo Inteiro
         case DUPLA_INTEIRO:
             dupla->valor.inteiro = atoi(valor);
@@ -76,12 +76,20 @@ void dupla_apagar(Dupla** dupla) {
     if (!dupla) return;
     if (!*dupla) return;
 
-    if (dupla_tipo(*dupla) == DUPLA_STRING) free((*dupla)->valor.string);
+    if (dupla_getTipo(*dupla) == DUPLA_STRING) free((*dupla)->valor.string);
     free(*dupla);
     *dupla = NULL;
 }
 
-int dupla_tipo(Dupla* dupla) {
+int dupla_getCampo(Dupla* dupla) {
+    if (!dupla) return DUPLA_INVALIDO;
+
+    return dupla->campo;
+}
+
+int dupla_getTipo(Dupla* dupla) {
+    if (!dupla) return DUPLA_INVALIDO;
+
     switch (dupla->campo) {
         // Campo Inteiro
         case DUPLA_IDNASCIMENTO:
