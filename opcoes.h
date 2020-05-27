@@ -7,6 +7,7 @@
 #include "binario.h"
 #include "binarioNaTela.h"
 #include "csv.h"
+#include "dupla.h"
 #include "registro.h"
 
 /**

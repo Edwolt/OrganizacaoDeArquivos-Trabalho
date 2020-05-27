@@ -124,20 +124,32 @@ static void opcao3() {
     int m;
     scanf(" %d", &m);
 
-    char** campos = (char**)malloc(m * sizeof(char*));
-    for (i = 0; i < m; i++) campos[i] = (char*)malloc(STR_TAM * sizeof(char));
-    char** valor = (char**)malloc(m * sizeof(char*));
-    for (i = 0; i < m; i++) valor[i] = (char*)malloc(STR_TAM * sizeof(char));
+    char* campo;
+    char* valor;
 
     for (i = 0; i < m; i++) {
-        scanf("%s ", campos[i]);
-        scan_quote_string(valor[i]);
-    }
+        campo = (char*)malloc(STR_TAM * sizeof(char));
+        if (!campo) {
+            printf("Campo não alocado");
+            return;
+        }
 
-    for (i = 0; i < m; i++) free(campos[i]);
-    free(campos);
-    for (i = 0; i < m; i++) free(valor[i]);
-    free(valor);
+        valor = (char*)malloc(STR_TAM * sizeof(char));
+        if (!valor) {
+            free(campo);
+            printf("Valor não alocado");
+            return;
+        }
+
+        scanf("%s ", campo);
+        trim(campo);
+
+        scan_quote_string(valor);
+        trim(valor);
+
+        Dupla* dupla = dupla_criar(campo, valor);
+        dupla_apagar(dupla);
+    }
 }
 
 /**
