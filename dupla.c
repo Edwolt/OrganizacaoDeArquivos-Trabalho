@@ -73,8 +73,7 @@ Dupla* dupla_criar(char* campo, char* valor) {
 
 void dupla_apagar(Dupla** dupla) {
     // Verifica se registro já foi apagado
-    if (!dupla) return;
-    if (!*dupla) return;
+    if (!dupla || !*dupla) return;
 
     if (dupla_getTipo(*dupla) == DUPLA_STRING) free((*dupla)->valor.string);
     free(*dupla);

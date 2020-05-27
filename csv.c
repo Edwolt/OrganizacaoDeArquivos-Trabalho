@@ -86,8 +86,7 @@ CSV* csv_abrir(char* path) {
 
 void csv_fechar(CSV** csv) {
     // Verifica se objeto ja foi apagado
-    if (!csv) return;
-    if (!*csv) return;
+    if (!csv || !*csv) return;
 
     fclose(*csv);
     *csv = NULL;
