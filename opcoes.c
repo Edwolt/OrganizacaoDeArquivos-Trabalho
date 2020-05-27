@@ -59,9 +59,9 @@ static void opcao2() {
     int i;  // Iteradores
 
     bool status;
-    int inseridos;
+    int inseridos, removidos;
     int rrn;  // Quantidade de registros de dados no arquivo contando os removidos
-    bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, NULL, NULL);
+    bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, &removidos, NULL);
 
     if (!ok) {  // Ocorreu uma falha ao ler o registro cabecalho
         printf("Falha no processamento do arquivo.\n");
@@ -73,7 +73,7 @@ static void opcao2() {
         return;
     }
 
-    if (inseridos == 0) {  // O arquivo nao possui dados
+    if (inseridos - removidos == 0) {  // O arquivo nao possui dados
         printf("Registro inexistente.\n");
         return;
     }
