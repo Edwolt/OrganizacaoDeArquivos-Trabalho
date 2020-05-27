@@ -148,7 +148,7 @@ static void opcao3() {
         trim(valor);
 
         Dupla* dupla = dupla_criar(campo, valor);
-        dupla_apagar(dupla);
+        dupla_apagar(&dupla);
     }
 }
 
