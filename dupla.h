@@ -13,8 +13,8 @@
 #define DUPLA_CIDADEMAE 877
 #define DUPLA_CIDADEBEBE 968
 
-#define DUPLA_INT 0
-#define DUPLA_CHAR 1
+#define DUPLA_INTEIRO 0
+#define DUPLA_CARACTER 1
 #define DUPLA_STRING 2
 
 /**
@@ -25,8 +25,8 @@ typedef struct _dupla Dupla;
 
 Dupla* dupla_criar(char* campo, char* valor);
 
-void dupla_apagar(Dupla* dupla);
-void dupla_destruir(Dupla* dupla);
+void dupla_apagar(Dupla** dupla);
+void dupla_destruir(Dupla** dupla);
 
 int dupla_tipo(Dupla* dupla);
 

@@ -35,25 +35,20 @@ Dupla* dupla_criar(char* campo, char* valor) {
 
     dupla->campo = hash(campo);
 
-    switch (dupla->campo) {
+    switch (dupla_tipo(dupla)) {
         // Campo Inteiro
-        case DUPLA_IDNASCIMENTO:
-        case DUPLA_IDADEMAE:
+        case DUPLA_INTEIRO:
             dupla->valor.inteiro = atoi(valor);
             break;
 
-        // Campo String
-        case DUPLA_DATANASCIMENTO:
-        case DUPLA_ESTADOMAE:
-        case DUPLA_ESTADOBEBE:
-        case DUPLA_CIDADEMAE:
-        case DUPLA_CIDADEBEBE:
-            dupla->valor.string = valor;
+        // Campo Caracter
+        case DUPLA_CARACTER:
+            dupla->valor.caracter = valor[0];
             break;
 
-        // Campo Char
-        case DUPLA_SEXOBEBE:
-            dupla->valor.caracter = valor[0];
+        // Campo String
+        case DUPLA_STRING:
+            dupla->valor.string = valor;
             break;
 
         default:
@@ -63,16 +58,45 @@ Dupla* dupla_criar(char* campo, char* valor) {
     return dupla;
 }
 
-dupla_apagar(Dupla* dupla) {
-    if (dupla_tipo(dupla) == DUPLA_STRING) free(dupla->valor.string);
-    free(dupla);
+void dupla_apagar(Dupla** dupla) {
+    // Verifica se registro já foi apagado
+    if (!dupla) return;
+    if (!*dupla) return;
+
+    if (dupla_tipo(*dupla) == DUPLA_STRING) free((*dupla)->valor.string);
+    free(*dupla);
+    *dupla = NULL;
 }
 
-dupla_destruir(Dupla* dupla) {
-    free(dupla);
+void dupla_destruir(Dupla** dupla) {
+    // Verifica se registro já foi apagado
+    if (!dupla) return;
+    if (!*dupla) return;
+
+    free(*dupla);
+    *dupla = NULL;
 }
 
-dupla_tipo(Dupla* dupla) {
-    // TODO Implementar
-    return DUPLA_STRING;
+int dupla_tipo(Dupla* dupla) {
+    switch (dupla->campo) {
+        // Campo Inteiro
+        case DUPLA_IDNASCIMENTO:
+        case DUPLA_IDADEMAE:
+            return DUPLA_INTEIRO;
+
+        // Campo Char
+        case DUPLA_SEXOBEBE:
+            return DUPLA_CARACTER;
+
+        // Campo String
+        case DUPLA_DATANASCIMENTO:
+        case DUPLA_ESTADOMAE:
+        case DUPLA_ESTADOBEBE:
+        case DUPLA_CIDADEMAE:
+        case DUPLA_CIDADEBEBE:
+            return DUPLA_STRING;
+
+        default:
+            return DUPLA_INVALIDO;
+    }
 }
