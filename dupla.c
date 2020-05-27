@@ -30,6 +30,17 @@ static int hash(char* str) {
 //* ============================ */
 
 Dupla* dupla_criar(char* campo, char* valor) {
+    // Parametros nao foram passados
+    if (!campo) {
+        if (valor) free(valor);
+        return NULL;
+    }
+
+    if (!valor) {
+        if (campo) free(campo);
+        return NULL
+    }
+
     Dupla* dupla = (Dupla*)malloc(sizeof(Dupla));
     if (!dupla) return NULL;
 
@@ -39,11 +50,13 @@ Dupla* dupla_criar(char* campo, char* valor) {
         // Campo Inteiro
         case DUPLA_INTEIRO:
             dupla->valor.inteiro = atoi(valor);
+            free(valor);
             break;
 
         // Campo Caracter
         case DUPLA_CARACTER:
             dupla->valor.caracter = valor[0];
+            free(valor);
             break;
 
         // Campo String
