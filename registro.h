@@ -8,7 +8,6 @@
 #define INTNULL -1
 #define STR_TAM 97  // Tamanho maximo de um campo string
 
-
 /**
  * TAD Registro
  * Armazena dados de um registro
@@ -54,6 +53,9 @@ void registro_imprimir();
 //* ============================ *//
 //* ===== Getter e Setters ===== *//
 //* ============================ *//
+
+// Se o registro for NULL, em um getter, retorna uma valor qualquer
+// Se o registro for NULL, em um setter, nada eh feito
 
 int registro_getIdNascimento(Registro* registro);
 void registro_setIdNascimento(Registro* registro, int idNascimento);

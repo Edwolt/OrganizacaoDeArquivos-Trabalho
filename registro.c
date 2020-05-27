@@ -107,26 +107,66 @@ void registro_imprimir(Registro* registro) {
 //* ===== Getter e Setters ===== *//
 //* ============================ *//
 
-int registro_getIdNascimento(Registro* registro) { return registro->idNascimento; }
-void registro_setIdNascimento(Registro* registro, int idNascimento) { registro->idNascimento = idNascimento; }
+int registro_getIdNascimento(Registro* registro) {
+    if (!registro) return INTNULL;
+    return registro->idNascimento;
+}
+void registro_setIdNascimento(Registro* registro, int idNascimento) {
+    if (registro) registro->idNascimento = idNascimento;
+}
 
-int registro_getIdadeMae(Registro* registro) { return registro->idadeMae; }
-void registro_setIdadeMae(Registro* registro, int idadeMae) { registro->idadeMae = idadeMae; }
+int registro_getIdadeMae(Registro* registro) {
+    if (!registro) return INTNULL;
+    return registro->idadeMae;
+}
+void registro_setIdadeMae(Registro* registro, int idadeMae) {
+    if (registro) registro->idadeMae = idadeMae;
+}
 
-char* registro_getDataNascimento(Registro* registro) { return registro->dataNascimento; }
-void registro_setDataNascimento(Registro* registro, char* dataNascimento) { registro->dataNascimento = dataNascimento; }
+char* registro_getDataNascimento(Registro* registro) {
+    if (!registro) return NULL;
+    return registro->dataNascimento;
+}
+void registro_setDataNascimento(Registro* registro, char* dataNascimento) {
+    if (registro) registro->dataNascimento = dataNascimento;
+}
 
-char registro_getSexoBebe(Registro* registro) { return registro->sexoBebe; }
-void registro_setSexoBebe(Registro* registro, char sexoBebe) { registro->sexoBebe = sexoBebe; }
+char registro_getSexoBebe(Registro* registro) {
+    if (!registro) return '\0';
+    return registro->sexoBebe;
+}
+void registro_setSexoBebe(Registro* registro, char sexoBebe) {
+    if (registro) registro->sexoBebe = sexoBebe;
+}
 
-char* registro_getEstadoMae(Registro* registro) { return registro->estadoMae; }
-void registro_setEstadoMae(Registro* registro, char* estadoMae) { registro->estadoMae = estadoMae; }
+char* registro_getEstadoMae(Registro* registro) {
+    if (!registro) return NULL;
+    return registro->estadoMae;
+}
+void registro_setEstadoMae(Registro* registro, char* estadoMae) {
+    if (registro) registro->estadoMae = estadoMae;
+}
 
-char* registro_getEstadoBebe(Registro* registro) { return registro->estadoBebe; }
-void registro_setEstadoBebe(Registro* registro, char* estadoBebe) { registro->estadoBebe = estadoBebe; }
+char* registro_getEstadoBebe(Registro* registro) {
+    if (!registro) return NULL;
+    return registro->estadoBebe;
+}
+void registro_setEstadoBebe(Registro* registro, char* estadoBebe) {
+    if (registro) registro->estadoBebe = estadoBebe;
+}
 
-char* registro_getCidadeMae(Registro* registro) { return registro->cidadeMae; }
-void registro_setCidadeMae(Registro* registro, char* cidadeMae) { registro->cidadeMae = cidadeMae; }
+char* registro_getCidadeMae(Registro* registro) {
+    if (!registro) return NULL;
+    return registro->cidadeMae;
+}
+void registro_setCidadeMae(Registro* registro, char* cidadeMae) {
+    if (registro) registro->cidadeMae = cidadeMae;
+}
 
-char* registro_getCidadeBebe(Registro* registro) { return registro->cidadeBebe; }
-void registro_setCidadeBebe(Registro* registro, char* cidadeBebe) { registro->cidadeBebe = cidadeBebe; }
+char* registro_getCidadeBebe(Registro* registro) {
+    if (!registro) return NULL;
+    return registro->cidadeBebe;
+}
+void registro_setCidadeBebe(Registro* registro, char* cidadeBebe) {
+    if (registro) registro->cidadeBebe = cidadeBebe;
+}
