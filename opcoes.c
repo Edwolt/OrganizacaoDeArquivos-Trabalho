@@ -126,18 +126,19 @@ static void opcao3() {
 
     char* campo;
     char* valor;
+    Dupla** duplas = (Dupla**)malloc(m * sizeof(Dupla*));
 
     for (i = 0; i < m; i++) {
         campo = (char*)malloc(STR_TAM * sizeof(char));
         if (!campo) {
-            printf("Campo não alocado");
+            printf("Campo não alocado\n");
             return;
         }
 
         valor = (char*)malloc(STR_TAM * sizeof(char));
         if (!valor) {
             free(campo);
-            printf("Valor não alocado");
+            printf("Valor não alocado\n");
             return;
         }
 
@@ -147,9 +148,17 @@ static void opcao3() {
         scan_quote_string(valor);
         trim(valor);
 
-        Dupla* dupla = dupla_criar(campo, valor);
-        dupla_apagar(&dupla);
+        duplas[i] = dupla_criar(campo, valor);
+        if (!duplas[i]) {  // Se nao foi possivel alocar
+            for (i--; i >= 0; i--) {  // Apaga o que ja tinha sido alocado
+                dupla_apagar(&duplas[i]);
+            }
+            printf("Dupla não alocado\n");
+        }
     }
+
+    for (i = 0; i < m; i++) dupla_apagar(&duplas[i]);
+    free(duplas);
 }
 
 /**
