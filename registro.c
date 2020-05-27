@@ -54,10 +54,7 @@ Registro* registro_criarVazio() {
 void registro_apagar(Registro** registro) {
     // Verifica se objeto ja foi apagado
     if (!registro) return;
-    if (!*registro) {
-        *registro = NULL;
-        return;
-    }
+    if (!*registro) return;
 
     // Free nas strings
     if ((*registro)->dataNascimento) free((*registro)->dataNascimento = NULL);
@@ -73,10 +70,7 @@ void registro_apagar(Registro** registro) {
 void registro_destruir(Registro** registro) {
     // Verifica se registro já foi apagado
     if (!registro) return;
-    if (!*registro) {
-        *registro = NULL;
-        return;
-    }
+    if (!*registro) return;
 
     free(registro);
     *registro = NULL;

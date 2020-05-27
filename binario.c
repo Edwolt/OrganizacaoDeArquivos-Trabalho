@@ -229,10 +229,7 @@ Binario* binario_abrirEscrita(char* path) {
 void binario_fechar(Binario** binario) {
     // Verifica se objeto já foi apagado
     if (!binario) return;
-    if (!*binario) {
-        *binario = NULL;
-        return;
-    }
+    if (!*binario) return;
 
     // Fecha o arquivo
     if (binario && *binario) fclose(*binario);
