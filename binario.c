@@ -241,7 +241,7 @@ bool binario_inserir(Binario* binario, Registro** registros, int n) {
 
     int i;
 
-    for (i = 0; i < n; i++ 0) {
+    for (i = 0; i < n; i++) {
         bool ok = escreverRegistro(binario, registros[i]);
         if (!ok) return false;
     }
