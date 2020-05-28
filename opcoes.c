@@ -307,7 +307,6 @@ bool opcoes_executar(int n) {
     if (0 < n && n <= length) {
         (*funcOpcoes[n - 1])();  // Executa funcOpoes na com valor opcao
         return true;
-    } else {
-        return false;
     }
+    return false;
 }
