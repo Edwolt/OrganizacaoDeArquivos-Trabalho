@@ -236,27 +236,15 @@ void binario_fechar(Binario** binario) {
     *binario = NULL;
 }
 
-bool binario_inserir(char* path, Registro* registro) {
-    bool status;
-    int rrn;
-    binario_getCabecalho(path, &status, &rrn, NULL, NULL, NULL);
+bool binario_inserir(Binario* binario, Registro** registros, int n) {
+    if (!binario || !registros) return false;
 
-    if (!status) return false;  // Arquivo inconsistente
+    int i;
 
-    // Coloca status como inconsistente
-    status = false;
-    binario_setCabecalho(path, &status, NULL, NULL, NULL, NULL);
-
-    Binario* binario = binario_abrirEscrita(path);
-    fseek(binario, rrn * TAM_REG, SEEK_SET);
-
-    bool ok = escreverRegistro(binario, registro);
-    if (!ok) return false;
-
-    // Atualiza RRNProx e coloca status como consistente
-    rrn++;
-    status = true;
-    binario_setCabecalho(path, &status, &rrn, NULL, NULL, NULL);
+    for (i = 0; i < n; i++ 0) {
+        bool ok = escreverRegistro(binario, registros[i]);
+        if (!ok) return false;
+    }
 
     return true;
 }

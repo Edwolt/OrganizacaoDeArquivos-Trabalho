@@ -76,7 +76,7 @@ void binario_fechar(Binario** binario);
  * Insere um registro no arquivo com nome path
  * Atualiza o registro cabecalho
  */
-bool binario_inserir(char* path, Registro* registro);
+bool binario_inserir(Binario* binario, Registro** registros, int n);
 
 /**
  * Le um registro do arquivo binario
