@@ -29,20 +29,20 @@ static void opcao1() {
     scanf(" %s %s", src, dest);
 
     CSV* csv = csv_abrir(src);
-    if (!csv) {
+    if (!csv) {  // Falha ao abrir csv
         printf("Falha no carregamento do arquivo.\n");
         return;
     }
 
     bool ok = binario_gerarDoCSV(dest, csv);
-    if (!ok) {
-        csv_fechar(&csv);
+    csv_fechar(&csv);
+
+    if (!ok) {  // Falha ao gerar CSV
         printf("Falha no carregamento do arquivo.\n");
         return;
     }
 
     binarioNaTela(dest);
-    csv_fechar(&csv);
 }
 
 /** 
@@ -63,23 +63,23 @@ static void opcao2() {
     int rrn;  // Quantidade de registros de dados no arquivo contando os removidos
     bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, &removidos, NULL);
 
-    if (!ok) {  // Ocorreu uma falha ao ler o registro cabecalho
+    if (!ok) {  // Falha ao ler o registro cabecalho
         printf("Falha no processamento do arquivo.\n");
         return;
     }
 
-    if (!status) {  // O arquivo esta inconsistente
+    if (!status) {  // Arquivo inconsistente
         printf("Falha no processamento do arquivo.\n");
         return;
     }
 
-    if (inseridos - removidos == 0) {  // O arquivo nao possui dados
+    if (inseridos - removidos == 0) {  // Arquivo nao possui dados
         printf("Registro inexistente.\n");
         return;
     }
 
     Binario* bin = binario_abrirLeitura(path);
-    if (!bin) {  // O arquivo nao abriu
+    if (!bin) {  // Arquivo nao abriu
         printf("Falha no processamento do arquivo.\n");
         return;
     }
@@ -90,7 +90,7 @@ static void opcao2() {
     for (i = 0; i < rrn; i++) {
         registro = binario_leRegistro(bin, &erro);
 
-        if (erro) {
+        if (erro) {  // Falha ao ler arquivo
             printf("Falha no processamento do arquivo.\n");
             return;
         }
@@ -127,22 +127,21 @@ static void opcao3() {
     char* campo;
     char* valor;
     Dupla** duplas = (Dupla**)malloc(m * sizeof(Dupla*));
-    if (!duplas) {
+    if (!duplas) {  // Falha ao alocar vetor de duplas
         printf("Falha no processamento do arquivo\n");
         return;
     }
 
     for (i = 0; i < m; i++) {
         campo = (char*)malloc(STR_TAM * sizeof(char));
-        if (!campo) {
-            // Campo nao alocado
+        if (!campo) {  // Falha ao alocar string campo
             printf("Falha no processamento do arquivo\n");
             return;
         }
 
         valor = (char*)malloc(STR_TAM * sizeof(char));
-        if (!valor) {
-            free(campo);
+        if (!valor) {  // Falha ao alocar string valor
+            free(campo);  // Falha ao alocar string campo
             printf("Falha no processamento do arquivo\n");
             return;
         }
@@ -190,7 +189,7 @@ static void opcao3() {
     for (i = 0; i < rrn; i++) {
         registro = binario_leRegistro(bin, &erro);
 
-        if (erro) {
+        if (erro) {  // Falha ao ler registro
             printf("Falha no processamento do arquivo.\n");
             return;
         }
@@ -205,7 +204,7 @@ static void opcao3() {
         registro_apagar(&registro);
     }
 
-    if (!imprimiu) printf("Registro Inexistente.\n");
+    if (!imprimiu) printf("Registro Inexistente.\n");  // Nada foi impresso
 
     binario_fechar(&bin);
     for (i = 0; i < m; i++) dupla_apagar(&duplas[i]);
