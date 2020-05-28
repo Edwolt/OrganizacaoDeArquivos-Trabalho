@@ -100,46 +100,46 @@ bool registro_satisfaz(Registro* registro, Dupla** duplas, int n) {
 
             // Campo String
             case DUPLA_DATANASCIMENTO:
-                // Tentativa ruim
-                // if (dupla_getString(duplas[i]) != registro->dataNascimento) && registro->dataNascimento) return false;
-
-                // Verifica se uma dos dois, mas não ambos, eh NULL
+                // Verifica se uma dos dois, mas nao ambos, eh NULL
                 // (dupla == NULL) xor (campo == NULL)
                 if ((!dupla_getString(duplas[i]) != !registro->dataNascimento)) return false;
+                if (!registro->dataNascimento) continue;  // Ambos sao nulos
 
                 if (strcmp(registro->dataNascimento, dupla_getString(duplas[i])) != 0) return false;
                 break;
 
             case DUPLA_ESTADOMAE:
+                // Verifica se uma dos dois, mas não ambos, eh NULL
+                // (dupla == NULL) xor (campo == NULL)
                 if ((!dupla_getString(duplas[i]) != !registro->estadoMae)) return false;
+                if (!registro->estadoMae) continue;  // Ambos sao nulos
 
                 if (strcmp(registro->estadoMae, dupla_getString(duplas[i])) != 0) return false;
                 break;
 
             case DUPLA_ESTADOBEBE:
+                // Verifica se uma dos dois, mas não ambos, eh NULL
+                // (dupla == NULL) xor (campo == NULL)
                 if ((!dupla_getString(duplas[i]) != !registro->estadoBebe)) return false;
-                // if ((!dupla_getString(duplas[i]) != registro->estadoMae) && registro->estadoMae) return false;
-                // if (!dupla_getString(duplas[i]) != !registro->dataNascimento) return false;
-
-                if (!registro->dataNascimento) continue;
+                if (!registro->estadoBebe) continue;  // Ambos sao nulos
 
                 if (strcmp(registro->estadoBebe, dupla_getString(duplas[i])) != 0) return false;
                 break;
 
             case DUPLA_CIDADEMAE:
+                // Verifica se uma dos dois, mas não ambos, eh NULL
+                // (dupla == NULL) xor (campo == NULL)
                 if ((!dupla_getString(duplas[i]) != !registro->cidadeMae)) return false;
-
-                // if (!dupla_getString(duplas[i]) != !registro->dataNascimento) return false;
-                // if (!registro->dataNascimento) continue;
+                if (!registro->cidadeMae) continue;  // Ambos sao nulos
 
                 if (strcmp(registro->cidadeMae, dupla_getString(duplas[i])) != 0) return false;
                 break;
 
             case DUPLA_CIDADEBEBE:
+                // Verifica se uma dos dois, mas não ambos, eh NULL
+                // (dupla == NULL) xor (campo == NULL)
                 if ((!dupla_getString(duplas[i]) != !registro->cidadeBebe)) return false;
-
-                // if (!dupla_getString(duplas[i]) != !registro->dataNascimento) return false;
-                // if (!registro->dataNascimento) continue;
+                if (!registro->cidadeBebe) continue;  // Ambos sao nulos
 
                 if (strcmp(registro->cidadeBebe, dupla_getString(duplas[i])) != 0) return false;
                 break;
