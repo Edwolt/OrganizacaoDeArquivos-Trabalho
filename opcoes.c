@@ -132,7 +132,6 @@ static void opcao3() {
         return;
     }
 
-    printf("Alocando duplas\n");
     for (i = 0; i < m; i++) {
         campo = (char*)malloc(STR_TAM * sizeof(char));
         if (!campo) {
@@ -148,15 +147,12 @@ static void opcao3() {
             return;
         }
 
-        printf("Scan campo\n");
         scanf("%s ", campo);
         trim(campo);
 
-        printf("Scan valor\n");
         scan_quote_string(valor);
         trim(valor);
 
-        printf("Duplas\n");
         duplas[i] = dupla_criar(campo, valor);
         if (!duplas[i]) {  // Se nao foi possivel alocar
             for (i--; i >= 0; i--) {  // Apaga o que ja tinha sido alocado
@@ -164,17 +160,14 @@ static void opcao3() {
             }
             printf("Falha no processamento do arquivo\n");
         }
-        printf("Fim Duplas\n");
     }
 
-    printf("Cabeçalho\n");
     bool status;
     int inseridos, removidos;
     int rrn;  // Quantidade de registros de dados no arquivo contando os removidos
     bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, &removidos, NULL);
 
     if (!ok) {  // Ocorreu uma falha ao ler o registro cabecalho
-        printf("%s$\n", path);
         printf("Falha no processamento do arquivo.\n");
         return;
     }
@@ -189,14 +182,12 @@ static void opcao3() {
         return;
     }
 
-    printf("Open escrita\n");
     Binario* bin = binario_abrirEscrita(path);
     Registro* registro;
     bool erro;
-    printf("Z\n");
+    bool imprimiu = false;
 
     for (i = 0; i < rrn; i++) {
-        printf("Le\n");
         registro = binario_leRegistro(bin, &erro);
 
         if (erro) {
@@ -206,19 +197,17 @@ static void opcao3() {
 
         if (!registro) continue;
 
-        printf("Satisfaz {\n");
         if (registro_satisfaz(registro, duplas, m)) {
-            printf("\t>>>\n");
             registro_imprimir(registro);
+            imprimiu = true;
         }
-        printf("}\n");
 
-        printf("Paga\n");
         registro_apagar(&registro);
     }
 
-    binario_fechar(&bin);
+    if (!imprimiu) printf("Registro Inexistente.\n");
 
+    binario_fechar(&bin);
     for (i = 0; i < m; i++) dupla_apagar(&duplas[i]);
     free(duplas);
 }

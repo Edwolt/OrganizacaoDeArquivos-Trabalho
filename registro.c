@@ -68,22 +68,9 @@ void registro_apagar(Registro** registro) {
 
 bool registro_satisfaz(Registro* registro, Dupla** duplas, int n) {
     if (!registro || !duplas) return NULL;
-    printf("\t p: [%d]%p\n", registro_getIdNascimento(registro), registro);
-    printf("\t cidade1: %s\n", registro_getCidadeBebe(registro));
-    printf("\t cidade1: %s\n", registro_getCidadeMae(registro));
     int i;  // Iteradores
 
     for (i = 0; i < n; i++) {
-        if (dupla_getTipo(duplas[i]) == DUPLA_INTEIRO) {
-            printf("\tint %d\n", dupla_getInteiro(duplas[i]));
-        } else if (dupla_getTipo(duplas[i]) == DUPLA_CARACTER) {
-            printf("\tchr %c(%d)\n", dupla_getCaracter(duplas[i]));
-        } else if (dupla_getTipo(duplas[i]) == DUPLA_STRING) {
-            printf("\tstr %s\n", dupla_getString(duplas[i]));
-        } else {
-            printf("\t???\n");
-        }
-
         switch (dupla_getCampo(duplas[i])) {
             case DUPLA_IDNASCIMENTO:
                 if (registro->idNascimento != dupla_getInteiro(duplas[i])) return false;
