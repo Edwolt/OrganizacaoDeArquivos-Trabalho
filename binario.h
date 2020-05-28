@@ -54,10 +54,11 @@ bool binario_gerarDoCSV(char* path, CSV* csv);
 Binario* binario_abrirLeitura(char* path);
 
 /**
- * Abre um arquivo binario com nome path para leitura
+ * Abre um arquivo binario com nome path para escrita
+ * O arquivo tambem permite leitura
  * Obs: Nao eh necessario pular o registro cabecalho
  * 
- * Retorna NULL se nao for possivel Abrir o arquivo
+ * Retorna NULL se nao for possivel abrir o arquivo
  * Retorna NULL se nao receber um path
  * 
  * Obs: Depois, use uma funcao para destruir o objeto
@@ -73,8 +74,8 @@ Binario* binario_abrirEscrita(char* path);
 void binario_fechar(Binario** binario);
 
 /**
- * Insere um registro no arquivo com nome path
- * Atualiza o registro cabecalho
+ * Insere n registros no arquivo binario
+ * Retorna se a operacao foi possivel
  */
 bool binario_inserir(Binario* binario, Registro** registros, int n);
 
