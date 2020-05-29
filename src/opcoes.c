@@ -228,9 +228,12 @@ static void opcao4() {
 
     if (registro) {  // registro != NULL
         registro_imprimir(registro);
+        registro_apagar(&registro);
     } else {
         printf("Registro Inexistente.");
     }
+
+    binario_fechar(&binario);
 }
 
 /**
@@ -271,7 +274,7 @@ static void opcao5() {
     for (i = 0; i < n; i++) {  // TODO
         scanf("%d", &m);
         criterios[i] = criterio_criarDoStdin();
-        if (!criterios[i]) { // Nao foi possivel criar criterios
+        if (!criterios[i]) {  // Nao foi possivel criar criterios
             for (i--; i >= 0; i--) {
                 criterio_apagar(&criterios[i]);
             }
