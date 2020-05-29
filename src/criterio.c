@@ -5,7 +5,19 @@ struct _criterio {
     int tam;
 };
 
-Criterio* criterio_criar() {
+Criterio* criterio_criar(Dupla** duplas, int n) {
+    if (!duplas) return NULL;  // Nao recebeu parametro
+
+    Criterio* criterio = (Criterio*)malloc(sizeof(Criterio));
+    if (!criterio) return NULL;  // Falha ao criar criterios
+
+    criterio->tam = n;
+    criterio->duplas = duplas;
+
+    return criterio;
+}
+
+Criterio* criterio_criarVazio() {
     Criterio* criterio = (Criterio*)malloc(sizeof(Criterio));
     if (!criterio) return NULL;  // Falha ao criar criterios
 
@@ -62,6 +74,8 @@ Criterio* criterio_criarStdin() {
 }
 
 void criterio_apagar(Criterio** criterio) {
+    if (!criterio || !*criterio) return;  // Objeto ja foi apagado
+
     int i;  //Iteradores
 
     for (i = 0; i < (*criterio)->tam; i++) dupla_apagar(&(*criterio)->duplas[i]);
@@ -74,6 +88,20 @@ void criterio_apagar(Criterio** criterio) {
 //* ===== Getters e Setters ===== *//
 //* ============================= *//
 
-Dupla** criterio_getArray(int* n);  // TODO
+Dupla** criterio_getArray(Criterio* criterio, int* n) {
+    if (!criterio) {  // Objeto nao existe
+        if (n) *n = 0;
+        return NULL;
+    }
 
-void criterio_setArray(Dupla** duplas, int n);  // TODO
+    if (n) *n = criterio->tam;
+    return criterio->duplas;
+}
+
+void criterio_setArray(Criterio* criterio, Dupla** duplas, int n) {
+    int i;  //Iteradores;
+
+    for (i = 0; i < criterio->tam; i++) dupla_apagar(&criterio->duplas[i]);  // Apaga duplas
+    criterio->duplas = duplas;
+    criterio->tam = n;
+}

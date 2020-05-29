@@ -45,7 +45,7 @@ void criterio_apagar(Criterio** criterio);
  * 
  * Se alterar algo no array retornado tambem altera os dados armazenado
  */
-Dupla** criterio_getArray(int* n);
+Dupla** criterio_getArray(Criterio* criterio, int* n);
 
 /**
  * Muda o array
@@ -54,6 +54,6 @@ Dupla** criterio_getArray(int* n);
  *!Os arrays retornado pelo getArray deixa de ter valor valido e nao deve ser mais usado
  *!Se você quer evitar isso faça uma copia dos dados do array antes
  */
-void criterio_setArray(Dupla** duplas, int n);
+void criterio_setArray(Criterio* criterio, Dupla** duplas, int n);
 
 #endif
