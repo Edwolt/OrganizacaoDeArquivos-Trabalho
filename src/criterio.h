@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "binarioNaTela.h"  // trim
 #include "dupla.h"
 #include "registro.h"  // STR_TAM
 
@@ -26,7 +27,7 @@ Criterio* criterio_criar();
  * A entrada deve ser:
  * n campo[1] valor[2] .. campo[n] valor[n]
  */
-Criterio* criterio_criarStdin();
+Criterio* criterio_criarDoStdin();
 
 /**
  * Destroi o objeto

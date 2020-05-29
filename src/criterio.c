@@ -27,7 +27,7 @@ Criterio* criterio_criarVazio() {
     return criterio;
 }
 
-Criterio* criterio_criarStdin() {
+Criterio* criterio_criarDoStdin() {
     int i;  //Iteradores
 
     Criterio* criterio = (Criterio*)malloc(sizeof(Criterio));
