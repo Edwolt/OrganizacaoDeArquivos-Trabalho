@@ -177,7 +177,7 @@ static void opcao3() {
     }
 
     if (inseridos - removidos == 0) {  // O arquivo nao possui dados
-        printf("Registro Inexistente.\n");
+        printf("Registro inexistente.\n");
         return;
     }
 
@@ -208,7 +208,7 @@ static void opcao3() {
         registro_apagar(&registro);
     }
 
-    if (!imprimiu) printf("Registro Inexistente.\n");  // Nada foi impresso
+    if (!imprimiu) printf("Registro inexistente.\n");  // Nada foi impresso
 
     binario_fechar(&bin);
     for (i = 0; i < m; i++) dupla_apagar(&duplas[i]);
@@ -223,13 +223,52 @@ static void opcao3() {
  * 
  * Imprime o valor do regitro de RRN igual a rrn do arquivo binario bin
  */
-static void opcao4() {  // TODO
+static void opcao4() {
     char path[PATH_TAM];
     scanf(" %s", path);
 
     int rrn;
+    scanf("%d", &rrn);
 
-    printf("Operação não implementada :(\n");
+    bool status;
+    int rrn_arquivo;  // Quantidade de registros de dados no arquivo contando os removidos
+    bool ok = binario_getCabecalho(path, &status, &rrn_arquivo, NULL, NULL, NULL);
+
+    if (!ok) {  // Falha ao ler cabecalho
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
+
+    if (!status) {  // Arquivo inconsistente
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
+
+    if (0 < rrn || rrn > rrn_arquivo) {  // Registro nao existe
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
+
+    Binario* binario = binario_abrirLeitura(path);
+
+    if (!binario) {  // Falha ao abrir arquivo
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
+
+    bool erro;
+    Registro* registro = binario_buscar(binario, rrn, &erro);
+
+    if (erro) {  // Falha ao ler registro
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
+
+    if (registro) {  // registro != NULL
+        registro_imprimir(registro);
+    } else {
+        printf("Registro inexistente.");
+    }
 }
 
 /**
