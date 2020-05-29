@@ -15,7 +15,7 @@ struct _dupla {
 //* ============================ */
 
 /**
- * Função hash para facilitar comparacoes de string
+ * Funcao hash para facilitar comparacoes de string
  * Somatorio do valor dos caracter
  */
 static int hash(char* str) {

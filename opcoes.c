@@ -95,7 +95,7 @@ static void opcao2() {
             return;
         }
 
-        if (registro == NULL) continue;
+        if (!registro) continue;  // Registro NULL (Ocorreu falha ou registro esta removido)
 
         registro_imprimir(registro);
         registro_apagar(&registro);
@@ -182,6 +182,10 @@ static void opcao3() {
     }
 
     Binario* bin = binario_abrirEscrita(path);
+    if (!bin) {  // Falha ao abrir arquivo
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
     Registro* registro;
     bool erro;
     bool imprimiu = false;

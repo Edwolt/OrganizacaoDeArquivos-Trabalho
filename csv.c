@@ -43,9 +43,10 @@ static int leInt(CSV* csv) {
  * Usa alocacao dinamica
  */
 static char* leStr(CSV* csv) {
-    if (!csv) return NULL; // Objeto nao exite
+    if (!csv) return NULL;  // Objeto nao exite
 
     char* str = (char*)malloc(STR_TAM * sizeof(char));
+    if (!str) return NULL;  // Falha ao alocar string
 
     leCampo(csv, str);
 
@@ -61,7 +62,7 @@ static char* leStr(CSV* csv) {
  * Le um char do arquivo e consome a virgula
  */
 static char leChar(CSV* csv) {
-    if (!csv) return '\0'; // Objeto nao existe
+    if (!csv) return '\0';  // Objeto nao existe
 
     char str[STR_TAM];
 
@@ -77,7 +78,7 @@ static char leChar(CSV* csv) {
 //* ============================ *//
 
 CSV* csv_abrir(char* path) {
-    if (!path) return NULL; // Objeto nao existe
+    if (!path) return NULL;  // Objeto nao existe
 
     CSV* csv = fopen(path, "r");
     if (!csv) return NULL;  // Testa se o arquivo foi aberto com sucesso
@@ -87,20 +88,20 @@ CSV* csv_abrir(char* path) {
 }
 
 void csv_fechar(CSV** csv) {
-    if (!csv || !*csv) return; // Objeto ja foi apagado (arquivo ja foi fechado)
+    if (!csv || !*csv) return;  // Objeto ja foi apagado (arquivo ja foi fechado)
 
     fclose(*csv);
     *csv = NULL;
 }
 
 Registro* csv_lerRegistro(CSV* csv) {
-    if(!csv) return NULL; // Objeto nao existe
+    if (!csv) return NULL;  // Objeto nao existe
 
     char* cidadeMae = leStr(csv);
-    if (feof(csv)) return NULL;
+    if (!cidadeMae || feof(csv)) return NULL;  // Fim do arquivo ou falha ao ler string
 
     char* cidadeBebe = leStr(csv);
-    if (feof(csv)) {
+    if (!cidadeBebe || feof(csv)) {  // Fim do arquivo ou falha ao ler string
         // Desaloca o que ja foi alocado
         free(cidadeMae);
         return NULL;
@@ -123,7 +124,7 @@ Registro* csv_lerRegistro(CSV* csv) {
     }
 
     char* dataNascimento = leStr(csv);
-    if (feof(csv)) {
+    if (!dataNascimento || feof(csv)) {  // Fim do arquivo ou falha ao ler string
         // Desaloca o que ja foi alocado
         free(cidadeMae);
         free(cidadeBebe);
@@ -140,7 +141,7 @@ Registro* csv_lerRegistro(CSV* csv) {
     }
 
     char* estadoMae = leStr(csv);
-    if (feof(csv)) {
+    if (!estadoMae || feof(csv)) {  // Fim do arquivo ou falha ao ler string
         // Desaloca o que ja foi alocado
         free(cidadeMae);
         free(cidadeBebe);
@@ -149,7 +150,7 @@ Registro* csv_lerRegistro(CSV* csv) {
     }
 
     char* estadoBebe = leStr(csv);
-    if (feof(csv)) {
+    if (!estadoBebe || feof(csv)) {  // Fim do arquivo ou falha ao ler string
         // Desaloca o que ja foi alocado
         free(cidadeMae);
         free(cidadeBebe);
