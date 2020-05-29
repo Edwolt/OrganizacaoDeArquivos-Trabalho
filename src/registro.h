@@ -49,15 +49,6 @@ Registro* registro_criarVazio();
 void registro_apagar(Registro** registro);
 
 /**
- * Retorna se um registro satisfaz os criterio
- * O criterio eh um array de duplas
- * Para cada dupla no criterio o registro precisa no campo descrito pela dupla ter o valor que esta na dupla
- * 
- * Retorna false se registro ou duplas for NULL
- */
-bool registro_satisfaz(Registro* registro, Dupla** criterio, int n);
-
-/**
  * Escreve no stdin os dados do registro usando as informacoes mais importantes
  */
 void registro_imprimir();

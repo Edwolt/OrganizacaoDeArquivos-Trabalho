@@ -84,6 +84,87 @@ void criterio_apagar(Criterio** criterio) {
     *criterio = NULL;
 }
 
+bool criterio_satisfaz(Criterio* criterio, Registro* registro) {
+    if (!criterio || !registro) return NULL;  // Algum dos objetos nao existe
+    int i;  // Iteradores
+    char* reg;  // Auxilia a guardar uma string do registro
+    char* dup;  // Auxilia a guardar uma string da dupla
+
+    for (i = 0; i < criterio->tam; i++) {
+        switch (dupla_getCampo(criterio->duplas[i])) {
+            // Campos Inteiros
+            case DUPLA_IDNASCIMENTO:
+                if (registro_getIdNascimento(registro) != dupla_getInteiro(criterio->duplas[i])) return false;
+                break;
+
+            case DUPLA_IDADEMAE:
+                if (registro_getIdadeMae(registro) != dupla_getInteiro(criterio->duplas[i])) return false;
+                break;
+
+            // Campos Character
+            case DUPLA_SEXOBEBE:
+                if (registro_getSexoBebe(registro) != dupla_getCaracter(criterio->duplas[i])) return false;
+                break;
+
+            // Campos String
+            case DUPLA_DATANASCIMENTO:
+                reg = registro_getDataNascimento(registro);
+                dup = dupla_getString(criterio->duplas[i]);
+
+                if ((!dup != !reg)) return false;  // (dupla == NULL) xor (campo == NULL)
+                if (!reg) continue;  // Ambos sao nulos
+
+                if (strcmp(reg, dup) != 0) return false;
+                break;
+
+            case DUPLA_ESTADOMAE:
+                reg = registro_getEstadoMae(registro);
+                dup = dupla_getString(criterio->duplas[i]);
+
+                if ((!dup != !reg)) return false;  // (dupla == NULL) xor (campo == NULL)
+                if (!reg) continue;  // Ambos sao nulos
+
+                if (strcmp(reg, dup) != 0) return false;
+                break;
+
+            case DUPLA_ESTADOBEBE:
+                reg = registro_getEstadoBebe(registro);
+                dup = dupla_getString(criterio->duplas[i]);
+
+                if ((!dup != !reg)) return false;  // (dupla == NULL) xor (campo == NULL)
+                if (!reg) continue;  // Ambos sao nulos
+
+                if (strcmp(reg, dup) != 0) return false;
+                break;
+
+            case DUPLA_CIDADEMAE:
+                reg = registro_getCidadeMae(registro);
+                dup = dupla_getString(criterio->duplas[i]);
+
+                if ((!dup != !reg)) return false;  // (dupla == NULL) xor (campo == NULL)
+                if (!reg) continue;  // Ambos sao nulos
+
+                if (strcmp(reg, dup) != 0) return false;
+                break;
+
+            case DUPLA_CIDADEBEBE:
+                reg = registro_getCidadeBebe(registro);
+                dup = dupla_getString(criterio->duplas[i]);
+
+                if ((!dup != !reg)) return false;  // (dupla == NULL) xor (campo == NULL)
+                if (!reg) continue;  // Ambos sao nulos
+
+                if (strcmp(reg, dup) != 0) return false;
+                break;
+
+            default:
+                return false;
+        }
+    }
+
+    return true;
+}
+
 //* ============================= *//
 //* ===== Getters e Setters ===== *//
 //* ============================= *//

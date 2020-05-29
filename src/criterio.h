@@ -35,6 +35,14 @@ Criterio* criterio_criarStdin();
  */
 void criterio_apagar(Criterio** criterio);
 
+/**
+ * Retorna se um registro satisfaz o criterio
+ * Para cada dupla no criterio o registro precisa no campo descrito pela dupla ter o valor que esta na dupla
+ * 
+ * Retorna false se registro ou duplas for NULL
+ */
+bool criterio_satisfaz(Criterio* criterio, Registro* registro);  // TODO
+
 //* ============================= *//
 //* ===== Getters e Setters ===== *//
 //* ============================= *//
