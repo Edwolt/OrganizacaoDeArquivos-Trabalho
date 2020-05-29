@@ -1,5 +1,6 @@
 Backup/
 Ignore/
+bin/
 .vscode
 
 #Compilado

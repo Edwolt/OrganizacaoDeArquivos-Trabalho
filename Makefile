@@ -9,9 +9,9 @@ DEBUG    := debug
 ZIP      := $(EXEC).zip
 
 #Files
-SRC      := $(wildcard *.c)
-OBJ      := $(SRC:.c=.o)
-HEADER   := $(wildcard *.h)
+SRC      := $(wildcard src/*.c)
+OBJ      := $(SRC:src/%.c=bin/%.o)
+HEADER   := $(wildcard src/*.h)
 MK       := Makefile
 TEST_IN  := TesteIn/
 TEST_OUT := TesteOut/
@@ -63,6 +63,5 @@ mencheck: debug
 $(EXEC): $(OBJ)
 	$(CC) -o $(EXEC) $(OBJ) $(CFLAGS)
 
-%.o: %.c
+bin/%.o: src/%.c
 	$(CC) -c -o $@ $< $(CFLAGS)
-
