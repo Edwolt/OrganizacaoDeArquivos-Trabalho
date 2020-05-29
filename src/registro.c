@@ -23,31 +23,33 @@ Registro* registro_criar(int idNascimento,
                          char* estadoMae, char* estadoBebe,
                          char* cidadeMae, char* cidadeBebe) {
     Registro* registro = (Registro*)malloc(sizeof(Registro));
-    if (registro) {
-        registro->idNascimento = idNascimento;
-        registro->idadeMae = idadeMae;
-        registro->dataNascimento = dataNascimento;
-        registro->sexoBebe = sexoBebe;
-        registro->estadoMae = estadoMae;
-        registro->estadoBebe = estadoBebe;
-        registro->cidadeMae = cidadeMae;
-        registro->cidadeBebe = cidadeBebe;
-    }
+    if (!registro) return NULL;  // Falha ao criar registro
+
+    registro->idNascimento = idNascimento;
+    registro->idadeMae = idadeMae;
+    registro->dataNascimento = dataNascimento;
+    registro->sexoBebe = sexoBebe;
+    registro->estadoMae = estadoMae;
+    registro->estadoBebe = estadoBebe;
+    registro->cidadeMae = cidadeMae;
+    registro->cidadeBebe = cidadeBebe;
+
     return registro;
 }
 
 Registro* registro_criarVazio() {
     Registro* registro = (Registro*)malloc(sizeof(Registro));
-    if (registro) {
-        registro->idNascimento = INTNULL;
-        registro->idadeMae = INTNULL;
-        registro->dataNascimento = NULL;
-        registro->sexoBebe = '\0';
-        registro->estadoMae = NULL;
-        registro->estadoBebe = NULL;
-        registro->cidadeMae = NULL;
-        registro->cidadeBebe = NULL;
-    }
+    if (!registro) return NULL;  // Falha ao criar registro
+
+    registro->idNascimento = INTNULL;
+    registro->idadeMae = INTNULL;
+    registro->dataNascimento = NULL;
+    registro->sexoBebe = '\0';
+    registro->estadoMae = NULL;
+    registro->estadoBebe = NULL;
+    registro->cidadeMae = NULL;
+    registro->cidadeBebe = NULL;
+    
     return registro;
 }
 
