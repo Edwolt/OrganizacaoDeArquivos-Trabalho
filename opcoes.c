@@ -13,22 +13,35 @@ typedef void Opcao();
 //* ===== Metodos Privados ===== *//
 //* ============================ *//
 
+typedef struct _criterio Criterio;
+struct _criterio {
+    Dupla** duplas;
+    int n;
+};
+
 /**
- * Le um vetor de n duplas do stdin
+ * Le um vetor duplas do stdin: n dupla[1] dupla[2] .. dupla[n]
+ * onde dupla[i] eh campo[i] valor[i]
+ * 
  * Se ocorrer alguma falha retorna NULL
  */
-Dupla** leCriterio(int n) {
+Criterio* leCriterio() {
     int i;  //Iteradores
+
+    Criterio* criterio = (Criterio*)malloc(sizeof(Criterio));
+    if (!criterio) return NULL;
+
+    scanf("%d", &criterio->n);
 
     char* campo;
     char* valor;
 
-    Dupla** criterio = (Dupla**)malloc(n * sizeof(Dupla*));
+    criterio->duplas = (Dupla**)malloc(criterio->n * sizeof(Dupla*));
     if (!criterio) {  // Falha ao alocar vetor de duplas
         return NULL;
     }
 
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < criterio->n; i++) {
         campo = (char*)malloc(STR_TAM * sizeof(char));
         if (!campo) {  // Falha ao alocar string campo
             return NULL;
@@ -46,10 +59,10 @@ Dupla** leCriterio(int n) {
         scan_quote_string(valor);
         trim(valor);
 
-        criterio[i] = dupla_criar(campo, valor);
-        if (!criterio[i]) {  // Se nao foi possivel alocar
+        criterio->duplas[i] = dupla_criar(campo, valor);
+        if (!criterio->duplas[i]) {  // Se nao foi possivel alocar
             for (i--; i >= 0; i--) {  // Apaga o que ja tinha sido alocado
-                dupla_apagar(&criterio[i]);
+                dupla_apagar(&criterio->duplas[i]);
             }
             return NULL;
         }
@@ -61,14 +74,11 @@ Dupla** leCriterio(int n) {
 /**
  * Desaloca um vetor de duplas com n elementos
  */
-void apagarCriterio(Dupla*** criterio, int n) {
+void apagarCriterio(Criterio** criterio) {
     int i;
 
-    /*
-    indexacao: v[i] = *(v + i)
-    &((*criterio)[i]) = <a = *citerio> = &(a[i]) = &(*(a + i)) = a + i = (*citerio) + i = *criterio + i
-    */
-    for (i = 0; i < n; i++) dupla_apagar(*criterio + i);
+    for (i = 0; i < (*criterio)->n; i++) dupla_apagar(&(*criterio)->duplas[i]);
+    free((*criterio)->duplas);
     free(*criterio);
     *criterio = NULL;
 }
@@ -185,10 +195,7 @@ static void opcao3() {
     char path[PATH_TAM];
     scanf(" %s", path);
 
-    int m;
-    scanf(" %d", &m);
-
-    Dupla** criterio = leCriterio(m);
+    Criterio* criterio = leCriterio();
 
     bool status;
     int inseridos, removidos;
@@ -230,7 +237,7 @@ static void opcao3() {
 
         if (!registro) continue;
 
-        if (registro_satisfaz(registro, criterio, m)) {
+        if (registro_satisfaz(registro, criterio)) {  // TODO
             registro_imprimir(registro);
             imprimiu = true;
         }
@@ -241,7 +248,7 @@ static void opcao3() {
     if (!imprimiu) printf("Registro inexistente.\n");  // Nada foi impresso
 
     binario_fechar(&bin);
-    apagarCriterio(&criterio, m);
+    apagarCriterio(&criterio);
 }
 
 /**
@@ -335,7 +342,7 @@ static void opcao5() {
 
     // Le criterios
     int m;
-    for (i = 0; i < n; i++) { // TODO
+    for (i = 0; i < n; i++) {  // TODO
         scanf("%d", &m);
         criterios[i] = leCriterio(m);
         if (!criterios[i]) {
