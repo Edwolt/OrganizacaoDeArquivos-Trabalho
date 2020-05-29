@@ -12,6 +12,7 @@
 
 /**
  * Executa a instrucao de numero n
+ * Retorna se foi possivel executar essa opcao
  */
 bool opcoes_executar(int n);
 

@@ -9,6 +9,8 @@
  * Consome a ',' ou '\n'
  */
 static void leCampo(CSV* csv, char* str) {
+    if (!csv) return;  // Objeto nao existe
+
     char c;
     int i = 0;
 
@@ -25,7 +27,7 @@ static void leCampo(CSV* csv, char* str) {
  * Le um inteiro do arquivo
  */
 static int leInt(CSV* csv) {
-    if (!csv) return INTNULL;
+    if (!csv) return INTNULL;  // Objeto nao existe
 
     char str[STR_TAM];
 
@@ -41,7 +43,7 @@ static int leInt(CSV* csv) {
  * Usa alocacao dinamica
  */
 static char* leStr(CSV* csv) {
-    if (!csv) return NULL;
+    if (!csv) return NULL; // Objeto nao exite
 
     char* str = (char*)malloc(STR_TAM * sizeof(char));
 
@@ -59,7 +61,7 @@ static char* leStr(CSV* csv) {
  * Le um char do arquivo e consome a virgula
  */
 static char leChar(CSV* csv) {
-    if (!csv) return '\0';
+    if (!csv) return '\0'; // Objeto nao existe
 
     char str[STR_TAM];
 
@@ -75,7 +77,7 @@ static char leChar(CSV* csv) {
 //* ============================ *//
 
 CSV* csv_abrir(char* path) {
-    if (!path) return NULL;
+    if (!path) return NULL; // Objeto nao existe
 
     CSV* csv = fopen(path, "r");
     if (!csv) return NULL;  // Testa se o arquivo foi aberto com sucesso
@@ -85,14 +87,15 @@ CSV* csv_abrir(char* path) {
 }
 
 void csv_fechar(CSV** csv) {
-    // Verifica se objeto ja foi apagado
-    if (!csv || !*csv) return;
+    if (!csv || !*csv) return; // Objeto ja foi apagado (arquivo ja foi fechado)
 
     fclose(*csv);
     *csv = NULL;
 }
 
 Registro* csv_lerRegistro(CSV* csv) {
+    if(!csv) return NULL; // Objeto nao existe
+
     char* cidadeMae = leStr(csv);
     if (feof(csv)) return NULL;
 

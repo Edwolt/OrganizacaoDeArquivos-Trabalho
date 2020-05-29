@@ -52,8 +52,7 @@ Registro* registro_criarVazio() {
 }
 
 void registro_apagar(Registro** registro) {
-    // Verifica se objeto ja foi apagado
-    if (!registro || !*registro) return;
+    if (!registro || !*registro) return;  // Objeto ja apagado
 
     // Free nas strings
     if ((*registro)->dataNascimento) free((*registro)->dataNascimento = NULL);
@@ -67,11 +66,12 @@ void registro_apagar(Registro** registro) {
 }
 
 bool registro_satisfaz(Registro* registro, Dupla** duplas, int n) {
-    if (!registro || !duplas) return NULL;
+    if (!registro || !duplas) return NULL;  // Objeto nao existe ou nao passou parametros
     int i;  // Iteradores
 
     for (i = 0; i < n; i++) {
         switch (dupla_getCampo(duplas[i])) {
+            // Campos Inteiros
             case DUPLA_IDNASCIMENTO:
                 if (registro->idNascimento != dupla_getInteiro(duplas[i])) return false;
                 break;
@@ -80,12 +80,12 @@ bool registro_satisfaz(Registro* registro, Dupla** duplas, int n) {
                 if (registro->idadeMae != dupla_getInteiro(duplas[i])) return false;
                 break;
 
-            // Campo Char
+            // Campos Character
             case DUPLA_SEXOBEBE:
                 if (registro->sexoBebe != dupla_getCaracter(duplas[i])) return false;
                 break;
 
-            // Campo String
+            // Campos String
             case DUPLA_DATANASCIMENTO:
                 // Verifica se uma dos dois, mas nao ambos, eh NULL
                 // (dupla == NULL) xor (campo == NULL)
@@ -140,7 +140,7 @@ bool registro_satisfaz(Registro* registro, Dupla** duplas, int n) {
 }
 
 void registro_imprimir(Registro* registro) {
-    if (!registro) {  // Verifica se o registro existe
+    if (!registro) {  // Objeto nao existe
         printf("Registro Inexistente\n");
         return;
     }
@@ -164,9 +164,12 @@ void registro_imprimir(Registro* registro) {
             strcpy(sexo, "-");
     }
 
-    // O acento tam bytes 0xc3aa
-    // Em UTF-8 eh o caracter U+00EA
-    // Para escrever pelo Linux Mint pode se usar ctrl+shift+u seguido do codigo no UTF8 (00EA)
+    /*
+    O acento tam bytes 0xc3aa
+    Em UTF-8 eh o caracter U+00EA
+    Para escrever pelo Linux Mint pode se usar ctrl+shift+u seguido do codigo no UTF8 (00EA)
+    Em vez de escrever "ê" escreve "ê" 
+    */
     // (ptr ? x : y) eh o mesmo que (ptr != NULL? x : y)
     printf("Nasceu em %s/%s, em %s, um bebê de sexo %s.\n",
            (registro->cidadeBebe ? registro->cidadeBebe : "-"),

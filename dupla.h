@@ -2,7 +2,9 @@
 #define DUPLA_H
 
 #include <stdlib.h>  // atoi
+#include <string.h>
 
+// Valores da hash da nome do campo
 #define DUPLA_INVALIDO -1
 #define DUPLA_IDNASCIMENTO 1246
 #define DUPLA_IDADEMAE 778
@@ -13,6 +15,8 @@
 #define DUPLA_CIDADEMAE 877
 #define DUPLA_CIDADEBEBE 968
 
+// Constantes para saber qual o tipo de dados
+// #define DUPLA_INVALIDO -1
 #define DUPLA_INTEIRO 0
 #define DUPLA_CARACTER 1
 #define DUPLA_STRING 2

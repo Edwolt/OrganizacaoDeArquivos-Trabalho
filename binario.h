@@ -2,7 +2,7 @@
 #define BINARIO_H
 
 #include <stdbool.h>
-#include <stdio.h>  // Manipular arquivos
+#include <stdio.h>  // Arquivos
 #include <stdlib.h>  // Alocacao Dinamica
 
 #include "csv.h"

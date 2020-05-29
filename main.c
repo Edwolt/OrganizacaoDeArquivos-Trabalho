@@ -7,7 +7,8 @@
 int main() {
     int opcao;
     while (scanf("%d", &opcao) == 1) {  // Enquanto houver entradas no stdin
-        if (!opcoes_executar(opcao)) {
+        if (!opcoes_executar(opcao)) {  // Executa opcao
+            // Nao foi possivel executar a opcao
             printf("Opção invalida\n");
             return EXIT_FAILURE;
         }

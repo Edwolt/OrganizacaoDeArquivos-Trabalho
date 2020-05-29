@@ -15,9 +15,12 @@ struct _dupla {
 //* ============================ */
 
 /**
- * Função hash para facilitar comparações
+ * Função hash para facilitar comparacoes de string
+ * Somatorio do valor dos caracter
  */
 static int hash(char* str) {
+    if (!str) return 0;  // Nao recebeu paramentros
+
     int res = 0;
     for (int i = 0; str[i] != '\0'; i++) {
         res += str[i];
@@ -30,19 +33,18 @@ static int hash(char* str) {
 //* ============================ */
 
 Dupla* dupla_criar(char* campo, char* valor) {
-    // Parametros nao foram passados
+    // Verifica se os parametros foram passados
     if (!campo) {
         if (valor) free(valor);
         return NULL;
     }
-
     if (!valor) {
         if (campo) free(campo);
         return NULL;
     }
 
     Dupla* dupla = (Dupla*)malloc(sizeof(Dupla));
-    if (!dupla) return NULL;
+    if (!dupla) return NULL;  // Falha ao criar dupla
 
     dupla->campo = hash(campo);
 
@@ -61,7 +63,11 @@ Dupla* dupla_criar(char* campo, char* valor) {
 
         // Campo String
         case DUPLA_STRING:
-            dupla->valor.string = valor;
+            if (strlen(valor) != 0)
+                {dupla->valor.string = NULL;
+            } else {
+                dupla->valor.string = valor;
+            }
             break;
 
         default:
@@ -72,8 +78,7 @@ Dupla* dupla_criar(char* campo, char* valor) {
 }
 
 void dupla_apagar(Dupla** dupla) {
-    // Verifica se registro já foi apagado
-    if (!dupla || !*dupla) return;
+    if (!dupla || !*dupla) return;  // Objeto ja foi apagado
 
     if (dupla_getTipo(*dupla) == DUPLA_STRING) free((*dupla)->valor.string);
     free(*dupla);
@@ -81,25 +86,25 @@ void dupla_apagar(Dupla** dupla) {
 }
 
 int dupla_getCampo(Dupla* dupla) {
-    if (!dupla) return DUPLA_INVALIDO;
+    if (!dupla) return DUPLA_INVALIDO;  // Objeto nao existe
 
     return dupla->campo;
 }
 
 int dupla_getTipo(Dupla* dupla) {
-    if (!dupla) return DUPLA_INVALIDO;
+    if (!dupla) return DUPLA_INVALIDO;  // Objeto nao existe
 
     switch (dupla->campo) {
-        // Campo Inteiro
+        // Campos Inteiros
         case DUPLA_IDNASCIMENTO:
         case DUPLA_IDADEMAE:
             return DUPLA_INTEIRO;
 
-        // Campo Char
+        // Campos Caracter
         case DUPLA_SEXOBEBE:
             return DUPLA_CARACTER;
 
-        // Campo String
+        // Campos String
         case DUPLA_DATANASCIMENTO:
         case DUPLA_ESTADOMAE:
         case DUPLA_ESTADOBEBE:
