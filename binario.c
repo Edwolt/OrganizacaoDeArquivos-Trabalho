@@ -225,7 +225,7 @@ Binario* binario_abrirLeitura(char* path) {
     Binario* binario = fopen(path, "rb");
     if (!binario) return NULL;  // Falha ao abrir arquivo
 
-    fseek(binario, TAM_REG, SEEK_SET);  // Pula o registro cabecalho
+    binario_apontar(binario, 1, SEEK_SET);  // Pula o registro cabecalho
     return binario;
 }
 
@@ -235,7 +235,7 @@ Binario* binario_abrirEscrita(char* path) {
     Binario* binario = fopen(path, "rb+");
     if (!binario) return NULL;  // Falha ao abrir arquivo
 
-    fseek(binario, TAM_REG, SEEK_SET);  // Pula o registro cabecalho
+    binario_apontar(binario, 1, SEEK_SET);  // Pula o registro cabecalho
     return binario;
 }
 
@@ -259,6 +259,27 @@ bool binario_inserir(Binario* binario, Registro** registros, int n) {
     }
 
     return true;
+}
+
+bool binario_remover(Binario* binario) {
+    if (!binario) return false;  // Objeto nao existe
+
+    int removido = REMOVIDO;
+    TRYFWRITE(&removido, int, 1, binario);
+
+    return true;
+
+fwrite_error:
+    return false;
+}
+
+Registro* binario_buscar(Binario* binario, int rrn, bool* erro) {
+    binario_apontar(binario, rrn, SEEK_SET);
+    return binario_leRegistro(binario, erro);
+}
+
+void binario_apontar(Binario* binario, int rrn, int whence) {
+    fseek(binario, rrn * TAM_REG, whence);
 }
 
 Registro* binario_leRegistro(Binario* binario, bool* erro) {

@@ -79,18 +79,33 @@ void binario_fechar(Binario** binario);
  */
 bool binario_inserir(Binario* binario, Registro** registros, int n);
 
-Registro* binario_buscar(Binario* binario, int rrn, int whence); // TODO
-
-bool binario_remover(Binario* binario); // TODO
+/**
+ * Remove o registro para o qual o arquivo esta apontando
+ */
+bool binario_remover(Binario* binario); 
 
 /**
- * Le um registro do arquivo binario
+ * Retorna o registro que esta no rrn
+ * Retorna NULL se o registro estiver logicamente removido
  * 
  * Salva em erro se ocorreu um erro
  * Retorna NULL se ocorrer um erro
- * 
+ */
+Registro* binario_buscar(Binario* binario, int rrn, bool* erro);
+
+/**
+ * Muda para o rrn dado
+ * whence segue a mesma logica que o fseek, podendo ser SEEK_CUR, SEEK_SET ou SEEK_END
+ */
+void binario_apontar(Binario* binario, int rrn, int whence);
+
+/**
+ * Le um registro do arquivo binario
  * Retorna o Registro lido
  * Retorna NULL se o registro estiver logicamente removido
+ * 
+ * Salva em erro se ocorreu um erro
+ * Retorna NULL se ocorrer um erro
  * 
  * Obs: Destrua o registro depois de usar
  */
