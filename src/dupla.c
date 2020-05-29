@@ -63,10 +63,10 @@ Dupla* dupla_criar(char* campo, char* valor) {
 
         // Campo String
         case DUPLA_STRING:
-            if (strlen(valor) != 0)
-                {dupla->valor.string = NULL;
-            } else {
+            if (strlen(valor) != 0) {
                 dupla->valor.string = valor;
+            } else {
+                dupla->valor.string = NULL;
             }
             break;
 

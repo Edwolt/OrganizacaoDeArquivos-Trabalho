@@ -9,6 +9,7 @@
 #include "csv.h"
 #include "dupla.h"
 #include "registro.h"
+#include "criterio.h"
 
 /**
  * Executa a instrucao de numero n

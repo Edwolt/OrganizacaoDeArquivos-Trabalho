@@ -121,7 +121,7 @@ static void opcao3() {
     char path[PATH_TAM];
     scanf(" %s", path);
 
-    Criterio* criterio = leCriterio();
+    Criterio* criterio = criterio_criarDoStdin();
 
     bool status;
     int inseridos, removidos;
@@ -139,7 +139,7 @@ static void opcao3() {
     }
 
     if (inseridos - removidos == 0) {  // O arquivo nao possui dados
-        printf("Registro inexistente.\n");
+        printf("Registro Inexistente.\n");
         return;
     }
 
@@ -163,7 +163,7 @@ static void opcao3() {
 
         if (!registro) continue;
 
-        if (registro_satisfaz(registro, criterio)) {  // TODO
+        if (criterio_satisfaz(criterio, registro)) {  // TODO
             registro_imprimir(registro);
             imprimiu = true;
         }
@@ -171,10 +171,10 @@ static void opcao3() {
         registro_apagar(&registro);
     }
 
-    if (!imprimiu) printf("Registro inexistente.\n");  // Nada foi impresso
+    if (!imprimiu) printf("Registro Inexistente.\n");  // Nada foi impresso
 
     binario_fechar(&bin);
-    apagarCriterio(&criterio);
+    criterio_apagar(&criterio);
 }
 
 /**
@@ -229,7 +229,7 @@ static void opcao4() {
     if (registro) {  // registro != NULL
         registro_imprimir(registro);
     } else {
-        printf("Registro inexistente.");
+        printf("Registro Inexistente.");
     }
 }
 
@@ -260,7 +260,7 @@ static void opcao5() {
     int n;
     scanf(" %d", &n);
 
-    Dupla*** criterios = (Dupla***)malloc(n * sizeof(Dupla**));
+    Criterio** criterios = (Criterio**)malloc(n * sizeof(Criterio*));
     if (!criterios) {  // Falha ao alocar vetor de criterios
         printf("Falha no processamento do arquivo\n");
         return;
@@ -270,66 +270,66 @@ static void opcao5() {
     int m;
     for (i = 0; i < n; i++) {  // TODO
         scanf("%d", &m);
-        criterios[i] = leCriterio(m);
-        if (!criterios[i]) {
+        criterios[i] = criterio_criarDoStdin();
+        if (!criterios[i]) { // Nao foi possivel criar criterios
             for (i--; i >= 0; i--) {
-                apagarCriterio(&criterios[i], m);
+                criterio_apagar(&criterios[i]);
             }
         }
     }
 
-    bool status;
-    int inseridos, removidos;
-    int rrn;  // Quantidade de registros de dados no arquivo contando os removidos
-    bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, &removidos, NULL);
+    // bool status;
+    // int inseridos, removidos;
+    // int rrn;  // Quantidade de registros de dados no arquivo contando os removidos
+    // bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, &removidos, NULL);
 
-    if (!ok) {  // Ocorreu uma falha ao ler o registro cabecalho
-        printf("Falha no processamento do arquivo.\n");
-        return;
-    }
+    // if (!ok) {  // Ocorreu uma falha ao ler o registro cabecalho
+    //     printf("Falha no processamento do arquivo.\n");
+    //     return;
+    // }
 
-    if (!status) {  // O arquivo esta inconsistente
-        printf("Falha no processamento do arquivo.\n");
-        return;
-    }
+    // if (!status) {  // O arquivo esta inconsistente
+    //     printf("Falha no processamento do arquivo.\n");
+    //     return;
+    // }
 
-    if (inseridos - removidos == 0) {  // O arquivo nao possui dados
-        printf("Registro inexistente.\n");
-        return;
-    }
+    // if (inseridos - removidos == 0) {  // O arquivo nao possui dados
+    //     printf("Registro inexistente.\n");
+    //     return;
+    // }
 
-    Binario* bin = binario_abrirEscrita(path);
-    if (!bin) {  // Falha ao abrir arquivo
-        printf("Falha no processamento do arquivo.\n");
-        return;
-    }
-    Registro* registro;
-    bool erro;
-    bool imprimiu = false;
+    // Binario* bin = binario_abrirEscrita(path);
+    // if (!bin) {  // Falha ao abrir arquivo
+    //     printf("Falha no processamento do arquivo.\n");
+    //     return;
+    // }
+    // Registro* registro;
+    // bool erro;
+    // bool imprimiu = false;
 
-    for (i = 0; i < rrn; i++) {
-        registro = binario_leRegistro(bin, &erro);
+    // for (i = 0; i < rrn; i++) {
+    //     registro = binario_leRegistro(bin, &erro);
 
-        if (erro) {  // Falha ao ler registro
-            printf("Falha no processamento do arquivo.\n");
-            return;
-        }
+    //     if (erro) {  // Falha ao ler registro
+    //         printf("Falha no processamento do arquivo.\n");
+    //         return;
+    //     }
 
-        if (!registro) continue;
+    //     if (!registro) continue;
 
-        if (registro_satisfaz(registro, duplas, m)) {
-            registro_imprimir(registro);
-            imprimiu = true;
-        }
+    //     if (criterio_satisfaz(criterio, registro)) {
+    //         registro_imprimir(registro);
+    //         imprimiu = true;
+    //     }
 
-        registro_apagar(&registro);
-    }
+    //     registro_apagar(&registro);
+    // }
 
-    if (!imprimiu) printf("Registro inexistente.\n");  // Nada foi impresso
+    // if (!imprimiu) printf("Registro inexistente.\n");  // Nada foi impresso
 
-    binario_fechar(&bin);
-    for (i = 0; i < m; i++) dupla_apagar(&duplas[i]);
-    free(duplas);
+    // binario_fechar(&bin);
+    // for (i = 0; i < m; i++) dupla_apagar(&duplas[i]);
+    // free(duplas);
 }
 
 /**
