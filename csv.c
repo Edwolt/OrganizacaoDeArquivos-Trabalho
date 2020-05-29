@@ -40,7 +40,7 @@ static int leInt(CSV* csv) {
 
 /**
  * Le uma string do arquivo e consome a virgula
- * Usa alocacao dinamica
+ * String retornada foi alocada dinamicamente
  */
 static char* leStr(CSV* csv) {
     if (!csv) return NULL;  // Objeto nao exite
