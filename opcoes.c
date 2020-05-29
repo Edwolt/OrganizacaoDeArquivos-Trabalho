@@ -10,8 +10,72 @@
 typedef void Opcao();
 
 //* ============================ *//
-//* ===== Métodos Privados ===== *//
+//* ===== Metodos Privados ===== *//
 //* ============================ *//
+
+/**
+ * Le um vetor de n duplas do stdin
+ * Se ocorrer alguma falha retorna NULL
+ */
+Dupla** leCriterio(int n) {
+    int i;  //Iteradores
+
+    char* campo;
+    char* valor;
+
+    Dupla** criterio = (Dupla**)malloc(n * sizeof(Dupla*));
+    if (!criterio) {  // Falha ao alocar vetor de duplas
+        return NULL;
+    }
+
+    for (i = 0; i < n; i++) {
+        campo = (char*)malloc(STR_TAM * sizeof(char));
+        if (!campo) {  // Falha ao alocar string campo
+            return NULL;
+        }
+
+        valor = (char*)malloc(STR_TAM * sizeof(char));
+        if (!valor) {  // Falha ao alocar string valor
+            free(campo);  // Falha ao alocar string campo
+            return NULL;
+        }
+
+        scanf("%s ", campo);
+        trim(campo);
+
+        scan_quote_string(valor);
+        trim(valor);
+
+        criterio[i] = dupla_criar(campo, valor);
+        if (!criterio[i]) {  // Se nao foi possivel alocar
+            for (i--; i >= 0; i--) {  // Apaga o que ja tinha sido alocado
+                dupla_apagar(&criterio[i]);
+            }
+            return NULL;
+        }
+    }
+
+    return criterio;
+}
+
+/**
+ * Desaloca um vetor de duplas com n elementos
+ */
+void apagarCriterio(Dupla*** criterio, int n) {
+    int i;
+
+    /*
+    indexacao: v[i] = *(v + i)
+    &((*criterio)[i]) = <a = *citerio> = &(a[i]) = &(*(a + i)) = a + i = (*citerio) + i = *criterio + i
+    */
+    for (i = 0; i < n; i++) dupla_apagar(*criterio + i);
+    free(*criterio);
+    *criterio = NULL;
+}
+
+//* ================== *//
+//* ===== Opcoes ===== *//
+//* ================== *//
 
 /**
  * 1 src dest
@@ -124,42 +188,7 @@ static void opcao3() {
     int m;
     scanf(" %d", &m);
 
-    char* campo;
-    char* valor;
-    Dupla** duplas = (Dupla**)malloc(m * sizeof(Dupla*));
-    if (!duplas) {  // Falha ao alocar vetor de duplas
-        printf("Falha no processamento do arquivo\n");
-        return;
-    }
-
-    for (i = 0; i < m; i++) {
-        campo = (char*)malloc(STR_TAM * sizeof(char));
-        if (!campo) {  // Falha ao alocar string campo
-            printf("Falha no processamento do arquivo\n");
-            return;
-        }
-
-        valor = (char*)malloc(STR_TAM * sizeof(char));
-        if (!valor) {  // Falha ao alocar string valor
-            free(campo);  // Falha ao alocar string campo
-            printf("Falha no processamento do arquivo\n");
-            return;
-        }
-
-        scanf("%s ", campo);
-        trim(campo);
-
-        scan_quote_string(valor);
-        trim(valor);
-
-        duplas[i] = dupla_criar(campo, valor);
-        if (!duplas[i]) {  // Se nao foi possivel alocar
-            for (i--; i >= 0; i--) {  // Apaga o que ja tinha sido alocado
-                dupla_apagar(&duplas[i]);
-            }
-            printf("Falha no processamento do arquivo\n");
-        }
-    }
+    Dupla** criterio = leCriterio(m);
 
     bool status;
     int inseridos, removidos;
@@ -186,6 +215,7 @@ static void opcao3() {
         printf("Falha no processamento do arquivo.\n");
         return;
     }
+
     Registro* registro;
     bool erro;
     bool imprimiu = false;
@@ -200,7 +230,7 @@ static void opcao3() {
 
         if (!registro) continue;
 
-        if (registro_satisfaz(registro, duplas, m)) {
+        if (registro_satisfaz(registro, criterio, m)) {
             registro_imprimir(registro);
             imprimiu = true;
         }
@@ -211,8 +241,7 @@ static void opcao3() {
     if (!imprimiu) printf("Registro inexistente.\n");  // Nada foi impresso
 
     binario_fechar(&bin);
-    for (i = 0; i < m; i++) dupla_apagar(&duplas[i]);
-    free(duplas);
+    apagarCriterio(&criterio, m);
 }
 
 /**
@@ -290,7 +319,84 @@ static void opcao4() {
  * No arquivo src o campo[i][j] deve valer valor[i][j]
  */
 static void opcao5() {
-    printf("Operação não implementada :(\n");
+    int i;  // Iteradores
+
+    char path[PATH_TAM];
+    scanf(" %s", path);
+
+    int n;
+    scanf(" %d", &n);
+
+    Dupla*** criterios = (Dupla***)malloc(n * sizeof(Dupla**));
+    if (!criterios) {  // Falha ao alocar vetor de criterios
+        printf("Falha no processamento do arquivo\n");
+        return;
+    }
+
+    // Le criterios
+    int m;
+    for (i = 0; i < n; i++) { // TODO
+        scanf("%d", &m);
+        criterios[i] = leCriterio(m);
+        if (!criterios[i]) {
+            for (i--; i >= 0; i--) {
+                apagarCriterio(&criterios[i], m);
+            }
+        }
+    }
+
+    bool status;
+    int inseridos, removidos;
+    int rrn;  // Quantidade de registros de dados no arquivo contando os removidos
+    bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, &removidos, NULL);
+
+    if (!ok) {  // Ocorreu uma falha ao ler o registro cabecalho
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
+
+    if (!status) {  // O arquivo esta inconsistente
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
+
+    if (inseridos - removidos == 0) {  // O arquivo nao possui dados
+        printf("Registro inexistente.\n");
+        return;
+    }
+
+    Binario* bin = binario_abrirEscrita(path);
+    if (!bin) {  // Falha ao abrir arquivo
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
+    Registro* registro;
+    bool erro;
+    bool imprimiu = false;
+
+    for (i = 0; i < rrn; i++) {
+        registro = binario_leRegistro(bin, &erro);
+
+        if (erro) {  // Falha ao ler registro
+            printf("Falha no processamento do arquivo.\n");
+            return;
+        }
+
+        if (!registro) continue;
+
+        if (registro_satisfaz(registro, duplas, m)) {
+            registro_imprimir(registro);
+            imprimiu = true;
+        }
+
+        registro_apagar(&registro);
+    }
+
+    if (!imprimiu) printf("Registro inexistente.\n");  // Nada foi impresso
+
+    binario_fechar(&bin);
+    for (i = 0; i < m; i++) dupla_apagar(&duplas[i]);
+    free(duplas);
 }
 
 /**
@@ -347,7 +453,7 @@ static Opcao* funcOpcoes[] = {opcao1,
                               opcao7};
 
 //* ============================ *//
-//* ===== Métodos Publicos ===== *//
+//* ===== Metodos Publicos ===== *//
 //* ============================ *//
 
 bool opcoes_executar(int n) {
