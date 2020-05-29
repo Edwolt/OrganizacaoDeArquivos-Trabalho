@@ -23,7 +23,9 @@ IN       := 1..7
 
 
 #Actions
-all: $(EXEC)
+all: 
+	mkdir -p bin
+	make $(EXEC)
 
 run: $(EXEC)
 	./$(EXEC)
@@ -32,7 +34,6 @@ compile: clean $(EXEC)
 
 zip: clean_zip
 	zip $(ZIP) $(SRC) $(HEADER) $(MK)
-
 
 #Clean
 clean_zip:
