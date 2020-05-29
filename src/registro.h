@@ -16,9 +16,9 @@
  * Armazena dados de um registro
  * 
  * Valores para campos nulos:
- * - Strings: NULL
- * - Inteiros: INTNULL
- * - Chars: '\0'
+ * * Strings: NULL
+ * * Inteiros: INTNULL
+ * * Chars: '\0'
  */
 typedef struct _registro Registro;
 

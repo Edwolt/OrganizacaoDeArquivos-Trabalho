@@ -59,8 +59,7 @@ static void opcao2() {
     int i;  // Iteradores
 
     bool status;
-    int inseridos, removidos;
-    int rrn;  // Quantidade de registros de dados no arquivo contando os removidos
+    int rrn, inseridos, removidos;
     bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, &removidos, NULL);
 
     if (!ok) {  // Falha ao ler o registro cabecalho
@@ -84,21 +83,23 @@ static void opcao2() {
         return;
     }
 
-    Registro* registro;
+    Registro* reg;
     bool erro;
 
     for (i = 0; i < rrn; i++) {
-        registro = binario_leRegistro(bin, &erro);
+        reg = binario_leRegistro(bin, &erro);
 
         if (erro) {  // Falha ao ler arquivo
+            binario_fechar(&bin);
+
             printf("Falha no processamento do arquivo.\n");
             return;
         }
 
-        if (!registro) continue;  // Registro NULL (Ocorreu falha ou registro esta removido)
+        if (!reg) continue;  // Registro NULL (Ocorreu falha ou registro esta removido)
 
-        registro_imprimir(registro);
-        registro_apagar(&registro);
+        registro_imprimir(reg);
+        registro_apagar(&reg);
     }
 
     binario_fechar(&bin);
@@ -121,11 +122,8 @@ static void opcao3() {
     char path[PATH_TAM];
     scanf(" %s", path);
 
-    Criterio* criterio = criterio_criarDoStdin();
-
     bool status;
-    int inseridos, removidos;
-    int rrn;  // Quantidade de registros de dados no arquivo contando os removidos
+    int rrn, inseridos, removidos;
     bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, &removidos, NULL);
 
     if (!ok) {  // Ocorreu uma falha ao ler o registro cabecalho
@@ -143,38 +141,46 @@ static void opcao3() {
         return;
     }
 
-    Binario* bin = binario_abrirEscrita(path);
-    if (!bin) {  // Falha ao abrir arquivo
+    Criterio* criterio = criterio_criarDoStdin();
+    if (!criterio) {  // Falha ao ler criterio
         printf("Falha no processamento do arquivo.\n");
         return;
     }
 
-    Registro* registro;
+    Binario* bin = binario_abrirEscrita(path);
+    if (!bin) {  // Falha ao abrir arquivo
+        criterio_apagar(&criterio);
+
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
+
+    Registro* reg;
     bool erro;
     bool imprimiu = false;
 
     for (i = 0; i < rrn; i++) {
-        registro = binario_leRegistro(bin, &erro);
+        reg = binario_leRegistro(bin, &erro);
 
         if (erro) {  // Falha ao ler registro
             printf("Falha no processamento do arquivo.\n");
             return;
         }
 
-        if (!registro) continue;
+        if (!reg) continue;
 
-        if (criterio_satisfaz(criterio, registro)) {  // TODO
-            registro_imprimir(registro);
+        if (criterio_satisfaz(criterio, reg)) {  // TODO
+            registro_imprimir(reg);
             imprimiu = true;
         }
 
-        registro_apagar(&registro);
+        registro_apagar(&reg);
     }
-
-    if (!imprimiu) printf("Registro Inexistente.\n");  // Nada foi impresso
 
     binario_fechar(&bin);
     criterio_apagar(&criterio);
+
+    if (!imprimiu) printf("Registro Inexistente.\n");  // Nada foi impresso
 }
 
 /**
@@ -193,7 +199,7 @@ static void opcao4() {
     scanf("%d", &rrn);
 
     bool status;
-    int rrn_arquivo;  // Quantidade de registros de dados no arquivo contando os removidos
+    int rrn_arquivo;
     bool ok = binario_getCabecalho(path, &status, &rrn_arquivo, NULL, NULL, NULL);
 
     if (!ok) {  // Falha ao ler cabecalho
@@ -211,29 +217,29 @@ static void opcao4() {
         return;
     }
 
-    Binario* binario = binario_abrirLeitura(path);
+    Binario* bin = binario_abrirLeitura(path);
 
-    if (!binario) {  // Falha ao abrir arquivo
+    if (!bin) {  // Falha ao abrir arquivo
         printf("Falha no processamento do arquivo.\n");
         return;
     }
 
     bool erro;
-    Registro* registro = binario_buscar(binario, rrn, &erro);
+    Registro* reg = binario_buscar(bin, rrn, &erro);
 
     if (erro) {  // Falha ao ler registro
         printf("Falha no processamento do arquivo.\n");
         return;
     }
 
-    if (registro) {  // registro != NULL
-        registro_imprimir(registro);
-        registro_apagar(&registro);
+    if (reg) {  // registro != NULL
+        registro_imprimir(reg);
+        registro_apagar(&reg);
     } else {
         printf("Registro Inexistente.");
     }
 
-    binario_fechar(&binario);
+    binario_fechar(&bin);
 }
 
 /**
@@ -255,7 +261,7 @@ static void opcao4() {
  * No arquivo src o campo[i][j] deve valer valor[i][j]
  */
 static void opcao5() {
-    int i;  // Iteradores
+    int i, j;  // Iteradores
 
     char path[PATH_TAM];
     scanf(" %s", path);
@@ -270,69 +276,80 @@ static void opcao5() {
     }
 
     // Le criterios
-    int m;
-    for (i = 0; i < n; i++) {  // TODO
-        scanf("%d", &m);
+    for (i = 0; i < n; i++) {
         criterios[i] = criterio_criarDoStdin();
         if (!criterios[i]) {  // Nao foi possivel criar criterios
-            for (i--; i >= 0; i--) {
+            for (i--; i >= 0; i--) {  // Desaloca o que ja foi alocado
                 criterio_apagar(&criterios[i]);
             }
+            return;
         }
     }
 
-    // bool status;
-    // int inseridos, removidos;
-    // int rrn;  // Quantidade de registros de dados no arquivo contando os removidos
-    // bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, &removidos, NULL);
+    bool status;
+    int rrn, inseridos, removidos;
+    bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, &removidos, NULL);
 
-    // if (!ok) {  // Ocorreu uma falha ao ler o registro cabecalho
-    //     printf("Falha no processamento do arquivo.\n");
-    //     return;
-    // }
+    if (!ok) {  // Ocorreu uma falha ao ler o registro cabecalho
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
 
-    // if (!status) {  // O arquivo esta inconsistente
-    //     printf("Falha no processamento do arquivo.\n");
-    //     return;
-    // }
+    if (!status) {  // O arquivo esta inconsistente
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
 
-    // if (inseridos - removidos == 0) {  // O arquivo nao possui dados
-    //     printf("Registro inexistente.\n");
-    //     return;
-    // }
+    if (inseridos - removidos == 0) {  // O arquivo nao possui dados
+        printf("Registro Inexistente.\n");
+        return;
+    }
 
-    // Binario* bin = binario_abrirEscrita(path);
-    // if (!bin) {  // Falha ao abrir arquivo
-    //     printf("Falha no processamento do arquivo.\n");
-    //     return;
-    // }
-    // Registro* registro;
-    // bool erro;
-    // bool imprimiu = false;
+    Binario* bin = binario_abrirEscrita(path);
 
-    // for (i = 0; i < rrn; i++) {
-    //     registro = binario_leRegistro(bin, &erro);
+    if (!bin) {  // Falha ao abrir arquivo
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
 
-    //     if (erro) {  // Falha ao ler registro
-    //         printf("Falha no processamento do arquivo.\n");
-    //         return;
-    //     }
+    bool erro;
+    bool imprimiu = false;
+    Registro* reg;
 
-    //     if (!registro) continue;
+    for (i = 0; i < rrn; i++) {  // Itera sobre registro
+        reg = binario_leRegistro(bin, &erro);
 
-    //     if (criterio_satisfaz(criterio, registro)) {
-    //         registro_imprimir(registro);
-    //         imprimiu = true;
-    //     }
+        if (erro) {  // Falha ao ler registro
+            printf("Falha no processamento do arquivo.\n");
+            return;
+        }
 
-    //     registro_apagar(&registro);
-    // }
+        if (!reg) continue;
 
-    // if (!imprimiu) printf("Registro inexistente.\n");  // Nada foi impresso
+        for (j = 0; j < n; j++) {  // Itera sobre criterio
+            if (criterio_satisfaz(criterios[j], reg)) {
+                // Apaga registro
+                binario_apontar(bin, -1, SEEK_CUR);  // Volta para o inicio do registro lido
+                binario_remover(bin);
+                binario_apontar(bin, 1, SEEK_CUR);  // Volta para o fim do registro lido
 
-    // binario_fechar(&bin);
-    // for (i = 0; i < m; i++) dupla_apagar(&duplas[i]);
-    // free(duplas);
+                // Imprimi registroS
+                registro_imprimir(reg);
+                imprimiu = true;
+            }
+            registro_apagar(&reg);
+        }
+    }
+
+    for (i = 0; i < n; i++) criterio_apagar(&criterios[i]);
+    free(criterios);
+    binario_fechar(&bin);
+
+    if (imprimiu) {
+        binarioNaTela(path);
+    } else {
+        printf("Registro Inexistente.\n");  // Nada foi impresso}
+    }
 }
 
 /**

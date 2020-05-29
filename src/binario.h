@@ -82,7 +82,7 @@ bool binario_inserir(Binario* binario, Registro** registros, int n);
 /**
  * Remove o registro para o qual o arquivo esta apontando
  */
-bool binario_remover(Binario* binario); 
+bool binario_remover(Binario* binario);
 
 /**
  * Retorna o registro que esta no rrn
@@ -94,8 +94,12 @@ bool binario_remover(Binario* binario);
 Registro* binario_buscar(Binario* binario, int rrn, bool* erro);
 
 /**
- * Muda para o rrn dado
- * whence segue a mesma logica que o fseek, podendo ser SEEK_CUR, SEEK_SET ou SEEK_END
+ * Faz o binario passar a apontar para o rrn dado
+ * 
+ * whence segue a mesma logica que o fseek:
+ * * SEEK_SET: Vai para o registro com o rrn passado
+ * * SEEK_CUR: Anda rrn registros a partir do registro dado
+ * * SEEK_END: Anda rrn registros a partir do fim do arquivo
  */
 void binario_apontar(Binario* binario, int rrn, int whence);
 
@@ -134,7 +138,7 @@ bool binario_setCabecalho(char* path,
  * O valor que for NULL nao sera lido do arquivo
  * 
  * status      = Status
- * rrn         = RRNProxRegistro
+ * rrn         = RRNProxRegistro (Quantidade de registros contando os removidos e descontando o cabecalho)
  * inseridos   = numeroRegistrosInseridos
  * removidos   = numeroRegistrosRemovidos  
  * atualizados = numeroRegistrosAtualizado
