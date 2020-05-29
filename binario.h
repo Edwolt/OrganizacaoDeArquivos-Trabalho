@@ -79,6 +79,10 @@ void binario_fechar(Binario** binario);
  */
 bool binario_inserir(Binario* binario, Registro** registros, int n);
 
+Registro* binario_buscar(Binario* binario, int rrn, int whence); // TODO
+
+bool binario_remover(Binario* binario); // TODO
+
 /**
  * Le um registro do arquivo binario
  * 

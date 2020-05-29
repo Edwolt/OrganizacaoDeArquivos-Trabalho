@@ -219,7 +219,12 @@ static void opcao3() {
  * 
  * Imprime o valor do regitro de RRN igual a rrn do arquivo binario bin
  */
-static void opcao4() {
+static void opcao4() { // TODO
+    char path[PATH_TAM];
+    scanf(" %s", path);
+
+    int rrn;
+
     printf("Operação não implementada :(\n");
 }
 
