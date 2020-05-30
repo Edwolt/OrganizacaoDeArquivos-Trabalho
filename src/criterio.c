@@ -55,8 +55,7 @@ Criterio* criterio_criarDoStdin() {
             return NULL;
         }
 
-        scanf("%s ", campo);
-        trim(campo);
+        scanf(" %s", campo);
 
         scan_quote_string(valor);
         trim(valor);
