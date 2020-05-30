@@ -9,9 +9,9 @@
  */
 typedef void Opcao();
 
-//* ============================ *//
-//* ===== Metodos Privados ===== *//
-//* ============================ *//
+//* ================== *//
+//* ===== Opcoes ===== *//
+//* ================== *//
 
 /**
  * 1 src dest
@@ -38,8 +38,7 @@ static void opcao1() {
 
     binario_fechar(&bin);
 
-    // Coloca status como inconsistente
-    int cont = 0;  // Numero de registro escritos
+    // Marca arquivo como insconsistente
     bool status = false;
     bool ok = binario_setCabecalho(dest, &status, NULL, NULL, NULL, NULL);
     if (!ok) {  // Falha ao modificar cabecalho
@@ -64,6 +63,7 @@ static void opcao1() {
         return;
     }
 
+    int cont = 0;  // Numero de registro escritos
     while ((reg = csv_lerRegistro(csv))) {  // Enquanto houver registros para ler
         ok = binario_escreverRegistro(bin, reg);
         if (!ok) {  // Falha ao escrever registro
@@ -82,7 +82,7 @@ static void opcao1() {
     csv_fechar(&csv);
     binario_fechar(&bin);
 
-    // Coloca status como consistente
+    // Marca arquivo como consistente e atualiza cabecalho
     status = true;
     ok = binario_setCabecalho(dest, &status, &cont, &cont, NULL, NULL);
     if (!ok) {  // Falha ao modificar cabecalho
@@ -109,8 +109,8 @@ static void opcao2() {
 
     // Verifica cabecalho
     bool status;
-    int rrn, inseridos, removidos;
-    bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, &removidos, NULL);
+    int rrn, inseridos;
+    bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, NULL, NULL);
 
     if (!ok) {  // Falha ao ler o registro cabecalho
         printf("Falha no processamento do arquivo.\n");
@@ -122,7 +122,7 @@ static void opcao2() {
         return;
     }
 
-    if (inseridos - removidos == 0) {  // Arquivo nao possui dados
+    if (inseridos == 0) {  // Arquivo nao possui dados
         printf("Registro inexistente.\n");
         return;
     }
@@ -181,8 +181,8 @@ static void opcao3() {
 
     // Verifica cabecalho
     bool status;
-    int rrn, inseridos, removidos;
-    bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, &removidos, NULL);
+    int rrn, inseridos;
+    bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, NULL, NULL);
 
     if (!ok) {  // Ocorreu uma falha ao ler o registro cabecalho
         criterio_apagar(&criterio);
@@ -198,7 +198,7 @@ static void opcao3() {
         return;
     }
 
-    if (inseridos - removidos == 0) {  // O arquivo nao possui dados
+    if (inseridos == 0) {  // O arquivo nao possui dados
         criterio_apagar(&criterio);
 
         printf("Registro Inexistente.\n");
@@ -321,7 +321,7 @@ static void opcao4() {
  * Para um registro passar pelo criterio e ser removido
  * No arquivo src o campo[i][j] deve valer valor[i][j]
  */
-static void opcao5() {  //TODO Salvar o quantos registros foram removidos
+static void opcao5() {
     int i, j;  // Iteradores
 
     // Le opcao
@@ -343,6 +343,7 @@ static void opcao5() {  //TODO Salvar o quantos registros foram removidos
             for (i--; i >= 0; i--) {  // Desaloca o que ja foi alocado
                 criterio_apagar(&criterios[i]);
             }
+            free(criterios);
             return;
         }
     }
@@ -353,17 +354,37 @@ static void opcao5() {  //TODO Salvar o quantos registros foram removidos
     bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, &removidos, NULL);
 
     if (!ok) {  // Ocorreu uma falha ao ler o registro cabecalho
+        for (i = 0; i < n; i++) criterio_apagar(&criterios[i]);
+        free(criterios);
+
         printf("Falha no processamento do arquivo.\n");
         return;
     }
 
     if (!status) {  // O arquivo esta inconsistente
+        for (i = 0; i < n; i++) criterio_apagar(&criterios[i]);
+        free(criterios);
+
         printf("Falha no processamento do arquivo.\n");
         return;
     }
 
-    if (inseridos - removidos == 0) {  // O arquivo nao possui dados
+    if (inseridos == 0) {  // O arquivo nao possui dados
+        for (i = 0; i < n; i++) criterio_apagar(&criterios[i]);
+        free(criterios);
+
         printf("Registro Inexistente.\n");
+        return;
+    }
+
+    // Marca arquivo como inconsistente
+    status = false;
+    ok = binario_setCabecalho(path, &status, NULL, NULL, NULL, NULL);
+    if (!ok) {  // Falha ao modificar cabecalho
+        for (i = 0; i < n; i++) criterio_apagar(&criterios[i]);
+        free(criterios);
+
+        printf("Falha no carregamento do arquivo.\n");
         return;
     }
 
@@ -371,6 +392,9 @@ static void opcao5() {  //TODO Salvar o quantos registros foram removidos
     Binario* bin = binario_abrirEscrita(path);
 
     if (!bin) {  // Falha ao abrir arquivo
+        for (i = 0; i < n; i++) criterio_apagar(&criterios[i]);
+        free(criterios);
+
         printf("Falha no processamento do arquivo.\n");
         return;
     }
@@ -383,6 +407,11 @@ static void opcao5() {  //TODO Salvar o quantos registros foram removidos
         reg = binario_leRegistro(bin, &erro);
 
         if (erro) {  // Falha ao ler registro
+            for (i = 0; i < n; i++) criterio_apagar(&criterios[i]);
+            free(criterios);
+            binario_fechar(&bin);
+            registro_apagar(&reg);
+
             printf("Falha no processamento do arquivo.\n");
             return;
         }
@@ -393,17 +422,27 @@ static void opcao5() {  //TODO Salvar o quantos registros foram removidos
             if (criterio_satisfaz(criterios[j], reg)) {
                 binario_apontar(bin, -1, SEEK_CUR);  // Volta para o inicio do registro lido
                 binario_remover(bin);
+                removidos++;
+                inseridos--;
                 apagou = true;
                 break;
             }
-            registro_apagar(&reg);
         }
+
+        registro_apagar(&reg);
     }
 
-    // Desaloca o que foi alocado
     for (i = 0; i < n; i++) criterio_apagar(&criterios[i]);
     free(criterios);
     binario_fechar(&bin);
+
+    // Marca arquivo como consistente e atualiza cabacalho
+    status = true;
+    ok = binario_setCabecalho(path, &status, NULL, &inseridos, &removidos, NULL);
+    if (!ok) {  // Falha ao modificar cabecalho
+        printf("Falha no carregamento do arquivo.\n");
+        return;
+    }
 
     // Imprime resultado
     if (apagou) {
