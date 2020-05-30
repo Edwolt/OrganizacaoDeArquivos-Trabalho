@@ -134,8 +134,9 @@ void binario_apontar(Binario* binario, int rrn, int whence) {
         int here = ftell(binario);
         here = here % TAM_REG;
         fseek(binario, rrn * TAM_REG - here, SEEK_CUR);
+    } else {
+        fseek(binario, rrn * TAM_REG, whence);
     }
-    fseek(binario, rrn * TAM_REG, whence);
 }
 
 Registro* binario_leRegistro(Binario* binario, bool* erro) {
