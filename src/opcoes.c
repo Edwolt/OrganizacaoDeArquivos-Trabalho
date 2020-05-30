@@ -24,20 +24,68 @@ typedef void Opcao();
  * salvando-o com o nome dest
  */
 static void opcao1() {
+    // Le opcao
     char src[PATH_TAM];
     char dest[PATH_TAM];
     scanf(" %s %s", src, dest);
 
-    CSV* csv = csv_abrir(src);
-    if (!csv) {  // Falha ao abrir csv
+    // Criar arquivo com registro cabecalho
+    Binario* bin = binario_criar(dest);
+    if (!bin) {  // Falha ao criar arquivo
         printf("Falha no carregamento do arquivo.\n");
         return;
     }
 
-    bool ok = binario_gerarDoCSV(dest, csv);
-    csv_fechar(&csv);
+    binario_fechar(&bin);
 
-    if (!ok) {  // Falha ao gerar CSV
+    // Coloca status como inconsistente
+    int cont = 0;  // Numero de registro escritos
+    bool status = false;
+    bool ok = binario_setCabecalho(dest, &status, NULL, NULL, NULL, NULL);
+    if (!ok) {  // Falha ao modificar cabecalho
+        printf("Falha no carregamento do arquivo.\n");
+        return;
+    }
+
+    // Leitura e Escrita dos registro
+    Registro* reg;
+
+    CSV* csv = csv_abrir(src);
+    if (!csv) {  // Falha ao abrir arquivo
+        printf("Falha no carregamento do arquivo.\n");
+        return;
+    }
+
+    bin = binario_abrirEscrita(dest);
+    if (!bin) {  // Falha ao abrir arquivo
+        csv_fechar(&csv);
+
+        printf("Falha no carregamento do arquivo.\n");
+        return;
+    }
+
+    while ((reg = csv_lerRegistro(csv))) {  // Enquanto houver registros para ler
+        ok = binario_escreverRegistro(bin, reg);
+        if (!ok) {  // Falha ao escrever registro
+            registro_apagar(&reg);
+            csv_fechar(&csv);
+            binario_fechar(&bin);
+
+            printf("Falha no carregamento do arquivo.\n");
+            return;
+        }
+
+        registro_apagar(&reg);
+        cont++;
+    }
+
+    csv_fechar(&csv);
+    binario_fechar(&bin);
+
+    // Coloca status como consistente
+    status = true;
+    ok = binario_setCabecalho(dest, &status, &cont, &cont, NULL, NULL);
+    if (!ok) {  // Falha ao modificar cabecalho
         printf("Falha no carregamento do arquivo.\n");
         return;
     }
@@ -53,11 +101,13 @@ static void opcao1() {
  * Imprime os dados do arquivo binario com nome path
  */
 static void opcao2() {
+    int i;  // Iteradores
+
+    // Le opcao
     char path[PATH_TAM];
     scanf(" %s", path);
 
-    int i;  // Iteradores
-
+    // Verifica cabecalho
     bool status;
     int rrn, inseridos, removidos;
     bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, &removidos, NULL);
@@ -77,6 +127,7 @@ static void opcao2() {
         return;
     }
 
+    // Le e imprime registros
     Binario* bin = binario_abrirLeitura(path);
     if (!bin) {  // Arquivo nao abriu
         printf("Falha no processamento do arquivo.\n");
@@ -85,7 +136,6 @@ static void opcao2() {
 
     Registro* reg;
     bool erro;
-
     for (i = 0; i < rrn; i++) {
         reg = binario_leRegistro(bin, &erro);
 
@@ -119,6 +169,7 @@ static void opcao2() {
 static void opcao3() {
     int i;  // Iteradores
 
+    // Le opcao
     char path[PATH_TAM];
     scanf(" %s", path);
 
@@ -128,6 +179,7 @@ static void opcao3() {
         return;
     }
 
+    // Verifica cabecalho
     bool status;
     int rrn, inseridos, removidos;
     bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, &removidos, NULL);
@@ -153,7 +205,8 @@ static void opcao3() {
         return;
     }
 
-    Binario* bin = binario_abrirEscrita(path);
+    // Busca no arquivo
+    Binario* bin = binario_abrirLeitura(path);
     if (!bin) {  // Falha ao abrir arquivo
         criterio_apagar(&criterio);
 
@@ -164,7 +217,6 @@ static void opcao3() {
     Registro* reg;
     bool erro;
     bool imprimiu = false;
-
     for (i = 0; i < rrn; i++) {
         reg = binario_leRegistro(bin, &erro);
 
@@ -198,12 +250,14 @@ static void opcao3() {
  * Imprime o valor do regitro de RRN igual a rrn do arquivo binario bin
  */
 static void opcao4() {
+    // Le opcao
     char path[PATH_TAM];
     scanf(" %s", path);
 
     int rrn;
     scanf("%d", &rrn);
 
+    // Verifica cabecalho
     bool status;
     int rrn_arquivo;
     bool ok = binario_getCabecalho(path, &status, &rrn_arquivo, NULL, NULL, NULL);
@@ -223,6 +277,7 @@ static void opcao4() {
         return;
     }
 
+    // Le e imprime registro
     Binario* bin = binario_abrirLeitura(path);
 
     if (!bin) {  // Falha ao abrir arquivo
@@ -266,14 +321,14 @@ static void opcao4() {
  * Para um registro passar pelo criterio e ser removido
  * No arquivo src o campo[i][j] deve valer valor[i][j]
  */
-static void opcao5() {
+static void opcao5() {  //TODO Salvar o quantos registros foram removidos
     int i, j;  // Iteradores
 
+    // Le opcao
     char path[PATH_TAM];
-    scanf(" %s", path);
-
     int n;
-    scanf(" %d", &n);
+
+    scanf(" %s %d", path, &n);
 
     Criterio** criterios = (Criterio**)malloc(n * sizeof(Criterio*));
     if (!criterios) {  // Falha ao alocar vetor de criterios
@@ -292,6 +347,7 @@ static void opcao5() {
         }
     }
 
+    // Verifica cabecalho
     bool status;
     int rrn, inseridos, removidos;
     bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, &removidos, NULL);
@@ -311,6 +367,7 @@ static void opcao5() {
         return;
     }
 
+    // Remove registros
     Binario* bin = binario_abrirEscrita(path);
 
     if (!bin) {  // Falha ao abrir arquivo
@@ -337,15 +394,18 @@ static void opcao5() {
                 binario_apontar(bin, -1, SEEK_CUR);  // Volta para o inicio do registro lido
                 binario_remover(bin);
                 apagou = true;
+                break;
             }
             registro_apagar(&reg);
         }
     }
 
+    // Desaloca o que foi alocado
     for (i = 0; i < n; i++) criterio_apagar(&criterios[i]);
     free(criterios);
     binario_fechar(&bin);
 
+    // Imprime resultado
     if (apagou) {
         binarioNaTela(path);
     } else {
