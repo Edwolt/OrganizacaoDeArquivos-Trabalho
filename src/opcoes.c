@@ -122,28 +122,34 @@ static void opcao3() {
     char path[PATH_TAM];
     scanf(" %s", path);
 
+    Criterio* criterio = criterio_criarDoStdin();
+    if (!criterio) {  // Falha ao ler criterio
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
+
     bool status;
     int rrn, inseridos, removidos;
     bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, &removidos, NULL);
 
     if (!ok) {  // Ocorreu uma falha ao ler o registro cabecalho
+        criterio_apagar(&criterio);
+
         printf("Falha no processamento do arquivo.\n");
         return;
     }
 
     if (!status) {  // O arquivo esta inconsistente
+        criterio_apagar(&criterio);
+
         printf("Falha no processamento do arquivo.\n");
         return;
     }
 
     if (inseridos - removidos == 0) {  // O arquivo nao possui dados
-        printf("Registro Inexistente.\n");
-        return;
-    }
+        criterio_apagar(&criterio);
 
-    Criterio* criterio = criterio_criarDoStdin();
-    if (!criterio) {  // Falha ao ler criterio
-        printf("Falha no processamento do arquivo.\n");
+        printf("Registro Inexistente.\n");
         return;
     }
 
@@ -169,7 +175,7 @@ static void opcao3() {
 
         if (!reg) continue;
 
-        if (criterio_satisfaz(criterio, reg)) {  // TODO
+        if (criterio_satisfaz(criterio, reg)) {
             registro_imprimir(reg);
             imprimiu = true;
         }
@@ -213,7 +219,7 @@ static void opcao4() {
     }
 
     if (0 < rrn || rrn > rrn_arquivo) {  // Registro nao existe
-        printf("Falha no processamento do arquivo.\n");
+        printf("Registro Inexistente.");
         return;
     }
 
@@ -271,7 +277,7 @@ static void opcao5() {
 
     Criterio** criterios = (Criterio**)malloc(n * sizeof(Criterio*));
     if (!criterios) {  // Falha ao alocar vetor de criterios
-        printf("Falha no processamento do arquivo\n");
+        printf("Falha no processamento do arquivo.\n");
         return;
     }
 
@@ -313,7 +319,7 @@ static void opcao5() {
     }
 
     bool erro;
-    bool imprimiu = false;
+    bool apagou = false;
     Registro* reg;
 
     for (i = 0; i < rrn; i++) {  // Itera sobre registro
@@ -328,14 +334,9 @@ static void opcao5() {
 
         for (j = 0; j < n; j++) {  // Itera sobre criterio
             if (criterio_satisfaz(criterios[j], reg)) {
-                // Apaga registro
                 binario_apontar(bin, -1, SEEK_CUR);  // Volta para o inicio do registro lido
                 binario_remover(bin);
-                binario_apontar(bin, 1, SEEK_CUR);  // Volta para o fim do registro lido
-
-                // Imprimi registroS
-                registro_imprimir(reg);
-                imprimiu = true;
+                apagou = true;
             }
             registro_apagar(&reg);
         }
@@ -345,7 +346,7 @@ static void opcao5() {
     free(criterios);
     binario_fechar(&bin);
 
-    if (imprimiu) {
+    if (apagou) {
         binarioNaTela(path);
     } else {
         printf("Registro Inexistente.\n");  // Nada foi impresso}

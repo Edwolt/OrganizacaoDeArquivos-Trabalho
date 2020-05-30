@@ -243,7 +243,7 @@ void binario_fechar(Binario** binario) {
     if (!binario || !*binario) return;  // Objeto ja foi apagado (arquivo ja foi fechado)
 
     // Fecha o arquivo
-    if (binario && *binario) fclose(*binario);
+    fclose(*binario);
     *binario = NULL;
 }
 
@@ -266,6 +266,7 @@ bool binario_remover(Binario* binario) {
 
     int removido = REMOVIDO;
     TRYFWRITE(&removido, int, 1, binario);
+    binario_apontar(binario, 1, SEEK_CUR);
 
     return true;
 
@@ -279,6 +280,11 @@ Registro* binario_buscar(Binario* binario, int rrn, bool* erro) {
 }
 
 void binario_apontar(Binario* binario, int rrn, int whence) {
+    if (whence == SEEK_CUR) {
+        int here = ftell(binario);
+        here = here % TAM_REG;
+        fseek(binario, rrn * TAM_REG - here, SEEK_CUR);
+    }
     fseek(binario, rrn * TAM_REG, whence);
 }
 
@@ -294,7 +300,10 @@ Registro* binario_leRegistro(Binario* binario, bool* erro) {
     int tamCidadeMae;
     TRYFREAD(&tamCidadeMae, int, 1, binario);
 
-    if (tamCidadeMae == REMOVIDO) return NULL;  // Registro foi removido
+    if (tamCidadeMae == REMOVIDO) {  // Registro foi removido
+        binario_apontar(binario, 1, SEEK_CUR);  // Pula registro
+        return NULL;
+    }
 
     int tamCidadeBebe;
     TRYFREAD(&tamCidadeBebe, int, 1, binario);
