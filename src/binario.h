@@ -115,6 +115,14 @@ void binario_apontar(Binario* binario, int rrn, int whence);
  */
 Registro* binario_leRegistro(Binario* binario, bool* erro);
 
+/**
+ * Insere um registro no arquivo
+ * Obs: Nao verifica se esta no final do arquivo
+ * 
+ * Retorna se foi possivel inserir o registro no arquivo
+ */
+bool binario_escreverRegistro(Binario* binario, Registro* registro);
+
 //* ============================== *//
 //* ===== Registro Cabecalho ===== *//
 //* ============================== *//

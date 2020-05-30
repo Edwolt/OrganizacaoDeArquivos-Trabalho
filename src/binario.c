@@ -38,119 +38,6 @@ static const char LIXO[TAM_REG + 1] = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     if (fread((ptr), sizeof(type), (qtde), (file)) != ((size_t)qtde)) goto fread_error
 
 //* ============================ *//
-//* ===== Métodos Privados ===== *//
-//* ============================ *//
-
-/**
- * Insere um registro no arquivo
- * Obs: Nao verifica se esta no final do arquivo
- * 
- * Retorna se foi possivel inserir o registro no arquivo
- */
-static bool escreverRegistro(Binario* binario, Registro* registro) {
-    if (!binario || !registro) return false;  // Objeto nao existe ou nao recebeu os paramentro
-
-    const char CHARNULO = '\0';
-    int tamDado;  // Tamanho do dado escrito para calcular quanto lixo escrever
-    int qtdeLixo;  // Guardar a qunatidade de espaco vazio para preencher com lixo
-
-    // Extraindo dados do registro
-    char* cidadeMae = registro_getCidadeMae(registro);
-    char* cidadeBebe = registro_getCidadeBebe(registro);
-    int idNascimento = registro_getIdNascimento(registro);
-    int idadeMae = registro_getIdadeMae(registro);
-    char* dataNascimento = registro_getDataNascimento(registro);
-    char sexoBebe = registro_getSexoBebe(registro);
-    sexoBebe = (sexoBebe != '\0' ? sexoBebe : '0');  // Se sexoBebe for nulo ele recebe '0'
-    char* estadoMae = registro_getEstadoMae(registro);
-    char* estadoBebe = registro_getEstadoBebe(registro);
-
-    // Calculando tamanho dos campos variaveis
-    // Mesmo que tamCidadee = (cidade != NULL ? strlen(cidade) : 0);
-    int tamCidadeMae = (cidadeMae ? strlen(cidadeMae) : 0);
-    int tamCidadeBebe = (cidadeBebe ? strlen(cidadeBebe) : 0);
-
-    // Escrevendo campos variaveis
-    qtdeLixo = TAM_CVAR;  // Espaco disponivel para campos variaveis
-    TRYFWRITE(&tamCidadeMae, int, 1, binario);
-    TRYFWRITE(&tamCidadeBebe, int, 1, binario);
-    if (cidadeMae) TRYFWRITE(cidadeMae, char, tamCidadeMae, binario);
-    if (cidadeBebe) TRYFWRITE(cidadeBebe, char, tamCidadeBebe, binario);
-
-    // Preenche o espaço que sobrou com lixo o restante
-    qtdeLixo -= tamCidadeMae + tamCidadeBebe;
-    TRYFWRITE(LIXO, char, qtdeLixo, binario);
-
-    // Escrevendo campos fixos
-    TRYFWRITE(&idNascimento, int, 1, binario);
-    TRYFWRITE(&idadeMae, int, 1, binario);
-
-    qtdeLixo = TAM_DATA;
-    if (dataNascimento) {  // dataNascimento != NULL
-        tamDado = strlen(dataNascimento);
-        TRYFWRITE(dataNascimento, char, tamDado, binario);
-        qtdeLixo -= tamDado;  // Descontando o que foi escrito
-
-        if (qtdeLixo > 0) {  // Se sobrou espaço vazio
-            // Escreve '\0', e se tiver sobrado escreve lixo
-            TRYFWRITE(&CHARNULO, char, 1, binario);
-            qtdeLixo--;
-            TRYFWRITE(LIXO, char, qtdeLixo, binario);
-        }
-    } else {  // dataNascimento == NULL
-        // Escreve '\0', e se tiver sobrado escreve lixo
-        TRYFWRITE(&CHARNULO, char, 1, binario);
-        qtdeLixo--;
-        TRYFWRITE(LIXO, char, qtdeLixo, binario);
-    }
-
-    TRYFWRITE(&sexoBebe, char, 1, binario);
-
-    qtdeLixo = TAM_ESTADO;
-    if (estadoMae) {  // estadoMae != NULL
-        tamDado = strlen(estadoMae);
-        TRYFWRITE(estadoMae, char, tamDado, binario);
-        qtdeLixo -= tamDado;  // Descontando o que foi escrito
-
-        if (qtdeLixo > 0) {  // Se sobrou espaco vazio
-            // Escreve '\0', e se tiver sobrado escreve lixo
-            TRYFWRITE(&CHARNULO, char, 1, binario);
-            qtdeLixo--;
-            TRYFWRITE(LIXO, char, qtdeLixo, binario);
-        }
-    } else {  // estadoMae == NULL
-        // Escreve '\0', e se tiver sobrado escreve lixo
-        TRYFWRITE(&CHARNULO, char, 1, binario);
-        qtdeLixo--;
-        TRYFWRITE(LIXO, char, qtdeLixo, binario);
-    }
-
-    qtdeLixo = TAM_ESTADO;
-    if (estadoBebe) {  // estadoBebe != NULL
-        tamDado = strlen(estadoBebe);
-        TRYFWRITE(estadoBebe, char, tamDado, binario);
-        qtdeLixo -= tamDado;  // Descontando o que foi escrito
-
-        if (qtdeLixo > 0) {  // Se sobrou espaco vazio
-            // Escreve '\0', e se tiver sobrado escreve lixo
-            TRYFWRITE(&CHARNULO, char, 1, binario);
-            qtdeLixo--;
-            TRYFWRITE(LIXO, char, qtdeLixo, binario);
-        }
-    } else {  // estadoBebe == NULL
-        // Escreve '\0', e se tiver sobrado escreve lixo
-        TRYFWRITE(&CHARNULO, char, 1, binario);
-        qtdeLixo--;
-        TRYFWRITE(LIXO, char, qtdeLixo, binario);
-    }
-
-    return true;
-
-fwrite_error:  // Tratando erros ao escrever no arquivo
-    return false;
-}
-
-//* ============================ *//
 //* ===== Métodos Publicos ===== *//
 //* ============================ *//
 
@@ -180,43 +67,6 @@ Binario* binario_criar(char* path) {
 fwrite_error:  // Tratando erros ao escrever no arquivo
     fclose(binario);
     return NULL;
-}
-
-bool binario_gerarDoCSV(char* path, CSV* csv) {
-    // Criar arquivo com o regitro cabecalho
-    Binario* binario = binario_criar(path);
-    if (!binario) return false;  // Falha ao criar arquivo
-    binario_fechar(&binario);
-
-    Registro* registro;  // Variavel para armazenar registro lido
-    int cont = 0;  // Conta quantos registro foram escritos
-    bool ok;  // Armazena se o setCabecalho funcionou
-
-    // Coloca status como inconsistente
-    bool status = false;
-    ok = binario_setCabecalho(path, &status, NULL, NULL, NULL, NULL);
-    if (!ok) return false;
-
-    // Escreve registros no arquivo
-    binario = binario_abrirEscrita(path);
-    if (!binario) return false;  // Falha ao abrir arquivo
-
-    // ok armazena se o escrever registro funcionou
-    while ((registro = csv_lerRegistro(csv))) {  // Enquanto houver registros para ler
-        ok = escreverRegistro(binario, registro);
-        if (!ok) return false;  // Falha ao escrever registro
-
-        registro_apagar(&registro);
-        cont++;
-    }
-    binario_fechar(&binario);
-
-    // Coloca status como consistente
-    status = true;
-    ok = binario_setCabecalho(path, &status, &cont, &cont, NULL, NULL);
-    if (!ok) return false;
-
-    return true;
 }
 
 Binario* binario_abrirLeitura(char* path) {
@@ -254,7 +104,7 @@ bool binario_inserir(Binario* binario, Registro** registros, int n) {
 
     bool ok;
     for (i = 0; i < n; i++) {
-        ok = escreverRegistro(binario, registros[i]);
+        ok = binario_escreverRegistro(binario, registros[i]);
         if (!ok) return false;
     }
 
@@ -408,6 +258,109 @@ Registro* binario_leRegistro(Binario* binario, bool* erro) {
 fread_error:  // Tratando erros ao ler do arquivo
     *erro = true;
     return NULL;
+}
+
+bool binario_escreverRegistro(Binario* binario, Registro* registro) {
+    if (!binario || !registro) return false;  // Objeto nao existe ou nao recebeu os paramentro
+
+    const char CHARNULO = '\0';
+    int tamDado;  // Tamanho do dado escrito para calcular quanto lixo escrever
+    int qtdeLixo;  // Guardar a qunatidade de espaco vazio para preencher com lixo
+
+    // Extraindo dados do registro
+    char* cidadeMae = registro_getCidadeMae(registro);
+    char* cidadeBebe = registro_getCidadeBebe(registro);
+    int idNascimento = registro_getIdNascimento(registro);
+    int idadeMae = registro_getIdadeMae(registro);
+    char* dataNascimento = registro_getDataNascimento(registro);
+    char sexoBebe = registro_getSexoBebe(registro);
+    sexoBebe = (sexoBebe != '\0' ? sexoBebe : '0');  // Se sexoBebe for nulo ele recebe '0'
+    char* estadoMae = registro_getEstadoMae(registro);
+    char* estadoBebe = registro_getEstadoBebe(registro);
+
+    // Calculando tamanho dos campos variaveis
+    // Mesmo que tamCidadee = (cidade != NULL ? strlen(cidade) : 0);
+    int tamCidadeMae = (cidadeMae ? strlen(cidadeMae) : 0);
+    int tamCidadeBebe = (cidadeBebe ? strlen(cidadeBebe) : 0);
+
+    // Escrevendo campos variaveis
+    qtdeLixo = TAM_CVAR;  // Espaco disponivel para campos variaveis
+    TRYFWRITE(&tamCidadeMae, int, 1, binario);
+    TRYFWRITE(&tamCidadeBebe, int, 1, binario);
+    if (cidadeMae) TRYFWRITE(cidadeMae, char, tamCidadeMae, binario);
+    if (cidadeBebe) TRYFWRITE(cidadeBebe, char, tamCidadeBebe, binario);
+
+    // Preenche o espaço que sobrou com lixo o restante
+    qtdeLixo -= tamCidadeMae + tamCidadeBebe;
+    TRYFWRITE(LIXO, char, qtdeLixo, binario);
+
+    // Escrevendo campos fixos
+    TRYFWRITE(&idNascimento, int, 1, binario);
+    TRYFWRITE(&idadeMae, int, 1, binario);
+
+    qtdeLixo = TAM_DATA;
+    if (dataNascimento) {  // dataNascimento != NULL
+        tamDado = strlen(dataNascimento);
+        TRYFWRITE(dataNascimento, char, tamDado, binario);
+        qtdeLixo -= tamDado;  // Descontando o que foi escrito
+
+        if (qtdeLixo > 0) {  // Se sobrou espaço vazio
+            // Escreve '\0', e se tiver sobrado escreve lixo
+            TRYFWRITE(&CHARNULO, char, 1, binario);
+            qtdeLixo--;
+            TRYFWRITE(LIXO, char, qtdeLixo, binario);
+        }
+    } else {  // dataNascimento == NULL
+        // Escreve '\0', e se tiver sobrado escreve lixo
+        TRYFWRITE(&CHARNULO, char, 1, binario);
+        qtdeLixo--;
+        TRYFWRITE(LIXO, char, qtdeLixo, binario);
+    }
+
+    TRYFWRITE(&sexoBebe, char, 1, binario);
+
+    qtdeLixo = TAM_ESTADO;
+    if (estadoMae) {  // estadoMae != NULL
+        tamDado = strlen(estadoMae);
+        TRYFWRITE(estadoMae, char, tamDado, binario);
+        qtdeLixo -= tamDado;  // Descontando o que foi escrito
+
+        if (qtdeLixo > 0) {  // Se sobrou espaco vazio
+            // Escreve '\0', e se tiver sobrado escreve lixo
+            TRYFWRITE(&CHARNULO, char, 1, binario);
+            qtdeLixo--;
+            TRYFWRITE(LIXO, char, qtdeLixo, binario);
+        }
+    } else {  // estadoMae == NULL
+        // Escreve '\0', e se tiver sobrado escreve lixo
+        TRYFWRITE(&CHARNULO, char, 1, binario);
+        qtdeLixo--;
+        TRYFWRITE(LIXO, char, qtdeLixo, binario);
+    }
+
+    qtdeLixo = TAM_ESTADO;
+    if (estadoBebe) {  // estadoBebe != NULL
+        tamDado = strlen(estadoBebe);
+        TRYFWRITE(estadoBebe, char, tamDado, binario);
+        qtdeLixo -= tamDado;  // Descontando o que foi escrito
+
+        if (qtdeLixo > 0) {  // Se sobrou espaco vazio
+            // Escreve '\0', e se tiver sobrado escreve lixo
+            TRYFWRITE(&CHARNULO, char, 1, binario);
+            qtdeLixo--;
+            TRYFWRITE(LIXO, char, qtdeLixo, binario);
+        }
+    } else {  // estadoBebe == NULL
+        // Escreve '\0', e se tiver sobrado escreve lixo
+        TRYFWRITE(&CHARNULO, char, 1, binario);
+        qtdeLixo--;
+        TRYFWRITE(LIXO, char, qtdeLixo, binario);
+    }
+
+    return true;
+
+fwrite_error:  // Tratando erros ao escrever no arquivo
+    return false;
 }
 
 //* ============================== *//
