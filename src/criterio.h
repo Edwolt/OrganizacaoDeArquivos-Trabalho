@@ -26,6 +26,8 @@ Criterio* criterio_criar();
  * Le dados do stdin, e retorna um objeto criterio com os dados lidos
  * A entrada deve ser:
  * n campo[1] valor[2] .. campo[n] valor[n]
+ * 
+ * Obs: Depois, use uma funcao para destruir o objeto
  */
 Criterio* criterio_criarDoStdin();
 
