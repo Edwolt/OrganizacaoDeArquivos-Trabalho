@@ -35,7 +35,8 @@ Criterio* criterio_criarDoStdin();
 /**
  * Destroi o objeto
  * Destroi os objetos e desaloca variaveis que estiver dentro dele
- *!Os arrays retornado pelo getArray deixa de ter valor valido e nao deve ser mais usado
+ * 
+ * Os arrays retornado pelo getArray deixa de ter valor valido e nao deve ser mais usado
  */
 void criterio_apagar(Criterio** criterio);
 
@@ -45,7 +46,12 @@ void criterio_apagar(Criterio** criterio);
  * 
  * Retorna false se registro ou duplas for NULL
  */
-bool criterio_satisfaz(Criterio* criterio, Registro* registro);  // TODO
+bool criterio_satisfaz(Criterio* criterio, Registro* registro);
+
+/**
+ * Atualiza o registro com os dados salvo em criterio
+ */
+void criterio_atualizarRegistro(Criterio* criterio, Registro* registro);
 
 //* ============================= *//
 //* ===== Getters e Setters ===== *//
@@ -62,9 +68,9 @@ Dupla** criterio_getArray(Criterio* criterio, int* n);
 /**
  * Muda o array
  * 
- * Se houver um array armazenado ele eh apagado (inclusive s)
- *!Os arrays retornado pelo getArray deixa de ter valor valido e nao deve ser mais usado
- *!Se você quer evitar isso faça uma copia dos dados do array antes
+ * Se houver um array armazenado ele eh apagado
+ * Os arrays retornado pelo getArray deixa de ter valor valido e nao deve ser mais usado
+ * Se você quer evitar isso faça uma copia dos dados do array antes
  */
 void criterio_setArray(Criterio* criterio, Dupla** duplas, int n);
 

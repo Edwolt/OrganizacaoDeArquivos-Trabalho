@@ -164,6 +164,53 @@ bool criterio_satisfaz(Criterio* criterio, Registro* registro) {
     return true;
 }
 
+void criterio_atualizarRegistro(Criterio* criterio, Registro* registro) {
+    if (!criterio || !registro) return;  // Algum dos objetos nao existe
+
+    int i;  // Iteradores
+    Dupla* dupla;
+
+    for (i = 0; i < criterio->tam; i++) {
+        dupla = criterio->duplas[i];
+        switch (dupla_getCampo(dupla)) {
+            // Campos Inteiros
+            case DUPLA_IDNASCIMENTO:
+                registro_setIdNascimento(registro, dupla_getInteiro(dupla));
+                break;
+
+            case DUPLA_IDADEMAE:
+                registro_setIdadeMae(registro, dupla_getInteiro(dupla));
+                break;
+
+            // Campos Character
+            case DUPLA_SEXOBEBE:
+                registro_setSexoBebe(registro, dupla_getCaracter(dupla));
+                break;
+
+            // Campos String
+            case DUPLA_DATANASCIMENTO:
+                registro_setDataNascimento(registro, dupla_getString(dupla));
+                break;
+
+            case DUPLA_ESTADOMAE:
+                registro_setEstadoMae(registro, dupla_getString(dupla));
+                break;
+
+            case DUPLA_ESTADOBEBE:
+                registro_setEstadoBebe(registro, dupla_getString(dupla));
+                break;
+
+            case DUPLA_CIDADEMAE:
+                registro_setCidadeMae(registro, dupla_getString(dupla));
+                break;
+
+            case DUPLA_CIDADEBEBE:
+                registro_setCidadeBebe(registro, dupla_getString(dupla));
+                break;
+        }
+    }
+}
+
 //* ============================= *//
 //* ===== Getters e Setters ===== *//
 //* ============================= *//
