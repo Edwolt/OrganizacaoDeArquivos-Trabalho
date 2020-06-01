@@ -619,8 +619,18 @@ static void opcao7() {
 
             // Atualiza registro
             criterio_atualizarRegistro(criterios[i], reg);  // Pega os valores em criterio e colocar no registro
-            binario_atualizarRegistro(bin, reg);  // Escreve o registro em cima do anterior
-            registro_apagar(&reg); // Apaga registro
+            ok = binario_atualizarRegistro(bin, reg);  // Escreve o registro em cima do anterior
+            if (!ok) {
+                registro_apagar(&reg);
+                free(rrns);
+                for (i--; i >= 0; i--) criterio_apagar(&criterios[i]);
+                free(criterios[i]);
+
+                printf("Falha no processamento do arquivo.\n");
+                return;
+            }
+
+            registro_apagar(&reg);
         }
     }
 
