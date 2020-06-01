@@ -619,7 +619,7 @@ static void opcao7() {
 
             // Atualiza registro
             criterio_atualizarRegistro(criterios[i], reg);  // Pega os valores em criterio e colocar no registro
-            // TODO escreverRegistro preenche com $
+            // TODO escreverRegistro preenche com lixo
             binario_escreverRegistro(bin, reg);  // Escreve o registro em cima do anterior
             registro_apagar(&reg); // Apaga registro
         }
