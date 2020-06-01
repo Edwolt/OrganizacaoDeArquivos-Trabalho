@@ -124,6 +124,15 @@ Registro* binario_lerRegistro(Binario* binario, bool* erro);
  */
 bool binario_escreverRegistro(Binario* binario, Registro* registro);
 
+/**
+ * Atualiza um registro do arquivo
+ * Obs: Nao verifica se esta no final do arquivo
+ * A diferenca entre do escrever eh nao prencher o espaco nao ocupado com lixo
+ * 
+ * Retorna se foi possivel inserir o registro no arquivo
+ */
+bool binario_atualizarRegistro(Binario* binario, Registro* registro);
+
 //* ============================== *//
 //* ===== Registro Cabecalho ===== *//
 //* ============================== *//

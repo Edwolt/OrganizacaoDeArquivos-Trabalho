@@ -356,6 +356,77 @@ fwrite_error:  // Tratando erros ao escrever no arquivo
     return false;
 }
 
+bool binario_atualizaRegistro(Binario* binario, Registro* registro) {
+    if (!binario || !registro) return false;  // Objeto nao existe ou nao recebeu os paramentro
+
+    const char CHARNULO = '\0';
+    int tamDado;  // Tamanho do dado escrito para saber se precisa colocar o '\0'
+    // TODO pular espaco vazio
+
+    // Extraindo dados do registro
+    int idNascimento;
+    int idadeMae;
+    char* dataNascimento;
+    char sexoBebe;
+    char *cidadeMae, *cidadeBebe;
+    char *estadoMae, *estadoBebe;
+    registro_extrairDados(registro,
+                          &idNascimento,
+                          &idadeMae, &dataNascimento,
+                          &sexoBebe,
+                          &cidadeMae, &cidadeBebe,
+                          &estadoMae, &estadoBebe);
+
+    sexoBebe = (sexoBebe != '\0' ? sexoBebe : '0');  // Se sexoBebe for nulo ele recebe '0'
+
+    // Calculando tamanho dos campos variaveis
+    // Mesmo que tamCidadee = (cidade != NULL ? strlen(cidade) : 0);
+    int tamCidadeMae = (cidadeMae ? strlen(cidadeMae) : 0);
+    int tamCidadeBebe = (cidadeBebe ? strlen(cidadeBebe) : 0);
+
+    // Escrevendo campos variaveis
+    TRYFWRITE(&tamCidadeMae, int, 1, binario);
+    TRYFWRITE(&tamCidadeBebe, int, 1, binario);
+    if (cidadeMae) TRYFWRITE(cidadeMae, char, tamCidadeMae, binario);
+    if (cidadeBebe) TRYFWRITE(cidadeBebe, char, tamCidadeBebe, binario);
+
+    // Escrevendo campos fixos
+    TRYFWRITE(&idNascimento, int, 1, binario);
+    TRYFWRITE(&idadeMae, int, 1, binario);
+
+    if (dataNascimento) {  // dataNascimento != NULL
+        tamDado = strlen(dataNascimento);
+        TRYFWRITE(dataNascimento, char, tamDado, binario);
+        if (tamDado < TAM_DATA) TRYFWRITE(&CHARNULO, char, 1, binario);  // Se sobrou espaco vazio: Escreve '\0'
+    } else {  // dataNascimento == NULL
+        TRYFWRITE(&CHARNULO, char, 1, binario);  // Escreve '\0'
+    }
+
+    TRYFWRITE(&sexoBebe, char, 1, binario);
+
+    if (estadoMae) {  // estadoMae != NULL
+        tamDado = strlen(estadoMae);
+        TRYFWRITE(estadoMae, char, tamDado, binario);
+        if (tamDado < TAM_ESTADO) TRYFWRITE(&CHARNULO, char, 1, binario);  // Se sobrou espaco vazio: Escreve '\0'
+    } else {  // estadoMae == NULL
+        // Escreve '\0', e se tiver sobrado escreve lixo
+        TRYFWRITE(&CHARNULO, char, 1, binario);  // Escreve '\0'
+    }
+
+    if (estadoBebe) {  // estadoBebe != NULL
+        tamDado = strlen(estadoBebe);
+        TRYFWRITE(estadoBebe, char, tamDado, binario);
+        if (tamDado < TAM_ESTADO) TRYFWRITE(&CHARNULO, char, 1, binario);  // Se sobrou espaco vazio: Escreve '\0'
+    } else {  // estadoBebe == NULL
+        TRYFWRITE(&CHARNULO, char, 1, binario); // Escreve '\0'
+    }
+
+    return true;
+
+fwrite_error:  // Tratando erros ao escrever no arquivo
+    return false;
+}
+
 //* ============================== *//
 //* ===== Registro Cabecalho ===== *//
 //* ============================== *//
