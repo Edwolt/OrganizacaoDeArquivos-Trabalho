@@ -68,9 +68,7 @@ static char leChar(CSV* csv) {
 
     leCampo(csv, str);
 
-    if (strlen(str) != 1) return '\0';
-
-    return str[0];
+    return (strlen(str) != 1 ? str[0]: '\0');
 }
 
 //* ============================ *//
