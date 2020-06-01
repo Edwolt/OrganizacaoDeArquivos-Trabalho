@@ -256,15 +256,20 @@ bool binario_escreverRegistro(Binario* binario, Registro* registro) {
     int qtdeLixo;  // Guardar a qunatidade de espaco vazio para preencher com lixo
 
     // Extraindo dados do registro
-    char* cidadeMae = registro_getCidadeMae(registro);
-    char* cidadeBebe = registro_getCidadeBebe(registro);
-    int idNascimento = registro_getIdNascimento(registro);
-    int idadeMae = registro_getIdadeMae(registro);
-    char* dataNascimento = registro_getDataNascimento(registro);
-    char sexoBebe = registro_getSexoBebe(registro);
+    int idNascimento;
+    int idadeMae;
+    char* dataNascimento;
+    char sexoBebe;
+    char *cidadeMae, *cidadeBebe;
+    char *estadoMae, *estadoBebe;
+    registro_extrairDados(registro,
+                          &idNascimento,
+                          &idadeMae, &dataNascimento,
+                          &sexoBebe,
+                          &cidadeMae, &cidadeBebe,
+                          &estadoMae, &estadoBebe);
+
     sexoBebe = (sexoBebe != '\0' ? sexoBebe : '0');  // Se sexoBebe for nulo ele recebe '0'
-    char* estadoMae = registro_getEstadoMae(registro);
-    char* estadoBebe = registro_getEstadoBebe(registro);
 
     // Calculando tamanho dos campos variaveis
     // Mesmo que tamCidadee = (cidade != NULL ? strlen(cidade) : 0);
