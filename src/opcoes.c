@@ -330,7 +330,7 @@ static void opcao5() {
 
     scanf(" %s %d", path, &n);
 
-    Criterio** criterios = (Criterio**)malloc(n * sizeof(Criterio*));
+    Criterio** criterios = malloc(n * sizeof(Criterio*));
     if (!criterios) {  // Falha ao alocar vetor de criterios
         printf("Falha no processamento do arquivo.\n");
         return;

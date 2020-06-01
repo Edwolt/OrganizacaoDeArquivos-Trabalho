@@ -22,7 +22,7 @@ Registro* registro_criar(int idNascimento,
                          char sexoBebe,
                          char* estadoMae, char* estadoBebe,
                          char* cidadeMae, char* cidadeBebe) {
-    Registro* registro = (Registro*)malloc(sizeof(Registro));
+    Registro* registro = malloc(sizeof(Registro));
     if (!registro) return NULL;  // Falha ao criar registro
 
     registro->idNascimento = idNascimento;
@@ -38,7 +38,7 @@ Registro* registro_criar(int idNascimento,
 }
 
 Registro* registro_criarVazio() {
-    Registro* registro = (Registro*)malloc(sizeof(Registro));
+    Registro* registro = malloc(sizeof(Registro));
     if (!registro) return NULL;  // Falha ao criar registro
 
     registro->idNascimento = INTNULL;

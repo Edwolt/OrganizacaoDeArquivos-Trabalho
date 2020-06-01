@@ -8,7 +8,7 @@ struct _criterio {
 Criterio* criterio_criar(Dupla** duplas, int n) {
     if (!duplas) return NULL;  // Nao recebeu parametro
 
-    Criterio* criterio = (Criterio*)malloc(sizeof(Criterio));
+    Criterio* criterio = malloc(sizeof(Criterio));
     if (!criterio) return NULL;  // Falha ao criar criterios
 
     criterio->tam = n;
@@ -18,7 +18,7 @@ Criterio* criterio_criar(Dupla** duplas, int n) {
 }
 
 Criterio* criterio_criarVazio() {
-    Criterio* criterio = (Criterio*)malloc(sizeof(Criterio));
+    Criterio* criterio = malloc(sizeof(Criterio));
     if (!criterio) return NULL;  // Falha ao criar criterios
 
     criterio->tam = 0;
@@ -30,7 +30,7 @@ Criterio* criterio_criarVazio() {
 Criterio* criterio_criarDoStdin() {
     int i;  //Iteradores
 
-    Criterio* criterio = (Criterio*)malloc(sizeof(Criterio));
+    Criterio* criterio = malloc(sizeof(Criterio));
     if (!criterio) return NULL;  // Falha ao criar criterios
 
     scanf("%d", &criterio->tam);
@@ -38,18 +38,18 @@ Criterio* criterio_criarDoStdin() {
     char* campo;
     char* valor;
 
-    criterio->duplas = (Dupla**)malloc(criterio->tam * sizeof(Dupla*));
+    criterio->duplas = malloc(criterio->tam * sizeof(Dupla*));
     if (!criterio) {  // Falha ao alocar vetor de duplas
         return NULL;
     }
 
     for (i = 0; i < criterio->tam; i++) {
-        campo = (char*)malloc(STR_TAM * sizeof(char));
+        campo = malloc(STR_TAM * sizeof(char));
         if (!campo) {  // Falha ao alocar string campo
             return NULL;
         }
 
-        valor = (char*)malloc(STR_TAM * sizeof(char));
+        valor = malloc(STR_TAM * sizeof(char));
         if (!valor) {  // Falha ao alocar string valor
             free(campo);  // Falha ao alocar string campo
             return NULL;

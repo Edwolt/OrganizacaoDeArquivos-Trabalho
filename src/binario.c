@@ -161,7 +161,7 @@ Registro* binario_leRegistro(Binario* binario, bool* erro) {
 
     char* cidadeMae = NULL;
     if (tamCidadeMae > 0) {
-        cidadeMae = (char*)malloc((TAM_CVAR + 1) * sizeof(char));
+        cidadeMae = malloc((TAM_CVAR + 1) * sizeof(char));
         if (!cidadeMae) {  // Falha ao alocar string
             *erro = true;
             return NULL;
@@ -172,7 +172,7 @@ Registro* binario_leRegistro(Binario* binario, bool* erro) {
 
     char* cidadeBebe = NULL;
     if (tamCidadeBebe > 0) {
-        cidadeBebe = (char*)malloc((TAM_CVAR + 1) * sizeof(char));
+        cidadeBebe = malloc((TAM_CVAR + 1) * sizeof(char));
         if (!cidadeBebe) {  // Falha ao alocar string
             // Desaloca o que ja foi alocado
             free(cidadeMae);
@@ -195,7 +195,7 @@ Registro* binario_leRegistro(Binario* binario, bool* erro) {
     int idadeMae;
     TRYFREAD(&idadeMae, int, 1, binario);
 
-    char* dataNascimento = (char*)malloc((TAM_DATA + 1) * sizeof(char));
+    char* dataNascimento = malloc((TAM_DATA + 1) * sizeof(char));
     if (!dataNascimento) {  // Falha ao alocar string
         // Desaloca o que ja foi alocado
         free(cidadeMae);
@@ -214,7 +214,7 @@ Registro* binario_leRegistro(Binario* binario, bool* erro) {
     char sexoBebe;
     TRYFREAD(&sexoBebe, char, 1, binario);
 
-    char* estadoMae = (char*)malloc((TAM_ESTADO + 1) * sizeof(char));
+    char* estadoMae = malloc((TAM_ESTADO + 1) * sizeof(char));
     if (!estadoMae) {  // Falha ao alocar string
         // Desaloca o que ja foi alocado
         free(cidadeMae);
@@ -231,7 +231,7 @@ Registro* binario_leRegistro(Binario* binario, bool* erro) {
         estadoMae = NULL;
     }
 
-    char* estadoBebe = (char*)malloc((TAM_ESTADO + 1) * sizeof(char));
+    char* estadoBebe = malloc((TAM_ESTADO + 1) * sizeof(char));
     if (!estadoBebe) {  // Falha ao alocar string
         // Desaloca o que ja foi alocado
         free(cidadeMae);

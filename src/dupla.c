@@ -43,7 +43,7 @@ Dupla* dupla_criar(char* campo, char* valor) {
         return NULL;
     }
 
-    Dupla* dupla = (Dupla*)malloc(sizeof(Dupla));
+    Dupla* dupla = malloc(sizeof(Dupla));
     if (!dupla) return NULL;  // Falha ao criar dupla
 
     dupla->campo = hash(campo);

@@ -45,7 +45,7 @@ static int leInt(CSV* csv) {
 static char* leStr(CSV* csv) {
     if (!csv) return NULL;  // Objeto nao exite
 
-    char* str = (char*)malloc(STR_TAM * sizeof(char));
+    char* str = malloc(STR_TAM * sizeof(char));
     if (!str) return NULL;  // Falha ao alocar string
 
     leCampo(csv, str);
