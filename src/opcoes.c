@@ -597,8 +597,11 @@ static void opcao7() {
     Registro* reg;
     for (i = 0; i < n; i++) {
         if (0 < rrns[i] && rrns[i] < rrn) {
-            binario_apontar(bin, rrns[i], SEEK_SET);
+            // Le registro
+            binario_apontar(bin, rrns[i], SEEK_SET);  // Vai para registro no RRN rrns[i]
             reg = binario_leRegistro(bin, &erro);
+            binario_apontar(bin, -1, SEEK_SET);  // Volta para registro no RRN rrns[i]
+
             if (erro) {  // Erro ao alocar
                 free(rrns);
                 for (i--; i >= 0; i--) criterio_apagar(&criterios[i]);
@@ -612,11 +615,11 @@ static void opcao7() {
                 continue;
             }
 
-            // TODO Explicar o que esta acontecendo
-            criterio_atualizarRegistro(criterios[i], reg);
-            binario_apontar(bin, -1, SEEK_SET);
-            binario_escreverRegistro(bin, reg);
-            registro_apagar(&reg);
+            // Atualiza registro
+            criterio_atualizarRegistro(criterios[i], reg);  // Pega os valores em criterio e colocar no registro
+            // TODO escreverRegistro preenche com $
+            binario_escreverRegistro(bin, reg);  // Escreve o registro em cima do anterior
+            registro_apagar(&reg); // Apaga registro
         }
     }
 
