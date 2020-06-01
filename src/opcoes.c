@@ -90,6 +90,7 @@ static void opcao1() {
         return;
     }
 
+    // Imprimindo resultado
     binarioNaTela(dest);
 }
 
@@ -511,6 +512,7 @@ static void opcao6() {
         return;
     }
 
+    // Imprimindo resultado
     binarioNaTela(path);
 }
 
