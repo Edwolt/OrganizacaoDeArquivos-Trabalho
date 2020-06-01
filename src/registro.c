@@ -67,6 +67,90 @@ void registro_apagar(Registro** registro) {
     *registro = NULL;
 }
 
+Registro* registro_criarDoStdin() {
+    Registro* registro = registro_criarVazio();
+    if (!registro) return NULL;
+
+    char aux[STR_TAM];
+
+    // Aloca strings
+    registro->dataNascimento = malloc(STR_TAM * sizeof(char));
+    if (!registro->dataNascimento) {
+        return NULL;
+    }
+
+    registro->estadoMae = malloc(STR_TAM * sizeof(char));
+    if (!registro->dataNascimento) {
+        free(registro->dataNascimento);
+        return NULL;
+    }
+
+    registro->estadoBebe = malloc(STR_TAM * sizeof(char));
+    if (!registro->dataNascimento) {
+        free(registro->dataNascimento);
+        free(registro->estadoBebe);
+        return NULL;
+    }
+
+    registro->cidadeMae = malloc(STR_TAM * sizeof(char));
+    if (!registro->dataNascimento) {
+        free(registro->dataNascimento);
+        free(registro->estadoBebe);
+        free(registro->cidadeMae);
+        return NULL;
+    }
+
+    registro->cidadeBebe = malloc(STR_TAM * sizeof(char));
+    if (!registro->dataNascimento) {
+        free(registro->dataNascimento);
+        free(registro->estadoBebe);
+        free(registro->cidadeMae);
+        free(registro->cidadeBebe);
+        return NULL;
+    }
+
+    // Lendo do Stdin
+    scan_quote_string(registro->cidadeMae);
+    if (strlen(registro->cidadeMae) == 0) {
+        free(registro->cidadeMae);
+        registro->cidadeMae = NULL;
+    }
+
+    scan_quote_string(registro->cidadeBebe);
+    if (strlen(registro->cidadeBebe) == 0) {
+        free(registro->cidadeBebe);
+        registro->cidadeBebe = NULL;
+    }
+
+    scanf("%d", &registro->idNascimento);  // Tenho certeza que nao e nulo
+
+    scan_quote_string(aux);
+    registro->idadeMae = (strlen(aux) != 0 ? atoi(aux) : INTNULL);
+
+    scan_quote_string(registro->dataNascimento);
+    if (strlen(registro->dataNascimento) == 0) {
+        free(registro->dataNascimento);
+        registro->dataNascimento = NULL;
+    }
+
+    scan_quote_string(aux);
+    registro->sexoBebe = (strlen(aux) == 1 ? aux[0] : '\0');
+
+    scan_quote_string(registro->estadoMae);
+    if (strlen(registro->estadoMae)) {
+        free(registro->estadoMae);
+        registro->estadoMae = NULL;
+    }
+
+    scan_quote_string(registro->estadoBebe);
+    if (strlen(registro->estadoBebe)) {
+        free(registro->estadoBebe);
+        registro->estadoMae;
+    }
+
+    return registro;
+}
+
 void registro_imprimir(Registro* registro) {
     if (!registro) {  // Objeto nao existe
         printf("Registro Inexistente\n");

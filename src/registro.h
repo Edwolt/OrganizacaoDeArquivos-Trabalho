@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "binarioNaTela.h"
 #include "dupla.h"
 
 #define INTNULL -1
@@ -39,8 +40,19 @@ Registro* registro_criar(int idNascimento,
  * Retorna NULL se nao for possivel criar o objeto
  * 
  * Obs: Depois, use uma funcao para destruir o objeto
+ * Obs: Depois, use uma funcao para destruir o objeto
  */
 Registro* registro_criarVazio();
+
+/**
+ * Cria um novo registro pegando dados do stdin
+ * Retorna NULL se nao for possivel criar o objeto
+ * 
+ * cidadeMae[i] cidadeBebe[i] idNascimento[i] idadeMae[i] dataNascimento[i] sexoBebe[i] estadoMae[i] estadoBebe[i]
+ * 
+ * Obs: Depois, use uma funcao para destruir o objeto
+ */
+Registro* registro_criarDoStdin();
 
 /**
  * Destroi o objeto
