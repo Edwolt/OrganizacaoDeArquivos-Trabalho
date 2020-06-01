@@ -100,7 +100,7 @@ void binario_fechar(Binario** binario) {
 bool binario_inserir(Binario* binario, Registro** registros, int n) {
     if (!binario || !registros) return false;  // Objeto nao existe ou nao recebeu parametros
 
-    int i;
+    int i;  // Iteradores
 
     bool ok;
     for (i = 0; i < n; i++) {
@@ -368,53 +368,6 @@ fwrite_error:  // Tratando erros ao escrever no arquivo
 //* ===== Registro Cabecalho ===== *//
 //* ============================== *//
 
-bool binario_setCabecalho(char* path,
-                          bool* status, int* rrn,
-                          int* inseridos, int* removidos, int* atualizados) {
-    if (!path) return false;  // Nao recebeu path
-
-    Binario* binario = fopen(path, "rb+");
-    if (!binario) return false;  // Falha ao abrir arquivo
-
-    if (status) {  // Recebeu status
-        char aux = (status ? '1' : '0');
-        TRYFWRITE(&aux, char, 1, binario);
-    } else {
-        fseek(binario, sizeof(char), SEEK_CUR);  // Pula o status
-    }
-
-    if (rrn) {  // Recebeu rrn
-        TRYFWRITE(rrn, int, 1, binario);
-    } else {
-        fseek(binario, sizeof(int), SEEK_CUR);  // Pula o rrn
-    }
-
-    if (inseridos) {  // Recebeu inseridos
-        TRYFWRITE(inseridos, int, 1, binario);
-    } else {
-        fseek(binario, sizeof(int), SEEK_CUR);  // Pula inseridos
-    }
-
-    if (removidos) {  // Recebeu removidos
-        TRYFWRITE(removidos, int, 1, binario);
-    } else {
-        fseek(binario, sizeof(int), SEEK_CUR);  // Pula removidos
-    }
-
-    if (atualizados) {  // Recebeu o atualizados
-        TRYFWRITE(atualizados, int, 1, binario);
-    } else {
-        fseek(binario, sizeof(int), SEEK_CUR);  // Pula atualizados
-    }
-
-    fclose(binario);
-    return true;
-
-fwrite_error:  // Tratando erros ao escrever no arquivo
-    fclose(binario);
-    return false;
-}
-
 bool binario_getCabecalho(char* path,
                           bool* status, int* rrn,
                           int* inseridos, int* removidos, int* atualizados) {
@@ -459,6 +412,53 @@ bool binario_getCabecalho(char* path,
     return true;
 
 fread_error:  // Tratando erros ao ler do arquivo
+    fclose(binario);
+    return false;
+}
+
+bool binario_setCabecalho(char* path,
+                          bool* status, int* rrn,
+                          int* inseridos, int* removidos, int* atualizados) {
+    if (!path) return false;  // Nao recebeu path
+
+    Binario* binario = fopen(path, "rb+");
+    if (!binario) return false;  // Falha ao abrir arquivo
+
+    if (status) {  // Recebeu status
+        char aux = (status ? '1' : '0');
+        TRYFWRITE(&aux, char, 1, binario);
+    } else {
+        fseek(binario, sizeof(char), SEEK_CUR);  // Pula o status
+    }
+
+    if (rrn) {  // Recebeu rrn
+        TRYFWRITE(rrn, int, 1, binario);
+    } else {
+        fseek(binario, sizeof(int), SEEK_CUR);  // Pula o rrn
+    }
+
+    if (inseridos) {  // Recebeu inseridos
+        TRYFWRITE(inseridos, int, 1, binario);
+    } else {
+        fseek(binario, sizeof(int), SEEK_CUR);  // Pula inseridos
+    }
+
+    if (removidos) {  // Recebeu removidos
+        TRYFWRITE(removidos, int, 1, binario);
+    } else {
+        fseek(binario, sizeof(int), SEEK_CUR);  // Pula removidos
+    }
+
+    if (atualizados) {  // Recebeu o atualizados
+        TRYFWRITE(atualizados, int, 1, binario);
+    } else {
+        fseek(binario, sizeof(int), SEEK_CUR);  // Pula atualizados
+    }
+
+    fclose(binario);
+    return true;
+
+fwrite_error:  // Tratando erros ao escrever no arquivo
     fclose(binario);
     return false;
 }

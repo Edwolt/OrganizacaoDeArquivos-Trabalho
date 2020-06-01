@@ -331,7 +331,7 @@ static void opcao5() {
     scanf(" %s %d", path, &n);
 
     Criterio** criterios = malloc(n * sizeof(Criterio*));
-    if (!criterios) {  // Falha ao alocar vetor de criterios
+    if (!criterios) {  // Falha ao alocar vetor
         printf("Falha no processamento do arquivo.\n");
         return;
     }
@@ -340,9 +340,7 @@ static void opcao5() {
     for (i = 0; i < n; i++) {
         criterios[i] = criterio_criarDoStdin();
         if (!criterios[i]) {  // Nao foi possivel criar criterios
-            for (i--; i >= 0; i--) {  // Desaloca o que ja foi alocado
-                criterio_apagar(&criterios[i]);
-            }
+            for (i--; i >= 0; i--) criterio_apagar(&criterios[i]);  // Desaloca o que ja foi alocado
             free(criterios);
             return;
         }

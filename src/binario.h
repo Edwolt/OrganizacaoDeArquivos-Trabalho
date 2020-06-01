@@ -43,7 +43,7 @@ Binario* binario_criar(char* path);
 bool binario_gerarDoCSV(char* path, CSV* csv);
 
 /**
- * Abre um arquivo binario com nome path para leitura
+ * Retorna arquivo binario com nome path aberto para leitura
  * Obs: Nao eh necessario pular o registro cabecalho
  * 
  * Retorna NULL se nao for possivel Abrir o arquivo
@@ -54,7 +54,7 @@ bool binario_gerarDoCSV(char* path, CSV* csv);
 Binario* binario_abrirLeitura(char* path);
 
 /**
- * Abre um arquivo binario com nome path para escrita
+ * Retorna o arquivo binario com nome path aberto para escrita
  * O arquivo tambem permite leitura
  * Obs: Nao eh necessario pular o registro cabecalho
  * 
@@ -66,55 +66,12 @@ Binario* binario_abrirLeitura(char* path);
 Binario* binario_abrirEscrita(char* path);
 
 /**
- * Retorna o arquivo binario com nome path aberto para escrita
- * O arquivo tambem permite leitura
- * O arquivo e marcado como inconsitente
- * 
- * Obs: Nao eh necessario pular o registro cabecalho
- * 
- * Retorna NULL se o arquivo for inconsistente
- * Retorna NULL se nao for possivel abrir o arquivo
- * Retorna NULL se nao receber um path
- * 
- * Retorna nas variaveis passada por referencia 
- * o que esta no cabecalho do arquivo: 
- * * rrn         = RRNProxRegistro
- * * inseridos   = numeroRegistrosInseridos
- * * removidos   = numeroRegistrosRemovidos
- * * atualizados = numeroRegistrosAtualizado
- */
-Binario* binario_abrirEscritaConsistencia(char* path,
-                                          int* rrn,
-                                          int* inseridos, int* removidos, int* atualizados);
-
-/**
  * Destroi o objeto
  * 
  * Obs: Não apaga o arquivo, apenas desaloca memoria
  * Obs: Se for um arquivo de escrita, depois da execucao (senao ocorre erros) arquivo estara em disco
  */
 void binario_fechar(Binario** binario);
-
-/**
- * Destroi o objeto
- * Deve ser usado em um arquivo de escrita
- * O arquivo fechado eh marcado como consistente
- * Deve passar o caminho do arquivo usando path
- * Retorna a funcao executou corretamente
- * 
- * Obs: Não apaga o arquivo, apenas desaloca memoria
- * Obs: Depois da execucao (senao ocorre erros) arquivo estara em disco
- * 
- * Recebe por referencia os valores a ser escrito no registro
- * Se o parametro for NULL o campo correspondente nao eh lido 
- * * rrn         = RRNProxRegistro
- * * inseridos   = numeroRegistrosInseridos
- * * removidos   = numeroRegistrosRemovidos
- * * atualizados = numeroRegistrosAtualizado
- */
-void binario_fecharConsistente(Binario** binario, char* path,
-                               int* rrn,
-                               int* inseridos, int* removidos, int* atualizados);
 
 /**
  * Insere n registros no arquivo binario
@@ -171,30 +128,30 @@ bool binario_escreverRegistro(Binario* binario, Registro* registro);
 //* ============================== *//
 
 /**
- * Atuliza o cabeçalho do arquivo
- * O valor que for NULL nao sera atualizado
+ * Pega os valores do cabecalho de um arquivo
+ * O parametro for NULL o campo correspondente nao sera lido
  * 
- * status      = Status
- * rrn         = RRNProxRegistro
- * inseridos   = numeroRegistrosInseridos
- * removidos   = numeroRegistrosRemovidos  
- * atualizados = numeroRegistrosAtualizado
+ * * status      = Status
+ * * rrn         = RRNProxRegistro (Quantidade de registros contando os removidos e descontando o cabecalho)
+ * * inseridos   = numeroRegistrosInseridos
+ * * removidos   = numeroRegistrosRemovidos  
+ * * atualizados = numeroRegistrosAtualizado
  */
-bool binario_setCabecalho(char* path,
+bool binario_getCabecalho(char* path,
                           bool* status, int* rrn,
                           int* inseridos, int* removidos, int* atualizados);
 
 /**
- * Pega os valores do cabecalho de um arquivo
- * O valor que for NULL nao sera lido do arquivo
+ * Atuliza o cabeçalho do arquivo
+ * O parametro for NULL o campo correspondente nao sera atualizado
  * 
- * status      = Status
- * rrn         = RRNProxRegistro (Quantidade de registros contando os removidos e descontando o cabecalho)
- * inseridos   = numeroRegistrosInseridos
- * removidos   = numeroRegistrosRemovidos  
- * atualizados = numeroRegistrosAtualizado
+ * * status      = Status
+ * * rrn         = RRNProxRegistro
+ * * inseridos   = numeroRegistrosInseridos
+ * * removidos   = numeroRegistrosRemovidos  
+ * * atualizados = numeroRegistrosAtualizado
  */
-bool binario_getCabecalho(char* path,
+bool binario_setCabecalho(char* path,
                           bool* status, int* rrn,
                           int* inseridos, int* removidos, int* atualizados);
 

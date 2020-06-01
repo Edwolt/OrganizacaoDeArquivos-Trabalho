@@ -19,7 +19,7 @@
 typedef FILE CSV;
 
 /**
- * Abre um arquivo csv com os dados do registro com nome path para leitura
+ * Retorna arquivo csv com os dados do registro com nome path aberto para leitura
  * Obs: Nao eh necessario pula a primeira linha que contem os nomes das colunas
  * 
  * Retorna NULL se nao for possivel abrir o arquivo
