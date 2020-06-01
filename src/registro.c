@@ -175,6 +175,24 @@ void registro_imprimir(Registro* registro) {
            sexo);
 }
 
+void registro_extrairDados(Registro* registro,
+                           int* idNascimento,
+                           int* idadeMae, char** dataNascimento,
+                           char* sexoBebe,
+                           char** estadoMae, char** estadoBebe,
+                           char** cidadeMae, char** cidadeBebe) {
+    if (!registro) return;  // Registro nao existe
+
+    if (idNascimento) *idNascimento = registro->idNascimento;
+    if (idadeMae) *idadeMae = registro->idadeMae;
+    if (dataNascimento) *dataNascimento = registro->dataNascimento;
+    if (sexoBebe) *sexoBebe = registro->sexoBebe;
+    if (estadoMae) *estadoMae = registro->estadoMae;
+    if (estadoBebe) *estadoBebe = registro->estadoBebe;
+    if (cidadeMae) *cidadeMae = registro->cidadeMae;
+    if (cidadeBebe) *cidadeBebe = registro->cidadeBebe;
+}
+
 //* ============================= *//
 //* ===== Getters e Setters ===== *//
 //* ============================= *//

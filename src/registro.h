@@ -66,6 +66,19 @@ void registro_apagar(Registro** registro);
  */
 void registro_imprimir(Registro* registro);
 
+/**
+ * Retorna detro dos parametros passados por referencia
+ * os valores armazenado no registro
+ * 
+ * Se o parametro for NULL, aquele campo nao eh retornado
+ */
+void registro_extrairDados(Registro* registro,
+                           int* idNascimento,
+                           int* idadeMae, char** dataNascimento,
+                           char* sexoBebe,
+                           char** estadoMae, char** estadoBebe,
+                           char** cidadeMae, char** cidadeBebe);
+
 //* ============================= *//
 //* ===== Getters e Setters ===== *//
 //* ============================= *//
