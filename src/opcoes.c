@@ -24,17 +24,6 @@ typedef void Opcao();
  * salvando-o com o nome dest
  */
 static void opcao1() {
-    /* Resumo do codigo
-    Le opcao
-    bin = novo arquivo binario com registro cabecalho
-    csv = abrir csv lido na opcao
-    Marca bin como inconsistente
-    Para cada registro reg no CSV {
-        bin.escreve(reg)
-    }
-    Marca arquivo como consistente e atualiza cabecalho
-    */
-
     // Le opcao
     char src[PATH_TAM];
     char dest[PATH_TAM];
