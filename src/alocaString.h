@@ -1,5 +1,5 @@
-#ifndef ALOCACAO_STRING_H
-#define ALOCACAO_STRING_H
+#ifndef ALOCA_STRING_H
+#define ALOCA_STRING_H
 
 /*
 Funcoes para auxiliar na alocacao dinamica de strings
