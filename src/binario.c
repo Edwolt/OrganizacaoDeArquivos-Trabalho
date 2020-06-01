@@ -356,7 +356,7 @@ fwrite_error:  // Tratando erros ao escrever no arquivo
     return false;
 }
 
-bool binario_atualizaRegistro(Binario* binario, Registro* registro) {
+bool binario_atualizarRegistro(Binario* binario, Registro* registro) {
     if (!binario || !registro) return false;  // Objeto nao existe ou nao recebeu os paramentro
 
     const char CHARNULO = '\0';
