@@ -45,15 +45,12 @@ static int leInt(CSV* csv) {
 static char* leStr(CSV* csv) {
     if (!csv) return NULL;  // Objeto nao exite
 
-    char* str = malloc(STR_TAM * sizeof(char));
+    char* str = string_criar(STR_TAM);
     if (!str) return NULL;  // Falha ao alocar string
 
     leCampo(csv, str);
 
-    if (strlen(str) == 0) {
-        free(str);
-        return NULL;
-    }
+    string_apagarSeVazio(&str);
 
     return str;
 }
@@ -68,7 +65,7 @@ static char leChar(CSV* csv) {
 
     leCampo(csv, str);
 
-    return (strlen(str) != 1 ? str[0]: '\0');
+    return (strlen(str) != 1 ? str[0] : '\0');
 }
 
 //* ============================ *//
@@ -101,59 +98,59 @@ Registro* csv_lerRegistro(CSV* csv) {
     char* cidadeBebe = leStr(csv);
     if (feof(csv)) {  // Fim do arquivo ou falha ao ler string
         // Desaloca o que ja foi alocado
-        free(cidadeMae);
+        string_apagar(&cidadeMae);
         return NULL;
     }
 
     int idNascimento = leInt(csv);
     if (feof(csv)) {
         // Desaloca o que ja foi alocado
-        free(cidadeMae);
-        free(cidadeBebe);
+        string_apagar(&cidadeMae);
+        string_apagar(&cidadeBebe);
         return NULL;
     }
 
     int idadeMae = leInt(csv);
     if (feof(csv)) {
         // Desaloca o que ja foi alocado
-        free(cidadeMae);
-        free(cidadeBebe);
+        string_apagar(&cidadeMae);
+        string_apagar(&cidadeBebe);
         return NULL;
     }
 
     char* dataNascimento = leStr(csv);
     if (feof(csv)) {  // Fim do arquivo ou falha ao ler string
         // Desaloca o que ja foi alocado
-        free(cidadeMae);
-        free(cidadeBebe);
+        string_apagar(&cidadeMae);
+        string_apagar(&cidadeBebe);
         return NULL;
     }
 
     char sexoBebe = leChar(csv);
     if (feof(csv)) {
         // Desaloca o que ja foi alocado
-        free(cidadeMae);
-        free(cidadeBebe);
-        free(dataNascimento);
+        string_apagar(&cidadeMae);
+        string_apagar(&cidadeBebe);
+        string_apagar(&dataNascimento);
         return NULL;
     }
 
     char* estadoMae = leStr(csv);
     if (feof(csv)) {  // Fim do arquivo ou falha ao ler string
         // Desaloca o que ja foi alocado
-        free(cidadeMae);
-        free(cidadeBebe);
-        free(dataNascimento);
+        string_apagar(&cidadeMae);
+        string_apagar(&cidadeBebe);
+        string_apagar(&dataNascimento);
         return NULL;
     }
 
     char* estadoBebe = leStr(csv);
     if (feof(csv)) {  // Fim do arquivo ou falha ao ler string
         // Desaloca o que ja foi alocado
-        free(cidadeMae);
-        free(cidadeBebe);
-        free(dataNascimento);
-        free(estadoMae);
+        string_apagar(&cidadeMae);
+        string_apagar(&cidadeBebe);
+        string_apagar(&dataNascimento);
+        string_apagar(&estadoMae);
         return NULL;
     }
 

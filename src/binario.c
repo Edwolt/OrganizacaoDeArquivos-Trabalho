@@ -161,7 +161,7 @@ Registro* binario_leRegistro(Binario* binario, bool* erro) {
 
     char* cidadeMae = NULL;
     if (tamCidadeMae > 0) {
-        cidadeMae = malloc((TAM_CVAR + 1) * sizeof(char));
+        cidadeMae = string_criar(TAM_CVAR + 1);
         if (!cidadeMae) {  // Falha ao alocar string
             *erro = true;
             return NULL;
@@ -172,10 +172,10 @@ Registro* binario_leRegistro(Binario* binario, bool* erro) {
 
     char* cidadeBebe = NULL;
     if (tamCidadeBebe > 0) {
-        cidadeBebe = malloc((TAM_CVAR + 1) * sizeof(char));
+        cidadeMae = string_criar(TAM_CVAR + 1);
         if (!cidadeBebe) {  // Falha ao alocar string
             // Desaloca o que ja foi alocado
-            free(cidadeMae);
+            string_apagar(&cidadeMae);
 
             *erro = true;
             return NULL;
@@ -195,66 +195,53 @@ Registro* binario_leRegistro(Binario* binario, bool* erro) {
     int idadeMae;
     TRYFREAD(&idadeMae, int, 1, binario);
 
-    char* dataNascimento = malloc((TAM_DATA + 1) * sizeof(char));
+    char* dataNascimento = string_criar(TAM_DATA + 1);
     if (!dataNascimento) {  // Falha ao alocar string
         // Desaloca o que ja foi alocado
-        free(cidadeMae);
-        free(cidadeBebe);
+        string_apagar(&cidadeMae);
+        string_apagar(&cidadeBebe);
 
         *erro = true;
         return NULL;
     }
     TRYFREAD(dataNascimento, char, TAM_DATA, binario);
     dataNascimento[TAM_DATA] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera alterada (O arquivo tera o '\0')
-    if (strlen(dataNascimento) == 0) {
-        free(dataNascimento);
-        dataNascimento = NULL;
-    }
+    string_apagarSeVazio(&dataNascimento);
 
     char sexoBebe;
     TRYFREAD(&sexoBebe, char, 1, binario);
 
-    char* estadoMae = malloc((TAM_ESTADO + 1) * sizeof(char));
+    char* estadoMae = string_criar(TAM_ESTADO + 1);
     if (!estadoMae) {  // Falha ao alocar string
         // Desaloca o que ja foi alocado
-        free(cidadeMae);
-        free(cidadeBebe);
-        free(dataNascimento);
+        string_apagar(&cidadeMae);
+        string_apagar(&cidadeBebe);
+        string_apagar(&dataNascimento);
 
         *erro = true;
         return NULL;
     }
     TRYFREAD(estadoMae, char, TAM_ESTADO, binario);
     estadoMae[TAM_ESTADO] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera alterada (O arquivo tera o '\0')
-    if (strlen(estadoMae) == 0) {
-        free(estadoMae);
-        estadoMae = NULL;
-    }
+    string_apagarSeVazio(&estadoMae);
 
-    char* estadoBebe = malloc((TAM_ESTADO + 1) * sizeof(char));
+    char* estadoBebe = string_criar(TAM_ESTADO + 1);
     if (!estadoBebe) {  // Falha ao alocar string
         // Desaloca o que ja foi alocado
-        free(cidadeMae);
-        free(cidadeBebe);
-        free(dataNascimento);
-        free(estadoMae);
+        string_apagar(&cidadeMae);
+        string_apagar(&cidadeBebe);
+        string_apagar(&dataNascimento);
+        string_apagar(&estadoMae);
 
         *erro = true;
         return NULL;
     }
     TRYFREAD(estadoBebe, char, TAM_ESTADO, binario);
     estadoBebe[TAM_ESTADO] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera alterada (O arquivo tera o '\0')
-    if (strlen(estadoBebe) == 0) {
-        free(estadoBebe);
-        estadoBebe = NULL;
-    }
+    string_apagarSeVazio(&estadoBebe);
 
     // Cria o objeto registro e retorna
-    return registro_criar(idNascimento,
-                          idadeMae, dataNascimento,
-                          sexoBebe,
-                          estadoMae, estadoBebe,
-                          cidadeMae, cidadeBebe);
+    return registro_criar(idNascimento, idadeMae, dataNascimento, sexoBebe, estadoMae, estadoBebe, cidadeMae, cidadeBebe);
 
 fread_error:  // Tratando erros ao ler do arquivo
     *erro = true;

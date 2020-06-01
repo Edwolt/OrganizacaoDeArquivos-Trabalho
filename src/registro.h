@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "alocaString.h"
 #include "binarioNaTela.h"
 #include "dupla.h"
 

@@ -5,6 +5,7 @@
 #include <stdio.h>  // Arquivos
 #include <stdlib.h>  // Alocacao Dinamica
 
+#include "alocaString.h"
 #include "csv.h"
 #include "registro.h"
 

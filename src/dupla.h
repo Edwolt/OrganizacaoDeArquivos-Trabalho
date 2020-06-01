@@ -4,6 +4,8 @@
 #include <stdlib.h>  // atoi
 #include <string.h>
 
+#include "alocaString.h"
+
 // Valores da hash da nome do campo
 #define DUPLA_INVALIDO -1
 #define DUPLA_IDNASCIMENTO 1246

@@ -57,11 +57,11 @@ void registro_apagar(Registro** registro) {
     if (!registro || !*registro) return;  // Objeto ja apagado
 
     // Free nas strings
-    if ((*registro)->dataNascimento) free((*registro)->dataNascimento = NULL);
-    if ((*registro)->estadoMae) free((*registro)->estadoMae = NULL);
-    if ((*registro)->estadoBebe) free((*registro)->estadoBebe = NULL);
-    if ((*registro)->cidadeMae) free((*registro)->cidadeMae = NULL);
-    if ((*registro)->cidadeBebe) free((*registro)->cidadeBebe = NULL);
+    string_apagar(&(*registro)->dataNascimento);
+    string_apagar(&(*registro)->estadoMae);
+    string_apagar(&(*registro)->estadoBebe);
+    string_apagar(&(*registro)->cidadeMae);
+    string_apagar(&(*registro)->cidadeBebe);
 
     free((*registro));
     *registro = NULL;
@@ -74,53 +74,47 @@ Registro* registro_criarDoStdin() {
     char aux[STR_TAM];
 
     // Aloca strings
-    registro->dataNascimento = malloc(STR_TAM * sizeof(char));
+    registro->dataNascimento = string_criar(STR_TAM);
     if (!registro->dataNascimento) {
         return NULL;
     }
 
-    registro->estadoMae = malloc(STR_TAM * sizeof(char));
-    if (!registro->dataNascimento) {
-        free(registro->dataNascimento);
+    registro->estadoMae = string_criar(STR_TAM);
+    if (!registro->estadoMae) {
+        string_apagar(&registro->dataNascimento);
         return NULL;
     }
 
-    registro->estadoBebe = malloc(STR_TAM * sizeof(char));
-    if (!registro->dataNascimento) {
-        free(registro->dataNascimento);
-        free(registro->estadoBebe);
+    registro->estadoBebe = string_criar(STR_TAM);
+    if (!registro->estadoBebe) {
+        string_apagar(&registro->dataNascimento);
+        string_apagar(&registro->estadoBebe);
         return NULL;
     }
 
-    registro->cidadeMae = malloc(STR_TAM * sizeof(char));
+    registro->cidadeMae = string_criar(STR_TAM);
     if (!registro->dataNascimento) {
-        free(registro->dataNascimento);
-        free(registro->estadoBebe);
-        free(registro->cidadeMae);
+        string_apagar(&registro->dataNascimento);
+        string_apagar(&registro->estadoBebe);
+        string_apagar(&registro->cidadeMae);
         return NULL;
     }
 
-    registro->cidadeBebe = malloc(STR_TAM * sizeof(char));
+    registro->cidadeBebe = string_criar(STR_TAM);
     if (!registro->dataNascimento) {
-        free(registro->dataNascimento);
-        free(registro->estadoBebe);
-        free(registro->cidadeMae);
-        free(registro->cidadeBebe);
+        string_apagar(&registro->dataNascimento);
+        string_apagar(&registro->estadoBebe);
+        string_apagar(&registro->cidadeMae);
+        string_apagar(&registro->cidadeBebe);
         return NULL;
     }
 
     // Lendo do Stdin
     scan_quote_string(registro->cidadeMae);
-    if (strlen(registro->cidadeMae) == 0) {
-        free(registro->cidadeMae);
-        registro->cidadeMae = NULL;
-    }
+    string_apagarSeVazio(&registro->cidadeMae);
 
     scan_quote_string(registro->cidadeBebe);
-    if (strlen(registro->cidadeBebe) == 0) {
-        free(registro->cidadeBebe);
-        registro->cidadeBebe = NULL;
-    }
+    string_apagarSeVazio(&registro->cidadeBebe);
 
     scanf("%d", &registro->idNascimento);  // Tenho certeza que nao e nulo
 
@@ -128,25 +122,16 @@ Registro* registro_criarDoStdin() {
     registro->idadeMae = (strlen(aux) != 0 ? atoi(aux) : INTNULL);
 
     scan_quote_string(registro->dataNascimento);
-    if (strlen(registro->dataNascimento) == 0) {
-        free(registro->dataNascimento);
-        registro->dataNascimento = NULL;
-    }
+    string_apagarSeVazio(&registro->dataNascimento);
 
     scan_quote_string(aux);
     registro->sexoBebe = (strlen(aux) == 1 ? aux[0] : '\0');
 
     scan_quote_string(registro->estadoMae);
-    if (strlen(registro->estadoMae)) {
-        free(registro->estadoMae);
-        registro->estadoMae = NULL;
-    }
+    string_apagarSeVazio(&registro->estadoMae);
 
     scan_quote_string(registro->estadoBebe);
-    if (strlen(registro->estadoBebe)) {
-        free(registro->estadoBebe);
-        registro->estadoMae;
-    }
+    string_apagarSeVazio(&registro->estadoBebe);
 
     return registro;
 }

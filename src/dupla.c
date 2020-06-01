@@ -35,11 +35,11 @@ static int hash(char* str) {
 Dupla* dupla_criar(char* campo, char* valor) {
     // Verifica se os parametros foram passados
     if (!campo) {
-        if (valor) free(valor);
+        if (valor) string_apagar(&valor);
         return NULL;
     }
     if (!valor) {
-        if (campo) free(campo);
+        if (campo) string_apagar(&campo);
         return NULL;
     }
 
@@ -47,27 +47,25 @@ Dupla* dupla_criar(char* campo, char* valor) {
     if (!dupla) return NULL;  // Falha ao criar dupla
 
     dupla->campo = hash(campo);
+    string_apagar(&campo);
 
     switch (dupla_getTipo(dupla)) {
         // Campo Inteiro
         case DUPLA_INTEIRO:
             dupla->valor.inteiro = atoi(valor);
-            free(valor);
+            string_apagar(&valor);
             break;
 
         // Campo Caracter
         case DUPLA_CARACTER:
             dupla->valor.caracter = valor[0];
-            free(valor);
+            string_apagar(&valor);
             break;
 
         // Campo String
         case DUPLA_STRING:
-            if (strlen(valor) != 0) {
-                dupla->valor.string = valor;
-            } else {
-                dupla->valor.string = NULL;
-            }
+            dupla->valor.string = valor;
+            string_apagarSeVazio(&dupla->valor.string);
             break;
 
         default:
@@ -80,7 +78,7 @@ Dupla* dupla_criar(char* campo, char* valor) {
 void dupla_apagar(Dupla** dupla) {
     if (!dupla || !*dupla) return;  // Objeto ja foi apagado
 
-    if (dupla_getTipo(*dupla) == DUPLA_STRING) free((*dupla)->valor.string);
+    if (dupla_getTipo(*dupla) == DUPLA_STRING) string_apagar(&(*dupla)->valor.string);
     free(*dupla);
     *dupla = NULL;
 }

@@ -2,10 +2,11 @@
 #define CSV_H
 
 #include <stdio.h>  // Manipular Arquivos
-#include <stdlib.h> // Alocacao Dinamica
+#include <stdlib.h>  // Alocacao Dinamica
 #include <string.h>
 
-#include "binarioNaTela.h" // Funcao trim()
+#include "alocaString.h"
+#include "binarioNaTela.h"  // Funcao trim()
 #include "registro.h"
 
 /**

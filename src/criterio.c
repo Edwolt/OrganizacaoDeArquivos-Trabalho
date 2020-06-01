@@ -44,14 +44,14 @@ Criterio* criterio_criarDoStdin() {
     }
 
     for (i = 0; i < criterio->tam; i++) {
-        campo = malloc(STR_TAM * sizeof(char));
+        campo = string_criar(STR_TAM);
         if (!campo) {  // Falha ao alocar string campo
             return NULL;
         }
 
-        valor = malloc(STR_TAM * sizeof(char));
+        valor = string_criar(STR_TAM);
         if (!valor) {  // Falha ao alocar string valor
-            free(campo);  // Falha ao alocar string campo
+            string_apagar(&campo);  // Falha ao alocar string campo
             return NULL;
         }
 
