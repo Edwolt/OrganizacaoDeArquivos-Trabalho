@@ -510,6 +510,8 @@ static void opcao6() {
         printf("Falha no carregamento do arquivo.\n");
         return;
     }
+
+    binarioNaTela(path);
 }
 
 /**
