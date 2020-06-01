@@ -112,8 +112,11 @@ static void opcao2() {
     int rrn, inseridos;
     bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, NULL, NULL);
 
-    // !ok: falha o ler cabecalho
-    // !status: arquivo inconsistente
+    /*
+    ok: falha o ler cabecalho
+    status: arquivo inconsistente
+    */
+
     if (!ok || !status) {
         printf("Falha no processamento do arquivo.\n");
         return;
@@ -181,8 +184,11 @@ static void opcao3() {
     int rrn, inseridos;
     bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, NULL, NULL);
 
-    // !ok: falha o ler cabecalho
-    // !status: arquivo inconsistente
+    /*
+    ok: falha o ler cabecalho
+    status: arquivo inconsistente
+    */
+
     if (!ok || !status) {
         criterio_apagar(&criterio);
 
@@ -254,8 +260,11 @@ static void opcao4() {
     int rrn_arquivo;
     bool ok = binario_getCabecalho(path, &status, &rrn_arquivo, NULL, NULL, NULL);
 
-    // !ok: falha o ler cabecalho
-    // !status: arquivo inconsistente
+    /*
+    ok: falha o ler cabecalho
+    status: arquivo inconsistente
+    */
+
     if (!ok || !status) {
         printf("Falha no processamento do arquivo.\n");
         return;
@@ -340,8 +349,11 @@ static void opcao5() {
     int rrn, inseridos, removidos;
     bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, &removidos, NULL);
 
-    // !ok: falha o ler cabecalho
-    // !status: arquivo inconsistente
+    /*
+    ok: falha o ler cabecalho
+    status: arquivo inconsistente
+    */
+
     if (!ok || !status) {
         for (i = 0; i < n; i++) criterio_apagar(&criterios[i]);
         free(criterios);
