@@ -449,7 +449,55 @@ static void opcao5() {
  * O conteudo de cada registro inserido eh dados[i]
  */
 static void opcao6() {
-    printf("Operação não implementada :(\n");
+    int i;  // Iteradores
+
+    // Le opcao
+    char path[PATH_TAM];
+    int n;
+
+    scanf(" %s %d", path, &n);
+
+    Registro** regs = malloc(n * sizeof(Registro*));
+    if (!regs) return;  // Falha ao alocar vetor
+    for (i = 0; i < n; i++) {
+        regs[i] = registro_criarDoStdin();
+        if (!regs[i]) {
+            for (i--; i >= 0; i--) registro_apagar(&regs[i]);  // Desaloca o que ja foi alocado
+        }
+        free(regs);
+    }
+
+    // Marca arquivo como inconsistente
+    bool status = false;
+    int rrn, inseridos;
+    bool ok = binario_setCabecalho(path, &status, &rrn, &inseridos, NULL, NULL);
+    if (!ok) {  // Falha ao modificar cabecalho
+        printf("Falha no carregamento do arquivo.\n");
+        return;
+    }
+
+    // Insere registros no arquivo
+    Binario* bin = binario_criar(path);
+
+    ok = binario_inserir(bin, regs, n);
+
+    if (!ok) {  // Falha ao inserir no arquivo
+        binario_fechar(&bin);
+        printf("Falha no carregamento do arquivo.\n");
+        return;
+    }
+
+    binario_fechar(&bin);
+
+    // Atualiza Cabecalho
+    status = true;
+    rrn += n;
+    inseridos += n;
+    ok = binario_setCabecalho(path, &status, &rrn, &inseridos, NULL, NULL);
+    if (!ok) {  // Falha ao modificar cabecalho
+        printf("Falha no carregamento do arquivo.\n");
+        return;
+    }
 }
 
 /**
