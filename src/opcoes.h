@@ -8,7 +8,6 @@
 #include "binarioNaTela.h"
 #include "criterio.h"
 #include "csv.h"
-#include "dupla.h"
 #include "registro.h"
 
 /**

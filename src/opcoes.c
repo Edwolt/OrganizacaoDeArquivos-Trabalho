@@ -533,7 +533,99 @@ static void opcao6() {
  * sendo que o campo[i][j] passa a valer valor[i][j]
  */
 static void opcao7() {
-    printf("Operação não implementada :(\n");
+    int i;  // Iteradores
+
+    // Le opcao
+    char path[PATH_TAM];
+    int n;
+    scanf(" %s %d", path, &n);
+
+    // Le o que deve atualizar (Guarda duplas campo-valor no TAD criterio)
+    int m;
+    int* rrns = malloc(n * sizeof(int));
+    if (!rrns) {
+        printf("Falha no carregamento do arquivo.\n");
+        return;
+    }
+    Criterio** criterios = malloc(n * sizeof(Criterio*));
+
+    for (i = 0; i < n; i++) {
+        scanf("%d %d", &rrns[i], &m);
+        criterios[i] = criterio_criarDoStdin();
+
+        if (!criterios[i]) {  // Falha ao ler criterio
+            free(rrns);
+            for (i--; i >= 0; i--) criterio_apagar(&criterios[i]);
+            free(criterios[i]);
+
+            printf("Falha no carregamento do arquivo.\n");
+            return;
+        }
+    }
+
+    // Verifica Cabecalho
+    bool status;
+    int rrn, inseridos, atualizados;
+    bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, NULL, &atualizados);
+
+    /*
+    ok: falha o ler cabecalho
+    status: arquivo inconsistente
+    inseridos == 0: O arquivo nao possui dados
+    */
+    if (!ok || !status || inseridos == 0) {
+        free(rrns);
+        for (i--; i >= 0; i--) criterio_apagar(&criterios[i]);
+        free(criterios[i]);
+
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
+
+    // Atualiza registros
+    Binario* bin = binario_abrirEscrita(path);
+    if (!bin) {  // Falha ao abrir arquivo
+        free(rrns);
+        for (i--; i >= 0; i--) criterio_apagar(&criterios[i]);
+        free(criterios[i]);
+
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
+
+    bool erro;
+    Registro* reg;
+    for (i = 0; i < n; i++) {
+        if (0 < rrns[i] && rrns[i] < rrn) {
+            binario_apontar(bin, rrns[i], SEEK_SET);
+            reg = binario_leRegistro(bin, &erro);
+            if (erro) {  // Erro ao alocar
+                free(rrns);
+                for (i--; i >= 0; i--) criterio_apagar(&criterios[i]);
+                free(criterios[i]);
+
+                printf("Falha no processamento do arquivo.\n");
+                return;
+            }
+
+            if (!reg) {  // Registro removido
+                continue;
+            }
+
+            // TODO Explicar o que esta acontecendo
+            criterio_atualizarRegistro(criterios[i], reg);
+            binario_apontar(bin, -1, SEEK_SET);
+            binario_escreverRegistro(bin, reg);
+            registro_apagar(&reg);
+        }
+    }
+
+    binario_fechar(&bin);
+    free(rrns);
+    free(criterios);
+
+    // Imprime resultado
+    binarioNaTela(path);
 }
 
 /**
