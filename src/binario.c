@@ -297,7 +297,7 @@ bool binario_escreverRegistro(Binario* binario, Registro* registro) {
         TRYFWRITE(dataNascimento, char, tamDado, binario);
         qtdeLixo -= tamDado;  // Descontando o que foi escrito
 
-        if (qtdeLixo > 0) {  // Se sobrou espaço vazio
+        if (qtdeLixo > 0) {  // Sobrou espaço vazio
             // Escreve '\0', e se tiver sobrado escreve lixo
             TRYFWRITE(&CHARNULO, char, 1, binario);
             qtdeLixo--;
@@ -318,7 +318,7 @@ bool binario_escreverRegistro(Binario* binario, Registro* registro) {
         TRYFWRITE(estadoMae, char, tamDado, binario);
         qtdeLixo -= tamDado;  // Descontando o que foi escrito
 
-        if (qtdeLixo > 0) {  // Se sobrou espaco vazio
+        if (qtdeLixo > 0) {  // Sobrou espaco vazio
             // Escreve '\0', e se tiver sobrado escreve lixo
             TRYFWRITE(&CHARNULO, char, 1, binario);
             qtdeLixo--;
@@ -337,7 +337,7 @@ bool binario_escreverRegistro(Binario* binario, Registro* registro) {
         TRYFWRITE(estadoBebe, char, tamDado, binario);
         qtdeLixo -= tamDado;  // Descontando o que foi escrito
 
-        if (qtdeLixo > 0) {  // Se sobrou espaco vazio
+        if (qtdeLixo > 0) {  // Sobrou espaco vazio
             // Escreve '\0', e se tiver sobrado escreve lixo
             TRYFWRITE(&CHARNULO, char, 1, binario);
             qtdeLixo--;
@@ -361,7 +361,7 @@ bool binario_atualizaRegistro(Binario* binario, Registro* registro) {
 
     const char CHARNULO = '\0';
     int tamDado;  // Tamanho do dado escrito para saber se precisa colocar o '\0'
-    // TODO pular espaco vazio
+    int espaco;
 
     // Extraindo dados do registro
     int idNascimento;
@@ -394,31 +394,54 @@ bool binario_atualizaRegistro(Binario* binario, Registro* registro) {
     TRYFWRITE(&idNascimento, int, 1, binario);
     TRYFWRITE(&idadeMae, int, 1, binario);
 
+    espaco = TAM_DATA;
     if (dataNascimento) {  // dataNascimento != NULL
         tamDado = strlen(dataNascimento);
         TRYFWRITE(dataNascimento, char, tamDado, binario);
-        if (tamDado < TAM_DATA) TRYFWRITE(&CHARNULO, char, 1, binario);  // Se sobrou espaco vazio: Escreve '\0'
+        espaco -= tamDado;
+
+        if (espaco > 0) {  // Sobrou espaco vazio
+            TRYFWRITE(&CHARNULO, char, 1, binario);  // Escreve '\0'
+            espaco--;
+            fseek(binario, espaco, SEEK_CUR);
+        }
     } else {  // dataNascimento == NULL
         TRYFWRITE(&CHARNULO, char, 1, binario);  // Escreve '\0'
+        espaco--;
+        fseek(binario, espaco, SEEK_CUR);
     }
 
     TRYFWRITE(&sexoBebe, char, 1, binario);
 
+    espaco = TAM_ESTADO;
     if (estadoMae) {  // estadoMae != NULL
         tamDado = strlen(estadoMae);
         TRYFWRITE(estadoMae, char, tamDado, binario);
-        if (tamDado < TAM_ESTADO) TRYFWRITE(&CHARNULO, char, 1, binario);  // Se sobrou espaco vazio: Escreve '\0'
+        espaco -= tamDado;
+
+        if (tamDado < TAM_ESTADO) {  // Sobrou espaco vazio
+            TRYFWRITE(&CHARNULO, char, 1, binario);  // Escreve '\0'
+            espaco--;
+            fseek(binario, espaco, SEEK_CUR);
+        }
     } else {  // estadoMae == NULL
-        // Escreve '\0', e se tiver sobrado escreve lixo
         TRYFWRITE(&CHARNULO, char, 1, binario);  // Escreve '\0'
+        espaco--;
+        fseek(binario, espaco, SEEK_CUR);
     }
 
     if (estadoBebe) {  // estadoBebe != NULL
         tamDado = strlen(estadoBebe);
         TRYFWRITE(estadoBebe, char, tamDado, binario);
-        if (tamDado < TAM_ESTADO) TRYFWRITE(&CHARNULO, char, 1, binario);  // Se sobrou espaco vazio: Escreve '\0'
+        if (tamDado < TAM_ESTADO) {  // Sobrou espaco vazio
+            TRYFWRITE(&CHARNULO, char, 1, binario);  //Escreve '\0'
+            espaco--;
+            fseek(binario, espaco, SEEK_CUR);
+        }
     } else {  // estadoBebe == NULL
-        TRYFWRITE(&CHARNULO, char, 1, binario); // Escreve '\0'
+        TRYFWRITE(&CHARNULO, char, 1, binario);  // Escreve '\0'
+        espaco--;
+        fseek(binario, espaco, SEEK_CUR);
     }
 
     return true;
