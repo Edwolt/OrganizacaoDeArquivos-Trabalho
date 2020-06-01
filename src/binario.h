@@ -114,7 +114,7 @@ void binario_apontar(Binario* binario, int rrn, int whence);
  * 
  * Obs: Destrua o registro depois de usar
  */
-Registro* binario_leRegistro(Binario* binario, bool* erro);
+Registro* binario_lerRegistro(Binario* binario, bool* erro);
 
 /**
  * Insere um registro no arquivo

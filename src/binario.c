@@ -126,7 +126,7 @@ fwrite_error:
 
 Registro* binario_buscar(Binario* binario, int rrn, bool* erro) {
     binario_apontar(binario, rrn, SEEK_SET);
-    return binario_leRegistro(binario, erro);
+    return binario_lerRegistro(binario, erro);
 }
 
 void binario_apontar(Binario* binario, int rrn, int whence) {
@@ -139,7 +139,7 @@ void binario_apontar(Binario* binario, int rrn, int whence) {
     }
 }
 
-Registro* binario_leRegistro(Binario* binario, bool* erro) {
+Registro* binario_lerRegistro(Binario* binario, bool* erro) {
     if (!binario) {  // Objeto nao existe
         *erro = true;
         return NULL;

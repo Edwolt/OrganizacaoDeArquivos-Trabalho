@@ -138,7 +138,7 @@ static void opcao2() {
     Registro* reg;
     bool erro;
     for (i = 0; i < rrn; i++) {
-        reg = binario_leRegistro(bin, &erro);
+        reg = binario_lerRegistro(bin, &erro);
 
         if (erro) {  // Falha ao ler arquivo
             binario_fechar(&bin);
@@ -217,7 +217,7 @@ static void opcao3() {
     bool erro;
     bool imprimiu = false;
     for (i = 0; i < rrn; i++) {
-        reg = binario_leRegistro(bin, &erro);
+        reg = binario_lerRegistro(bin, &erro);
 
         if (erro) {  // Falha ao ler registro
             printf("Falha no processamento do arquivo.\n");
@@ -398,7 +398,7 @@ static void opcao5() {
     Registro* reg;
 
     for (i = 0; i < rrn; i++) {  // Itera sobre registro
-        reg = binario_leRegistro(bin, &erro);
+        reg = binario_lerRegistro(bin, &erro);
 
         if (erro) {  // Falha ao ler registro
             for (i = 0; i < n; i++) criterio_apagar(&criterios[i]);
@@ -601,7 +601,7 @@ static void opcao7() {
         if (0 < rrns[i] && rrns[i] < rrn) {
             // Le registro
             binario_apontar(bin, rrns[i], SEEK_SET);  // Vai para registro no RRN rrns[i]
-            reg = binario_leRegistro(bin, &erro);
+            reg = binario_lerRegistro(bin, &erro);
             binario_apontar(bin, -1, SEEK_SET);  // Volta para registro no RRN rrns[i]
 
             if (erro) {  // Erro ao alocar
