@@ -508,7 +508,7 @@ static void opcao6() {
     }
 
     // Insere registros no arquivo
-    Binario* bin = binario_criar(path);
+    Binario* bin = binario_abrirEscrita(path);
     if (!bin) {
         for (i = 0; i < n; i++) registro_apagar(&regs[i]);
         free(regs);
@@ -516,7 +516,7 @@ static void opcao6() {
         printf("Falha no processamento do arquivo.\n");
         return;
     }
-    binario_apontar(bin, rrn, SEEK_SET);
+    binario_apontar(bin, rrn + 1, SEEK_SET);
 
     ok = binario_inserir(bin, regs, n);
     for (i = 0; i < n; i++) registro_apagar(&regs[i]);
