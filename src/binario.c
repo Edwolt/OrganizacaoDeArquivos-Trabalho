@@ -264,14 +264,14 @@ bool binario_escreverRegistro(Binario* binario, Registro* registro) {
     int idadeMae;
     char* dataNascimento;
     char sexoBebe;
-    char *cidadeMae, *cidadeBebe;
     char *estadoMae, *estadoBebe;
+    char *cidadeMae, *cidadeBebe;
     registro_extrairDados(registro,
                           &idNascimento,
                           &idadeMae, &dataNascimento,
                           &sexoBebe,
-                          &cidadeMae, &cidadeBebe,
-                          &estadoMae, &estadoBebe);
+                          &estadoMae, &estadoBebe,
+                          &cidadeMae, &cidadeBebe);
 
     sexoBebe = (sexoBebe != '\0' ? sexoBebe : '0');  // Se sexoBebe for nulo ele recebe '0'
 
@@ -372,14 +372,14 @@ bool binario_atualizarRegistro(Binario* binario, Registro* registro) {
     int idadeMae;
     char* dataNascimento;
     char sexoBebe;
-    char *cidadeMae, *cidadeBebe;
     char *estadoMae, *estadoBebe;
+    char *cidadeMae, *cidadeBebe;
     registro_extrairDados(registro,
                           &idNascimento,
                           &idadeMae, &dataNascimento,
                           &sexoBebe,
-                          &cidadeMae, &cidadeBebe,
-                          &estadoMae, &estadoBebe);
+                          &estadoMae, &estadoBebe,
+                          &cidadeMae, &cidadeBebe);
 
     sexoBebe = (sexoBebe != '\0' ? sexoBebe : '0');  // Se sexoBebe for nulo ele recebe '0'
 
