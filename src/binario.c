@@ -241,7 +241,11 @@ Registro* binario_lerRegistro(Binario* binario, bool* erro) {
     string_apagarSeVazio(&estadoBebe);
 
     // Cria o objeto registro e retorna
-    return registro_criar(idNascimento, idadeMae, dataNascimento, sexoBebe, estadoMae, estadoBebe, cidadeMae, cidadeBebe);
+    return registro_criar(idNascimento,
+                          idadeMae, dataNascimento,
+                          sexoBebe,
+                          estadoMae, estadoBebe,
+                          cidadeMae, cidadeBebe);
 
 fread_error:  // Tratando erros ao ler do arquivo
     *erro = true;
@@ -410,6 +414,7 @@ bool binario_atualizarRegistro(Binario* binario, Registro* registro) {
         espaco--;
         fseek(binario, espaco, SEEK_CUR);
     }
+    // TODO pular lixo
 
     TRYFWRITE(&sexoBebe, char, 1, binario);
 
