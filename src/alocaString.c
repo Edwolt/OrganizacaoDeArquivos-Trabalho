@@ -14,7 +14,7 @@ void string_apagar(char** str) {
 void string_apagarSeVazio(char** str) {
     if (!str || !*str) return;  // String ja desalocada
 
-    if (*str[0] != '\0') return;  // String nao vazia
+    if (strlen(*str) != 0) return; // String nao vazia
 
     free(*str);
     *str = NULL;

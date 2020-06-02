@@ -476,8 +476,8 @@ static void opcao6() {
         regs[i] = registro_criarDoStdin();
         if (!regs[i]) {
             for (i--; i >= 0; i--) registro_apagar(&regs[i]);  // Desaloca o que ja foi alocado
+            free(regs);
         }
-        free(regs);
     }
 
     // Marca arquivo como inconsistente
@@ -485,14 +485,24 @@ static void opcao6() {
     int rrn, inseridos;
     bool ok = binario_setCabecalho(path, &status, &rrn, &inseridos, NULL, NULL);
     if (!ok) {  // Falha ao modificar cabecalho
+        for (i = 0; i < n; i++) {
+            registro_apagar(&regs[i]);
+        }
         printf("Falha no carregamento do arquivo.\n");
         return;
     }
 
     // Insere registros no arquivo
     Binario* bin = binario_criar(path);
+    if (!bin) {
+        for (i = 0; i < n; i++) registro_apagar(&regs[i]);
+        free(regs);
 
+        return;
+    }
     ok = binario_inserir(bin, regs, n);
+    for (i = 0; i < n; i++) registro_apagar(&regs[i]);
+    free(regs);
 
     if (!ok) {  // Falha ao inserir no arquivo
         binario_fechar(&bin);
