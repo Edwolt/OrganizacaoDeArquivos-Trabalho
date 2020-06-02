@@ -6,6 +6,7 @@ Funcoes para auxiliar na alocacao dinamica de strings
 */
 
 #include <stdlib.h>
+#include <string.h>
 
 /**
  * Aloca uma string dinamicamente

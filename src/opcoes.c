@@ -354,7 +354,6 @@ static void opcao5() {
     ok: falha o ler cabecalho
     status: arquivo inconsistente
     */
-
     if (!ok || !status) {
         for (i = 0; i < n; i++) criterio_apagar(&criterios[i]);
         free(criterios);
@@ -480,15 +479,31 @@ static void opcao6() {
         }
     }
 
-    // Marca arquivo como inconsistente
-    bool status = false;
+    // Verifica cabecalho
+    bool status;
     int rrn, inseridos;
-    bool ok = binario_setCabecalho(path, &status, &rrn, &inseridos, NULL, NULL);
+    bool ok = binario_getCabecalho(path, &status, &rrn, &inseridos, NULL, NULL);
+
+    /*
+    ok: falha o ler cabecalho
+    status: arquivo inconsistente
+    */
+    if (!ok || !status) {
+        for (i = 0; i < n; i++) {
+            registro_apagar(&regs[i]);
+        }
+        printf("Falha no processamento do arquivo.\n");
+        return;
+    }
+
+    // Marca arquivo como inconsistente
+    status = false;
+    ok = binario_setCabecalho(path, &status, NULL, NULL, NULL, NULL);
     if (!ok) {  // Falha ao modificar cabecalho
         for (i = 0; i < n; i++) {
             registro_apagar(&regs[i]);
         }
-        printf("Falha no carregamento do arquivo.\n");
+        printf("Falha no processamento do arquivo.\n");
         return;
     }
 
@@ -498,15 +513,18 @@ static void opcao6() {
         for (i = 0; i < n; i++) registro_apagar(&regs[i]);
         free(regs);
 
+        printf("Falha no processamento do arquivo.\n");
         return;
     }
+    binario_apontar(bin, rrn, SEEK_SET);
+
     ok = binario_inserir(bin, regs, n);
     for (i = 0; i < n; i++) registro_apagar(&regs[i]);
     free(regs);
 
     if (!ok) {  // Falha ao inserir no arquivo
         binario_fechar(&bin);
-        printf("Falha no carregamento do arquivo.\n");
+        printf("Falha no processamento do arquivo.\n");
         return;
     }
 
@@ -518,7 +536,7 @@ static void opcao6() {
     inseridos += n;
     ok = binario_setCabecalho(path, &status, &rrn, &inseridos, NULL, NULL);
     if (!ok) {  // Falha ao modificar cabecalho
-        printf("Falha no carregamento do arquivo.\n");
+        printf("Falha no processamento do arquivo.\n");
         return;
     }
 
