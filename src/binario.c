@@ -172,10 +172,10 @@ Registro* binario_lerRegistro(Binario* binario, bool* erro) {
 
     char* cidadeBebe = NULL;
     if (tamCidadeBebe > 0) {
-        cidadeMae = string_criar(TAM_CVAR + 1);
+        cidadeBebe = string_criar(TAM_CVAR + 1);
         if (!cidadeBebe) {  // Falha ao alocar string
             // Desaloca o que ja foi alocado
-            string_apagar(&cidadeMae);
+            string_apagar(&cidadeBebe);
 
             *erro = true;
             return NULL;
