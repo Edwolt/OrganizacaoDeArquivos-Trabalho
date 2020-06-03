@@ -394,6 +394,10 @@ bool binario_atualizarRegistro(Binario* binario, Registro* registro) {
     if (cidadeMae) TRYFWRITE(cidadeMae, char, tamCidadeMae, binario);
     if (cidadeBebe) TRYFWRITE(cidadeBebe, char, tamCidadeBebe, binario);
 
+    // Pula lixo
+    espaco = TAM_CVAR - tamCidadeBebe - tamCidadeMae;
+    fseek(binario, espaco, SEEK_CUR);
+
     // Escrevendo campos fixos
     TRYFWRITE(&idNascimento, int, 1, binario);
     TRYFWRITE(&idadeMae, int, 1, binario);
@@ -414,7 +418,6 @@ bool binario_atualizarRegistro(Binario* binario, Registro* registro) {
         espaco--;
         fseek(binario, espaco, SEEK_CUR);
     }
-    // TODO pular lixo
 
     TRYFWRITE(&sexoBebe, char, 1, binario);
 
