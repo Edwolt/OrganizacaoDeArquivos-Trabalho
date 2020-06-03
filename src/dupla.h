@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "alocaString.h"
+#include "registro.h"  // INTNULL
 
 // Valores da hash da nome do campo
 #define DUPLA_INVALIDO -1

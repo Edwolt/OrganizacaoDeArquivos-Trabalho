@@ -33,13 +33,8 @@ static int hash(char* str) {
 //* ============================ */
 
 Dupla* dupla_criar(char* campo, char* valor) {
-    // Verifica se os parametros foram passados
-    if (!campo) {
+    if (!campo) {  // Verifica se os parametros foram passados
         if (valor) string_apagar(&valor);
-        return NULL;
-    }
-    if (!valor) {
-        if (campo) string_apagar(&campo);
         return NULL;
     }
 
@@ -52,14 +47,22 @@ Dupla* dupla_criar(char* campo, char* valor) {
     switch (dupla_getTipo(dupla)) {
         // Campo Inteiro
         case DUPLA_INTEIRO:
-            dupla->valor.inteiro = atoi(valor);
-            string_apagar(&valor);
+            if (valor) {
+                dupla->valor.inteiro = atoi(valor);
+                string_apagar(&valor);
+            } else {
+                dupla->valor.inteiro = INTNULL;
+            }
             break;
 
         // Campo Caracter
         case DUPLA_CARACTER:
-            dupla->valor.caracter = valor[0];
-            string_apagar(&valor);
+            if (valor) {
+                dupla->valor.caracter = valor[0];
+                string_apagar(&valor);
+            } else {
+                dupla->valor.caracter = '\0';
+            }
             break;
 
         // Campo String
