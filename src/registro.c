@@ -63,7 +63,7 @@ void registro_apagar(Registro** registro) {
     string_apagar(&(*registro)->cidadeMae);
     string_apagar(&(*registro)->cidadeBebe);
 
-    free((*registro));
+    free(*registro);
     *registro = NULL;
 }
 
@@ -218,7 +218,9 @@ char* registro_getDataNascimento(Registro* registro) {
     return registro->dataNascimento;
 }
 void registro_setDataNascimento(Registro* registro, char* dataNascimento) {
-    if (registro) registro->dataNascimento = dataNascimento;
+    if (!registro) return;
+    string_apagar(&registro->dataNascimento);
+    registro->dataNascimento = dataNascimento;
 }
 
 char registro_getSexoBebe(Registro* registro) {
@@ -234,7 +236,9 @@ char* registro_getEstadoMae(Registro* registro) {
     return registro->estadoMae;
 }
 void registro_setEstadoMae(Registro* registro, char* estadoMae) {
-    if (registro) registro->estadoMae = estadoMae;
+    if (!registro) return;
+    string_apagar(&registro->estadoMae);
+    registro->estadoMae = estadoMae;
 }
 
 char* registro_getEstadoBebe(Registro* registro) {
@@ -242,7 +246,9 @@ char* registro_getEstadoBebe(Registro* registro) {
     return registro->estadoBebe;
 }
 void registro_setEstadoBebe(Registro* registro, char* estadoBebe) {
-    if (registro) registro->estadoBebe = estadoBebe;
+    if (!registro) return;
+    string_apagar(&registro->estadoBebe);
+    registro->estadoMae = estadoBebe;
 }
 
 char* registro_getCidadeMae(Registro* registro) {
@@ -250,7 +256,9 @@ char* registro_getCidadeMae(Registro* registro) {
     return registro->cidadeMae;
 }
 void registro_setCidadeMae(Registro* registro, char* cidadeMae) {
-    if (registro) registro->cidadeMae = cidadeMae;
+    if (!registro) return;
+    string_apagar(&registro->cidadeMae);
+    registro->estadoMae = cidadeMae;
 }
 
 char* registro_getCidadeBebe(Registro* registro) {
@@ -258,5 +266,7 @@ char* registro_getCidadeBebe(Registro* registro) {
     return registro->cidadeBebe;
 }
 void registro_setCidadeBebe(Registro* registro, char* cidadeBebe) {
-    if (registro) registro->cidadeBebe = cidadeBebe;
+    if (!registro) return;
+    string_apagar(&registro->cidadeBebe);
+    registro->estadoMae = cidadeBebe;
 }
