@@ -130,12 +130,19 @@ Registro* binario_buscar(Binario* binario, int rrn, bool* erro) {
 }
 
 void binario_apontar(Binario* binario, int rrn, int whence) {
-    if (whence == SEEK_CUR) {
-        int here = ftell(binario);
-        here = here % TAM_REG;
-        fseek(binario, rrn * TAM_REG - here, SEEK_CUR);
-    } else {
-        fseek(binario, rrn * TAM_REG, whence);
+    int here;
+    switch (whence) {
+        case SEEK_SET:
+            fseek(binario, (rrn + 1) * TAM_REG, whence);
+            break;
+        case SEEK_CUR:
+            here = ftell(binario);
+            here = here % TAM_REG;
+            fseek(binario, rrn * TAM_REG - here, SEEK_CUR);
+            break;
+        case SEEK_END:
+            fseek(binario, rrn * TAM_REG, whence);
+            break;
     }
 }
 
