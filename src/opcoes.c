@@ -634,7 +634,7 @@ static void opcao7() {
     Registro* reg;
 
     Binario* bin = binario_abrirEscrita(path);
-    if (!bin) {
+    if (!bin) {  // Falha ao abrir arquivo
         free(rrnsAtualizar);
         for (i = 0; i < n; i++) criterio_apagar(&novosValores[i]);
         free(novosValores);
@@ -644,15 +644,7 @@ static void opcao7() {
     }
 
     for (i = 0; i < n; i++) {
-        if (rrnsAtualizar[i] < 0 || rrnsAtualizar[i] >= rrn) {
-            free(rrnsAtualizar);
-            for (i = 0; i < n; i++) criterio_apagar(&novosValores[i]);
-            free(novosValores);
-            binario_fechar(&bin);
-
-            printf("Falha no carregamento do arquivo.\n");
-            return;
-        }
+        if (rrnsAtualizar[i] < 0 || rrnsAtualizar[i] >= rrn) continue;
 
         reg = binario_buscar(bin, rrnsAtualizar[i], &erro);
         if (erro) {
@@ -669,7 +661,6 @@ static void opcao7() {
 
         // TODO explicar o que ta acontecendo
         criterio_atualizarRegistro(novosValores[i], reg);
-        binario_apontar(bin, rrnsAtualizar[i], SEEK_SET);
 
         ok = binario_atualizarRegistro(bin, reg);
         if (!ok) {
@@ -682,6 +673,7 @@ static void opcao7() {
             printf("Falha no carregamento do arquivo.\n");
             return;
         }
+        binario_apontar(bin, rrnsAtualizar[i], SEEK_SET);
 
         atualizados++;
         registro_apagar(&reg);
@@ -691,16 +683,14 @@ static void opcao7() {
     free(novosValores);
     binario_fechar(&bin);
 
-    for (i = 0; i < n; i++) criterio_apagar(&novosValores[i]);
-    free(novosValores);
-    free(rrnsAtualizar);
-
     // Atualiza cabecalho
     status = true;
     ok = binario_setCabecalho(path, &status, NULL, NULL, NULL, &atualizados);
     if (!ok) {  // Falha ao modificar cabecalho
+        printf("Falha no processamento do arquivo.\n");
         return;
     }
+
     // Imprime resultado
     binarioNaTela(path);
 }
