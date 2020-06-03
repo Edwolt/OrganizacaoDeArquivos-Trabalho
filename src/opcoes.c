@@ -286,7 +286,7 @@ static void opcao4() {
 
     bool erro;
     // rrn + 1 porque o rrn recebido do stdin desconsidera a existencia do registro cabecalho
-    Registro* reg = binario_buscar(bin, rrn + 1, &erro);
+    Registro* reg = binario_buscar(bin, rrn, &erro);
 
     if (erro) {  // Falha ao ler registro
         printf("Falha no processamento do arquivo.\n");
@@ -517,7 +517,7 @@ static void opcao6() {
         printf("Falha no processamento do arquivo.\n");
         return;
     }
-    binario_apontar(bin, rrn + 1, SEEK_SET);
+    binario_apontar(bin, rrn, SEEK_SET);
 
     ok = binario_inserir(bin, regs, n);
     for (i = 0; i < n; i++) registro_apagar(&regs[i]);
@@ -639,8 +639,8 @@ static void opcao7() {
     for (i = 0; i < n; i++) {
         if (0 <= rrns[i] && rrns[i] < rrn) {
             // Le registro
-            reg = binario_buscar(bin, rrns[i] + 1, &erro);
-            binario_apontar(bin, -1, SEEK_SET);  // Volta para registro no RRN rrns[i]
+            reg = binario_buscar(bin, rrns[i], &erro);
+            binario_apontar(bin, -1, SEEK_CUR);  // Volta para registro no RRN rrns[i]
 
             if (erro) {  // Erro ao alocar
                 free(rrns);

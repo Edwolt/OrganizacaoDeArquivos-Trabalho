@@ -98,7 +98,7 @@ Registro* binario_buscar(Binario* binario, int rrn, bool* erro);
  * Faz o binario passar a apontar para o rrn dado
  * 
  * whence segue a mesma logica que o fseek:
- * * SEEK_SET: Vai para o registro com o rrn passado
+ * * SEEK_SET: Vai para o registro com o rrn passado (Desconsidera o registro cabecalho)
  * * SEEK_CUR: Anda rrn registros a partir do registro dado
  * * SEEK_END: Anda rrn registros a partir do fim do arquivo
  */

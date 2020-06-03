@@ -75,7 +75,7 @@ Binario* binario_abrirLeitura(char* path) {
     Binario* binario = fopen(path, "rb");
     if (!binario) return NULL;  // Falha ao abrir arquivo
 
-    binario_apontar(binario, 1, SEEK_SET);  // Pula o registro cabecalho
+    binario_apontar(binario, 0, SEEK_SET);  // Vai para o primeiro registro do arquivo
     return binario;
 }
 
@@ -85,7 +85,7 @@ Binario* binario_abrirEscrita(char* path) {
     Binario* binario = fopen(path, "rb+");
     if (!binario) return NULL;  // Falha ao abrir arquivo
 
-    binario_apontar(binario, 1, SEEK_SET);  // Pula o registro cabecalho
+    binario_apontar(binario, 0, SEEK_SET);  // Vai para o primeiro registro do arquivo
     return binario;
 }
 
@@ -116,7 +116,7 @@ bool binario_remover(Binario* binario) {
 
     int removido = REMOVIDO;
     TRYFWRITE(&removido, int, 1, binario);
-    binario_apontar(binario, 1, SEEK_CUR);
+    binario_apontar(binario, 1, SEEK_CUR);  // Pula para o proximo registro
 
     return true;
 
@@ -130,10 +130,10 @@ Registro* binario_buscar(Binario* binario, int rrn, bool* erro) {
 }
 
 void binario_apontar(Binario* binario, int rrn, int whence) {
-    int here;
+    int here; // TODO escolher um nome melhor para a variavel
     switch (whence) {
         case SEEK_SET:
-            fseek(binario, (rrn + 1) * TAM_REG, whence);
+            fseek(binario, (rrn + 1) * TAM_REG, SEEK_SET);
             break;
         case SEEK_CUR:
             here = ftell(binario);
@@ -141,7 +141,7 @@ void binario_apontar(Binario* binario, int rrn, int whence) {
             fseek(binario, rrn * TAM_REG - here, SEEK_CUR);
             break;
         case SEEK_END:
-            fseek(binario, rrn * TAM_REG, whence);
+            fseek(binario, rrn * TAM_REG, SEEK_END);
             break;
     }
 }
