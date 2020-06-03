@@ -572,7 +572,6 @@ static void opcao7() {
     scanf(" %s %d", path, &n);
 
     // Le o que deve atualizar (Guarda duplas campo-valor no TAD criterio)
-    int m;
     int* rrns = malloc(n * sizeof(int));
     if (!rrns) {
         printf("Falha no carregamento do arquivo.\n");
@@ -581,7 +580,7 @@ static void opcao7() {
     Criterio** criterios = malloc(n * sizeof(Criterio*));
 
     for (i = 0; i < n; i++) {
-        scanf("%d %d", &rrns[i], &m);
+        scanf("%d ", &rrns[i]);
         criterios[i] = criterio_criarDoStdin();
 
         if (!criterios[i]) {  // Falha ao ler criterio
@@ -638,10 +637,9 @@ static void opcao7() {
     bool erro;
     Registro* reg;
     for (i = 0; i < n; i++) {
-        if (1 <= rrns[i] && rrns[i] < rrn) {
+        if (0 <= rrns[i] && rrns[i] < rrn) {
             // Le registro
-            binario_apontar(bin, rrns[i], SEEK_SET);  // Vai para registro no RRN rrns[i]
-            reg = binario_lerRegistro(bin, &erro);
+            reg = binario_buscar(bin, rrns[i] + 1, &erro);
             binario_apontar(bin, -1, SEEK_SET);  // Volta para registro no RRN rrns[i]
 
             if (erro) {  // Erro ao alocar
@@ -670,6 +668,7 @@ static void opcao7() {
                 return;
             }
 
+            atualizados++;
             registro_apagar(&reg);
         }
     }
@@ -680,7 +679,6 @@ static void opcao7() {
 
     // Atualiza cabecalho
     status = true;
-    atualizados += n;
     ok = binario_setCabecalho(path, &status, NULL, NULL, NULL, &atualizados);
     if (!ok) {  // Falha ao modificar cabecalho
         printf("Falha no processamento do arquivo.\n");
