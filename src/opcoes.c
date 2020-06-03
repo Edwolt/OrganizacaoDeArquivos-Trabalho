@@ -271,7 +271,7 @@ static void opcao4() {
         return;
     }
 
-    if (0 < rrn || rrn > rrn_arquivo) {  // Registro nao existe
+    if (rrn <= 0 || rrn > rrn_arquivo) {  // Registro nao existe
         printf("Registro Inexistente.");
         return;
     }
@@ -285,7 +285,8 @@ static void opcao4() {
     }
 
     bool erro;
-    Registro* reg = binario_buscar(bin, rrn, &erro);
+    // rrn + 1 porque o rrn recebido do stdin desconsidera a existencia do registro cabecalho
+    Registro* reg = binario_buscar(bin, rrn + 1, &erro); 
 
     if (erro) {  // Falha ao ler registro
         printf("Falha no processamento do arquivo.\n");
