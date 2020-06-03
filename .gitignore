@@ -3,7 +3,10 @@ Ignore/
 bin/
 .vscode
 
-#Compilado
+# Hexdumps
+*.hex 
+
+# Compilado
 enduser
 enduser.zip
 
