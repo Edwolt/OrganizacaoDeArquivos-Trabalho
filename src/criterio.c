@@ -39,7 +39,7 @@ Criterio* criterio_criarDoStdin() {
     char* valor;
 
     criterio->duplas = malloc(criterio->tam * sizeof(Dupla*));
-    if (!criterio) {  // Falha ao alocar vetor de duplas
+    if (!criterio->duplas) {  // Falha ao alocar vetor de duplas
         return NULL;
     }
 
@@ -48,7 +48,6 @@ Criterio* criterio_criarDoStdin() {
         if (!campo) {  // Falha ao alocar string campo
             return NULL;
         }
-        string_apagarSeVazio(&campo);
 
         valor = string_criar(STR_TAM);
         if (!valor) {  // Falha ao alocar string valor
@@ -57,6 +56,7 @@ Criterio* criterio_criarDoStdin() {
         }
 
         scanf(" %s", campo);
+        string_apagarSeVazio(&campo);
 
         scan_quote_string(valor);
         trim(valor);
