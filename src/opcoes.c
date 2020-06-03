@@ -286,7 +286,7 @@ static void opcao4() {
 
     bool erro;
     // rrn + 1 porque o rrn recebido do stdin desconsidera a existencia do registro cabecalho
-    Registro* reg = binario_buscar(bin, rrn + 1, &erro); 
+    Registro* reg = binario_buscar(bin, rrn + 1, &erro);
 
     if (erro) {  // Falha ao ler registro
         printf("Falha no processamento do arquivo.\n");
@@ -606,13 +606,23 @@ static void opcao7() {
     if (!ok || !status) {
         free(rrns);
         for (i--; i >= 0; i--) criterio_apagar(&criterios[i]);
-        free(criterios[i]);
+        free(criterios);
 
         printf("Falha no processamento do arquivo.\n");
         return;
     }
 
-    // TODO marca cabecalho como inconsistente
+    // Marca arquivo como insconsistente
+    status = false;
+    ok = binario_setCabecalho(path, &status, NULL, NULL, NULL, NULL);
+    if (!ok) {  // Falha ao modificar cabecalho
+        free(rrns);
+        for (i--; i >= 0; i--) criterio_apagar(&criterios[i]);
+        free(criterios[i]);
+
+        printf("Falha no carregamento do arquivo.\n");
+        return;
+    }
 
     // Atualiza registros
     Binario* bin = binario_abrirEscrita(path);
