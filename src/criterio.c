@@ -48,6 +48,7 @@ Criterio* criterio_criarDoStdin() {
         if (!campo) {  // Falha ao alocar string campo
             return NULL;
         }
+        string_apagarSeVazio(&campo);
 
         valor = string_criar(STR_TAM);
         if (!valor) {  // Falha ao alocar string valor
@@ -59,6 +60,7 @@ Criterio* criterio_criarDoStdin() {
 
         scan_quote_string(valor);
         trim(valor);
+        string_apagarSeVazio(&valor);
 
         criterio->duplas[i] = dupla_criar(campo, valor);
         if (!criterio->duplas[i]) {  // Se nao foi possivel alocar
