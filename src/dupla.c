@@ -86,6 +86,13 @@ void dupla_apagar(Dupla** dupla) {
     *dupla = NULL;
 }
 
+void dupla_destruir(Dupla** dupla) {
+    if (!dupla || !*dupla) return;  // Objeto ja foi apagado
+
+    free(*dupla);
+    *dupla = NULL;
+}
+
 int dupla_getCampo(Dupla* dupla) {
     if (!dupla) return DUPLA_INVALIDO;  // Objeto nao existe
 

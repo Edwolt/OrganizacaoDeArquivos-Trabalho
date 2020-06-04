@@ -166,14 +166,14 @@ bool criterio_satisfaz(Criterio* criterio, Registro* registro) {
     return true;
 }
 
-void criterio_atualizarRegistro(Criterio* criterio, Registro* registro) {
-    if (!criterio || !registro) return;  // Algum dos objetos nao existe
+void criterio_atualizarRegistro(Criterio** criterio, Registro* registro) {
+    if (!criterio || !*criterio || !registro) return;  // Algum dos objetos nao existe
 
     int i;  // Iteradores
     Dupla* dupla;
 
-    for (i = 0; i < criterio->tam; i++) {
-        dupla = criterio->duplas[i];
+    for (i = 0; i < (*criterio)->tam; i++) {
+        dupla = (*criterio)->duplas[i];
         switch (dupla_getCampo(dupla)) {
             // Campos Inteiros
             case DUPLA_IDNASCIMENTO:
@@ -192,25 +192,31 @@ void criterio_atualizarRegistro(Criterio* criterio, Registro* registro) {
             // Campos String
             case DUPLA_DATANASCIMENTO:
                 registro_setDataNascimento(registro, dupla_getString(dupla));
+                dupla_destruir(&(*criterio)->duplas[i]);
                 break;
 
             case DUPLA_ESTADOMAE:
                 registro_setEstadoMae(registro, dupla_getString(dupla));
+                dupla_destruir(&(*criterio)->duplas[i]);
                 break;
 
             case DUPLA_ESTADOBEBE:
                 registro_setEstadoBebe(registro, dupla_getString(dupla));
+                dupla_destruir(&(*criterio)->duplas[i]);
                 break;
 
             case DUPLA_CIDADEMAE:
                 registro_setCidadeMae(registro, dupla_getString(dupla));
+                dupla_destruir(&(*criterio)->duplas[i]);
                 break;
 
             case DUPLA_CIDADEBEBE:
                 registro_setCidadeBebe(registro, dupla_getString(dupla));
+                dupla_destruir(&(*criterio)->duplas[i]);
                 break;
         }
     }
+    criterio_apagar(criterio); // As duplas já foram destruidas, mas o vetor de duplas ainda nao
 }
 
 //* ============================= *//

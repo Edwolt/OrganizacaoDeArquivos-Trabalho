@@ -50,8 +50,9 @@ bool criterio_satisfaz(Criterio* criterio, Registro* registro);
 
 /**
  * Atualiza o registro com os dados salvo em criterio
+ * e apaga o objeto criterio
  */
-void criterio_atualizarRegistro(Criterio* criterio, Registro* registro);
+void criterio_atualizarRegistro(Criterio** criterio, Registro* registro);
 
 //* ============================= *//
 //* ===== Getters e Setters ===== *//

@@ -48,6 +48,14 @@ Dupla* dupla_criar(char* campo, char* valor);
  */
 void dupla_apagar(Dupla** dupla);
 
+/**
+ * Destroi o objeto
+ * Os objetos e desaloca variaveis que estiver dentro dele nao sao destruidos
+ * 
+ * O motivo dessa instrução existir eh poder desalocar a dupla e ainda ter a string utilizavel
+ */
+void dupla_destruir(Dupla** dupla);
+
 //* =================== *//
 //* ===== Getters ===== *//
 //* =================== *//
