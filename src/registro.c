@@ -248,7 +248,7 @@ char* registro_getEstadoBebe(Registro* registro) {
 void registro_setEstadoBebe(Registro* registro, char* estadoBebe) {
     if (!registro) return;
     string_apagar(&registro->estadoBebe);
-    registro->estadoMae = estadoBebe;
+    registro->estadoBebe = estadoBebe;
 }
 
 char* registro_getCidadeMae(Registro* registro) {
@@ -258,7 +258,7 @@ char* registro_getCidadeMae(Registro* registro) {
 void registro_setCidadeMae(Registro* registro, char* cidadeMae) {
     if (!registro) return;
     string_apagar(&registro->cidadeMae);
-    registro->estadoMae = cidadeMae;
+    registro->cidadeMae = cidadeMae;
 }
 
 char* registro_getCidadeBebe(Registro* registro) {
@@ -268,5 +268,5 @@ char* registro_getCidadeBebe(Registro* registro) {
 void registro_setCidadeBebe(Registro* registro, char* cidadeBebe) {
     if (!registro) return;
     string_apagar(&registro->cidadeBebe);
-    registro->estadoMae = cidadeBebe;
+    registro->cidadeBebe = cidadeBebe;
 }
