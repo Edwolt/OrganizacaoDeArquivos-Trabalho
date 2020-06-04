@@ -463,7 +463,8 @@ static void opcao5() {
  */
 static void opcao6() {
     int i;  // Iteradores
-
+    Criterio* criterio = NULL;
+    criterio_apagar(&criterio);
     // Le opcao
     char path[PATH_TAM];
     int n;
@@ -571,6 +572,7 @@ static void opcao7() {
     int n;
     scanf(" %s %d", path, &n);
 
+    // Le o que deve atualizar (Guarda duplas campo-valor no TAD criterio)
     int* rrnsAtualizar = malloc(n * sizeof(int));
     if (!rrnsAtualizar) {  // Falha ao criar vetor de inteiros
         printf("Falha no carregamento do arquivo.\n");
@@ -584,9 +586,8 @@ static void opcao7() {
         return;
     }
 
-    // Le o que deve atualizar (Guarda duplas campo-valor no TAD criterio)
     for (i = 0; i < n; i++) {
-        scanf("%d", &rrnsAtualizar[i]);  // Le rrn
+        scanf("%d ", &rrnsAtualizar[i]);  // Le rrn
         novosValores[i] = criterio_criarDoStdin();  // Le duplas campo-valor
 
         if (!novosValores[i]) {  // Falha ao criar criterio
@@ -630,9 +631,6 @@ static void opcao7() {
     }
 
     // Atualiza registros
-    bool erro;
-    Registro* reg;
-
     Binario* bin = binario_abrirEscrita(path);
     if (!bin) {  // Falha ao abrir arquivo
         free(rrnsAtualizar);
@@ -643,51 +641,54 @@ static void opcao7() {
         return;
     }
 
+    bool erro;
+    Registro* reg;
     for (i = 0; i < n; i++) {
-        if (rrnsAtualizar[i] < 0 || rrnsAtualizar[i] >= rrn) continue;
+        if (0 <= rrnsAtualizar[i] && rrnsAtualizar[i] < rrn) {  // RRN eh valido
+            reg = binario_buscar(bin, rrnsAtualizar[i], &erro);  // Le registro
+            binario_apontar(bin, -1, SEEK_CUR);  // Volta para registro no RRN rrns[i]
 
-        reg = binario_buscar(bin, rrnsAtualizar[i], &erro);
-        if (erro) {
-            free(rrnsAtualizar);
-            for (i = 0; i < n; i++) criterio_apagar(&novosValores[i]);
-            free(novosValores);
-            binario_fechar(&bin);
+            if (erro) {  // Erro ao alocar
+                free(rrnsAtualizar);
+                for (i = 0; i < n; i++) criterio_apagar(&novosValores[i]);
+                free(novosValores);
+                binario_fechar(&bin);
 
-            printf("Falha no carregamento do arquivo.\n");
-            return;
-        }
+                printf("Falha no carregamento do arquivo.\n");
+                return;
+            }
 
-        if (!reg) continue;
+            if (!reg) continue;  // Registro removido
 
-        // TODO explicar o que ta acontecendo
-        criterio_atualizarRegistro(novosValores[i], reg);
+            // Atualiza registro
+            criterio_atualizarRegistro(&novosValores[i], reg);  // Pega os valores em criterio e colocar no registro
+            ok = binario_atualizarRegistro(bin, reg);  // Escreve o registro em cima do anterior
+            if (!ok) {
+                registro_apagar(&reg);
+                free(rrnsAtualizar);
+                for (i = 0; i < n; i++) criterio_apagar(&novosValores[i]);
+                free(novosValores);
+                binario_fechar(&bin);
 
-        ok = binario_atualizarRegistro(bin, reg);
-        if (!ok) {
+                printf("Falha no carregamento do arquivo.\n");
+                return;
+            }
+
+            atualizados++;
             registro_apagar(&reg);
-            free(rrnsAtualizar);
-            for (i = 0; i < n; i++) criterio_apagar(&novosValores[i]);
-            free(novosValores);
-            binario_fechar(&bin);
-
-            printf("Falha no carregamento do arquivo.\n");
-            return;
         }
-        binario_apontar(bin, rrnsAtualizar[i], SEEK_SET);
-
-        atualizados++;
-        registro_apagar(&reg);
     }
+
+    binario_fechar(&bin);
     free(rrnsAtualizar);
     for (i = 0; i < n; i++) criterio_apagar(&novosValores[i]);
     free(novosValores);
-    binario_fechar(&bin);
 
     // Atualiza cabecalho
     status = true;
     ok = binario_setCabecalho(path, &status, NULL, NULL, NULL, &atualizados);
     if (!ok) {  // Falha ao modificar cabecalho
-        printf("Falha no processamento do arquivo.\n");
+        printf("Falha no carregamento do arquivo.\n");
         return;
     }
 
