@@ -130,7 +130,7 @@ Registro* binario_buscar(Binario* binario, int rrn, bool* erro) {
 }
 
 void binario_apontar(Binario* binario, int rrn, int whence) {
-    int here; // TODO escolher um nome melhor para a variavel
+    int here;  // TODO escolher um nome melhor para a variavel
     switch (whence) {
         case SEEK_SET:
             fseek(binario, (rrn + 1) * TAM_REG, SEEK_SET);
@@ -526,7 +526,7 @@ bool binario_setCabecalho(char* path,
     if (!binario) return false;  // Falha ao abrir arquivo
 
     if (status) {  // Recebeu status
-        char aux = (status ? '1' : '0');
+        char aux = (*status ? '1' : '0');
         TRYFWRITE(&aux, char, 1, binario);
     } else {
         fseek(binario, sizeof(char), SEEK_CUR);  // Pula o status
