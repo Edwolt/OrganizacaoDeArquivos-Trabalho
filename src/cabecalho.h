@@ -31,7 +31,7 @@ Cabecalho* cabecalho_criar(bool status, int rrn,
 Cabecalho* cabecalho_criarVazio();
 
 /**
- * Destroi o objeto e todos os objetos que o pertence
+ * Destroi o objeto, os objetos que o pertence e desaloca variveis
  */
 void cabecalho_apagar(Cabecalho** cabecalho);
 
