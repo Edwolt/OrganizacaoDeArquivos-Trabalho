@@ -3,7 +3,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>  // EXIT_SUCCESS, EXIT_FAILURE
-
 #include "opcoes.h"
 
 int main() {

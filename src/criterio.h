@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "alocaString.h"
 #include "binarioNaTela.h"  // trim
 #include "dupla.h"

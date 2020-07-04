@@ -3,7 +3,6 @@
 
 #include <stdbool.h>
 #include <stdio.h>
-
 #include "binario.h"
 #include "binarioNaTela.h"
 #include "criterio.h"

@@ -3,7 +3,6 @@
 
 #include <stdlib.h>  // atoi
 #include <string.h>
-
 #include "alocaString.h"
 #include "registro.h"  // INTNULL
 
