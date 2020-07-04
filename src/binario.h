@@ -15,7 +15,7 @@
  * Manipula um arquivo binario de registros
  * 
  * Por ser simples, nao tem motivo para cirar uma estrutura
- * por isso usei apenas um typedef
+ * por isso eh apenas um typedef
  */
 typedef FILE Binario;
 
@@ -35,20 +35,10 @@ typedef FILE Binario;
 Binario* binario_criar(char* path);
 
 /**
- * Cria um novo arquivo binário com nome path
- * a partir dos dados de um arquivo .csv usando o TAD CSV
- * 
- * Se o arquivo ja existir, sobrescreve ele com um arquivo novo
- * 
- * Retorna se foi possivel gerar
- */
-bool binario_gerarDoCSV(char* path, CSV* csv);
-
-/**
  * Retorna arquivo binario com nome path aberto para leitura
  * Obs: Nao eh necessario pular o registro cabecalho
  * 
- * Retorna NULL se nao for possivel Abrir o arquivo
+ * Retorna NULL se nao for possivel abrir o arquivo
  * Retorna NULL se nao receber um path
  * 
  * Obs: Depois, use uma funcao para destruir o objeto
@@ -148,11 +138,15 @@ bool binario_atualizarRegistro(Binario* binario, Registro* registro);
 /**
  * Retorna um objeto cabecalho com
  * os dados no cabecalho do arquivo em path
+ * 
+ * Retorna NULL se nao for possivel criar o objeto Cabecalho
+ * Retorna NULL se nao for possivel ler o registro cabecalho
  */
 Cabecalho* binario_getCabecalho(char* path);
 
 /**
  * Atuliza o cabeçalho do arquivo em path usando os dados do objeto cabecalho
+ * Retorna se teve sucesso ao alterar o registro cabecalho
  */
 bool binario_setCabecalho(char* path, Cabecalho* cabecalho);
 
