@@ -4,7 +4,9 @@
 #include <stdbool.h>
 #include <stdio.h>  // Arquivos
 #include <stdlib.h>  // Alocacao Dinamica
+
 #include "alocaString.h"
+#include "cabecalho.h"
 #include "csv.h"
 #include "registro.h"
 
