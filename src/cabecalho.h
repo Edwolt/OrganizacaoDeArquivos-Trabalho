@@ -23,9 +23,9 @@ void cabecalho_extrairDados(Cabecalho* cabecalho,
                             bool* status, int* rrn,
                             int* inseridos, int* removidos, int* atualizados);
 
-void cabecalho_insere(Cabecalho* cabecalho);
-void cabecalho_remove(Cabecalho* cebecalho);
-void cabecalho_atualiza(Cabecalho* cabecalho);
+void cabecalho_inserir(Cabecalho* cabecalho);
+void cabecalho_remover(Cabecalho* cebecalho);
+void cabecalho_atualizar(Cabecalho* cabecalho);
 
 //* ============================= *//
 //* ===== Getters e Setters ===== *//

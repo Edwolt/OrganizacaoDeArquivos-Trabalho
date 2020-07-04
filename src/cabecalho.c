@@ -45,19 +45,19 @@ void cabecalho_extrairDados(Cabecalho* cabecalho,
     if (atualizados) *atualizados = cabecalho->atualizados;
 }
 
-void cabecalho_insere(Cabecalho* cabecalho) {
+void cabecalho_inserir(Cabecalho* cabecalho) {
     if (!cabecalho) return;
     cabecalho->inseridos++;
     cabecalho->rrn++;
 }
 
-void cabecalho_remove(Cabecalho* cebecalho) {
+void cabecalho_remover(Cabecalho* cebecalho) {
     if (!cebecalho) return;
-    cabecalho->removidos++;
-    cabecalho->inseridos--;
+    cebecalho->removidos++;
+    cebecalho->inseridos--;
 }
 
-void cabecalho_atualiza(Cabecalho* cabecalho) {
+void cabecalho_atualizar(Cabecalho* cabecalho) {
     if (!cabecalho) return;
     cabecalho->atualizados++;
 }
