@@ -1,11 +1,11 @@
 #include "cabecalho.h"
 
 struct Cabecalho {
-    bool status;
-    int rrn;
-    int inseridos;
-    int removidos;
-    int atualizados;
+    bool status;  // Status
+    int rrn;  // RRNProxRegistro
+    int inseridos;  // numeroRegistrosInseridos
+    int removidos;  // numeroRegistrosRemovidos
+    int atualizados;  //numeroRegistrosAtualizado
 };
 
 Cabecalho* cabecalho_criar(bool status, int rrn,
