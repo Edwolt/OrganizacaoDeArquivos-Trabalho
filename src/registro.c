@@ -38,25 +38,17 @@ Registro* registro_criar(int idNascimento,
 }
 
 Registro* registro_criarVazio() {
-    Registro* registro = malloc(sizeof(Registro));
-    if (!registro) return NULL;  // Falha ao criar registro
-
-    registro->idNascimento = INTNULL;
-    registro->idadeMae = INTNULL;
-    registro->dataNascimento = NULL;
-    registro->sexoBebe = '\0';
-    registro->estadoMae = NULL;
-    registro->estadoBebe = NULL;
-    registro->cidadeMae = NULL;
-    registro->cidadeBebe = NULL;
-
-    return registro;
+    return registro_criar(INTNULL,
+                          INTNULL, NULL,
+                          '\0',
+                          NULL, NULL,
+                          NULL, NULL);
 }
 
 void registro_apagar(Registro** registro) {
     if (!registro || !*registro) return;  // Objeto ja apagado
 
-    // Free nas strings
+    // Apagar strings
     string_apagar(&(*registro)->dataNascimento);
     string_apagar(&(*registro)->estadoMae);
     string_apagar(&(*registro)->estadoBebe);

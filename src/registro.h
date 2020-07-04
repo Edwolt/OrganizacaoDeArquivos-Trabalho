@@ -13,8 +13,8 @@
 #define STR_TAM 97  // Tamanho maximo de um campo string
 
 /**
- * TAD Registro
- * Armazena dados de um registro
+ * TAD Registro de Dados
+ * Armazena dados de um registro de dados
  * 
  * Valores para campos nulos:
  * * Strings: NULL
