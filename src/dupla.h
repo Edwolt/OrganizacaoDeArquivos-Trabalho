@@ -6,7 +6,7 @@
 #include "registro.h"  // INTNULL
 #include "string.h"
 
-// Valores da hash da nome do campo
+// Valores da hash de nome do campo
 #define DUPLA_INVALIDO -1
 #define DUPLA_IDNASCIMENTO 1246
 #define DUPLA_IDADEMAE 778
@@ -42,14 +42,13 @@ typedef struct Dupla Dupla;
 Dupla* dupla_criar(char* campo, char* valor);
 
 /**
- * Destroi o objeto
- * Destroi os objetos e desaloca variaveis que estiver dentro dele
+ * Destroi o objeto, os objetos que o pertence e desaloca variveis
  */
 void dupla_apagar(Dupla** dupla);
 
 /**
  * Destroi o objeto
- * Os objetos e desaloca variaveis que estiver dentro dele nao sao destruidos
+ * nao destroi os objetos que o pertence, nem desaloca variveis
  * 
  * O motivo dessa instrução existir eh poder desalocar a dupla e ainda ter a string utilizavel
  */

@@ -17,6 +17,8 @@ struct Dupla {
 /**
  * Funcao hash para facilitar comparacoes de string
  * Somatorio do valor dos caracter
+ * 
+ * Nao possui colisoes entre nomes de campos
  */
 static int hash(char* str) {
     if (!str) return 0;  // Nao recebeu paramentros
