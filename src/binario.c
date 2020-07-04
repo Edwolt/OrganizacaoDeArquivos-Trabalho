@@ -130,19 +130,13 @@ Registro* binario_buscar(Binario* binario, int rrn, bool* erro) {
 }
 
 void binario_apontar(Binario* binario, int rrn, int whence) {
-    int here;  // TODO escolher um nome melhor para a variavel
-    switch (whence) {
-        case SEEK_SET:
-            fseek(binario, (rrn + 1) * TAM_REG, SEEK_SET);
-            break;
-        case SEEK_CUR:
-            here = ftell(binario);
-            here = here % TAM_REG;
-            fseek(binario, rrn * TAM_REG - here, SEEK_CUR);
-            break;
-        case SEEK_END:
-            fseek(binario, rrn * TAM_REG, SEEK_END);
-            break;
+    if (whence == SEEK_SET) {
+        fseek(binario, (rrn + 1) * TAM_REG, SEEK_SET);
+    } else if (whence == SEEK_CUR) {
+        int sobra = ftell(binario) % TAM_REG;  // Quanto o binario esta apontando a frente do inicio do registro
+        fseek(binario, rrn * TAM_REG - sobra, SEEK_CUR);
+    } else if (whence == SEEK_END) {
+        fseek(binario, rrn * TAM_REG, SEEK_END);
     }
 }
 
