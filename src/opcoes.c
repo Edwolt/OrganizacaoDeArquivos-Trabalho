@@ -27,7 +27,10 @@ static Opcao* funcOpcoes[] = {opcao1,
                               opcao4,
                               opcao5,
                               opcao6,
-                              opcao7};
+                              opcao7,
+                              opcao8,
+                              opcao9,
+                              opcao10};
 
 //* ============================ *//
 //* ===== Metodos Publicos ===== *//
