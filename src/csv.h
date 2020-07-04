@@ -11,16 +11,16 @@
 /**
  * TAD Arquivo CSV
  * Manipula um arquivo .csv com os dados do registro
- * Use para extrair as informações do arquivo CSV
+ * Extrai as informações de arquivo .csv com dados de registros 
  * 
  * Por ser simples, nao tem motivo para cirar uma estrutura
- * por isso usei apenas um typedef
+ * por isso eh apenas um typedef
  */
 typedef FILE CSV;
 
 /**
- * Retorna arquivo csv com os dados do registro com nome path aberto para leitura
- * Obs: Nao eh necessario pula a primeira linha que contem os nomes das colunas
+ * Retorna o arquivo csv com nome path aberto para leitura
+ * Obs: Nao eh necessario pula a primeira linha, que contem os nomes das colunas
  * 
  * Retorna NULL se nao for possivel abrir o arquivo
  * Retorna NULL se nao receber um path

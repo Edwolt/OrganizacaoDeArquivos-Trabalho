@@ -24,7 +24,7 @@ static void leCampo(CSV* csv, char* str) {
 }
 
 /**
- * Le um inteiro do arquivo
+ * Le um inteiro do arquivo e consome a virgula
  */
 static int leInt(CSV* csv) {
     if (!csv) return INTNULL;  // Objeto nao existe
@@ -41,6 +41,8 @@ static int leInt(CSV* csv) {
 /**
  * Le uma string do arquivo e consome a virgula
  * String retornada foi alocada dinamicamente
+ * 
+ * Retorna NULL se nao tiver um string para o campo no CSV
  */
 static char* leStr(CSV* csv) {
     if (!csv) return NULL;  // Objeto nao exite
