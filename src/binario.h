@@ -146,31 +146,14 @@ bool binario_atualizarRegistro(Binario* binario, Registro* registro);
 //* ============================== *//
 
 /**
- * Pega os valores do cabecalho de um arquivo
- * O parametro for NULL o campo correspondente nao sera lido
- * 
- * * status      = Status
- * * rrn         = RRNProxRegistro (Quantidade de registros contando os removidos e descontando o cabecalho)
- * * inseridos   = numeroRegistrosInseridos
- * * removidos   = numeroRegistrosRemovidos  
- * * atualizados = numeroRegistrosAtualizado
+ * Retorna um objeto cabecalho com
+ * os dados no cabecalho do arquivo em path
  */
-bool binario_getCabecalho(char* path,
-                          bool* status, int* rrn,
-                          int* inseridos, int* removidos, int* atualizados);
+Cabecalho* binario_getCabecalho(char* path);
 
 /**
- * Atuliza o cabeçalho do arquivo
- * O parametro for NULL o campo correspondente nao sera atualizado
- * 
- * * status      = Status
- * * rrn         = RRNProxRegistro
- * * inseridos   = numeroRegistrosInseridos
- * * removidos   = numeroRegistrosRemovidos  
- * * atualizados = numeroRegistrosAtualizado
+ * Atuliza o cabeçalho do arquivo em path usando os dados do objeto cabecalho
  */
-bool binario_setCabecalho(char* path,
-                          bool* status, int* rrn,
-                          int* inseridos, int* removidos, int* atualizados);
+bool binario_setCabecalho(char* path, Cabecalho* cabecalho);
 
 #endif

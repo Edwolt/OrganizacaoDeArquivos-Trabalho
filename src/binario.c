@@ -46,8 +46,7 @@ Binario* binario_criar(char* path) {
 
     Binario* binario = fopen(path, "wb");
     if (!binario) return NULL;  // Falha ao abrir arquivo
-
-    // Criando Cabecalho
+//
     char status = '1';
     int rrn = 0;
     int inseridos = 0;
@@ -469,92 +468,58 @@ fwrite_error:  // Tratando erros ao escrever no arquivo
 //* ===== Registro Cabecalho ===== *//
 //* ============================== *//
 
-bool binario_getCabecalho(char* path,
-                          bool* status, int* rrn,
-                          int* inseridos, int* removidos, int* atualizados) {
+Cabecalho* binario_getCabecalho(char* path) {
     if (!path) return false;  // Nao recebeu caminho
 
     Binario* binario = fopen(path, "rb");
     if (!binario) return false;  // Falha ao abrir arquivo
 
-    if (status) {  // Deve ler o status
-        char aux;
-        TRYFREAD(&aux, char, 1, binario);
-        *status = (aux == '1');
-    } else {
-        fseek(binario, sizeof(char), SEEK_CUR);  // Pula o status
-    }
+    char aux;
+    TRYFREAD(&aux, char, 1, binario);
+    bool status = (aux == '1');
 
-    if (rrn) {  // Deve ler o rrn
-        TRYFREAD(rrn, int, 1, binario);
-    } else {
-        fseek(binario, sizeof(int), SEEK_CUR);  // Pula o status
-    }
+    int rrn;
+    TRYFREAD(rrn, int, 1, binario);
 
-    if (inseridos) {  // Deve ler inseridos
-        TRYFREAD(inseridos, int, 1, binario);
-    } else {
-        fseek(binario, sizeof(int), SEEK_CUR);  // Pula inseridos
-    }
+    int inseridos;
+    TRYFREAD(inseridos, int, 1, binario);
 
-    if (removidos) {  // Deve ler removidos
-        TRYFREAD(removidos, int, 1, binario);
-    } else {
-        fseek(binario, sizeof(int), SEEK_CUR);  // Pula o removidos
-    }
+    int removidos;
+    TRYFREAD(removidos, int, 1, binario);
 
-    if (atualizados) {  // Deve ler atualizados
-        TRYFREAD(atualizados, int, 1, binario);
-    } else {
-        fseek(binario, sizeof(int), SEEK_CUR);  // Pula o atualizdos
-    }
+    int atualizados;
+    TRYFREAD(atualizados, int, 1, binario);
 
     fclose(binario);
-    return true;
+    return cabecalho_criar(status, rrn,
+                           inseridos, removidos, atualizados);
 
 fread_error:  // Tratando erros ao ler do arquivo
     fclose(binario);
-    return false;
+    return NULL;
 }
 
-bool binario_setCabecalho(char* path,
-                          bool* status, int* rrn,
-                          int* inseridos, int* removidos, int* atualizados) {
+bool binario_setCabecalho(char* path, Cabecalho* cabecalho) {
     if (!path) return false;  // Nao recebeu path
+    if (!cabecalho) return false;  // Nao recebeu cabecalho
 
     Binario* binario = fopen(path, "rb+");
     if (!binario) return false;  // Falha ao abrir arquivo
 
-    if (status) {  // Recebeu status
-        char aux = (*status ? '1' : '0');
-        TRYFWRITE(&aux, char, 1, binario);
-    } else {
-        fseek(binario, sizeof(char), SEEK_CUR);  // Pula o status
-    }
+    bool status;
+    int rrn;
+    int inseridos, removidos, atualizados;
 
-    if (rrn) {  // Recebeu rrn
-        TRYFWRITE(rrn, int, 1, binario);
-    } else {
-        fseek(binario, sizeof(int), SEEK_CUR);  // Pula o rrn
-    }
+    cabecalho_extrairDados(cabecalho, &status, &rrn,
+                           &inseridos, &removidos, &atualizados);
 
-    if (inseridos) {  // Recebeu inseridos
-        TRYFWRITE(inseridos, int, 1, binario);
-    } else {
-        fseek(binario, sizeof(int), SEEK_CUR);  // Pula inseridos
-    }
+    char aux = (status ? '1' : '0');
 
-    if (removidos) {  // Recebeu removidos
-        TRYFWRITE(removidos, int, 1, binario);
-    } else {
-        fseek(binario, sizeof(int), SEEK_CUR);  // Pula removidos
-    }
-
-    if (atualizados) {  // Recebeu o atualizados
-        TRYFWRITE(atualizados, int, 1, binario);
-    } else {
-        fseek(binario, sizeof(int), SEEK_CUR);  // Pula atualizados
-    }
+    TRYFWRITE(&aux, char, 1, binario);
+    TRYFWRITE(rrn, int, 1, binario);
+    TRYFWRITE(inseridos, int, 1, binario);
+    TRYFWRITE(removidos, int, 1, binario);
+    TRYFWRITE(atualizados, int, 1, binario);
 
     fclose(binario);
     return true;
