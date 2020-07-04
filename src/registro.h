@@ -21,7 +21,7 @@
  * * Inteiros: INTNULL
  * * Chars: '\0'
  */
-typedef struct _registro Registro;
+typedef struct Registro Registro;
 
 /**
  * Cria um novo registro

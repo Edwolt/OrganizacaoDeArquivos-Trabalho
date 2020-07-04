@@ -1,6 +1,6 @@
 #include "criterio.h"
 
-struct _criterio {
+struct Criterio {
     Dupla** duplas;
     int tam;
 };

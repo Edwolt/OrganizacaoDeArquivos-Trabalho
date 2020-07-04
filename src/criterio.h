@@ -11,7 +11,7 @@
 /**
  * TAD Criterio: Vetor de Duplas
  */
-typedef struct _criterio Criterio;
+typedef struct Criterio Criterio;
 
 /**
  * Cria um novo objeto criterio

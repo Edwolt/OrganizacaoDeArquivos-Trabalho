@@ -1,6 +1,6 @@
 #include "dupla.h"
 
-struct _dupla {
+struct Dupla {
     int campo;
 
     union {

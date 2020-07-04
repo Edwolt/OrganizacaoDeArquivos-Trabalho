@@ -27,7 +27,7 @@
  * TAD Dupla campo valor
  * Representando a dupla de parametros campo valor
  */
-typedef struct _dupla Dupla;
+typedef struct Dupla Dupla;
 
 /**
  * Cria um novo objeto dupla a partir de duas strings

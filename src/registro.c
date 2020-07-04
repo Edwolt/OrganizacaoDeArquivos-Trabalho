@@ -4,7 +4,7 @@
 #define SEXO_MASCULINO '1'
 #define SEXO_FEMININO '2'
 
-struct _registro {
+struct Registro {
     int idNascimento;  // int
     int idadeMae;  // int
     char* dataNascimento;  // string: AAAA-MM-DD
