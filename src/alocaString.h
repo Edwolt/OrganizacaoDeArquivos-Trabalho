@@ -1,6 +1,8 @@
 #ifndef ALOCA_STRING_H
 #define ALOCA_STRING_H
 
+// TODO essas funcoes poderiam ser inline e removeria o .c
+
 /*
 Funcoes para auxiliar na alocacao dinamica de strings
 */

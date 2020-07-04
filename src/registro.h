@@ -82,8 +82,8 @@ void registro_extrairDados(Registro* registro,
 //* ===== Getters e Setters ===== *//
 //* ============================= *//
 
-// Se o registro for NULL, em um getter, retorna uma valor qualquer
-// Se o registro for NULL, em um setter, nada eh feito
+// Se registro for NULL, em um getter, retorna uma valor qualquer
+// Se registro for NULL, em um setter, nada eh feito
 
 int registro_getIdNascimento(Registro* registro);
 void registro_setIdNascimento(Registro* registro, int idNascimento);
