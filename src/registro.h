@@ -24,7 +24,7 @@
 typedef struct Registro Registro;
 
 /**
- * Cria um novo registro
+ * Cria um novo objeto registro
  * Retorna NULL se nao for possivel criar o objeto
  * 
  * Obs: Depois, use uma funcao para destruir o objeto
@@ -36,37 +36,36 @@ Registro* registro_criar(int idNascimento,
                          char* cidadeMae, char* cidadeBebe);
 
 /**
- * Cria um novo registro sem nenhum dado
+ * Cria um novo objeto registro sem nenhum dado
  * Retorna NULL se nao for possivel criar o objeto
  * 
- * Obs: Depois, use uma funcao para destruir o objeto
  * Obs: Depois, use uma funcao para destruir o objeto
  */
 Registro* registro_criarVazio();
 
 /**
- * Cria um novo registro pegando dados do stdin
+ * Cria um novo objeto registro pegando dados do stdin
  * Retorna NULL se nao for possivel criar o objeto
  * 
- * cidadeMae[i] cidadeBebe[i] idNascimento[i] idadeMae[i] dataNascimento[i] sexoBebe[i] estadoMae[i] estadoBebe[i]
+ * Padrao que o stdin deve seguir
+ * cidadeMae cidadeBebe idNascimento idadeMae dataNascimento sexoBebe estadoMae estadoBebe
  * 
  * Obs: Depois, use uma funcao para destruir o objeto
  */
 Registro* registro_criarDoStdin();
 
 /**
- * Destroi o objeto
- * Destroi os objetos e desaloca variaveis que estiver dentro dele
+ * Destroi o objeto, os objetos que o pertence e desaloca variveis
  */
 void registro_apagar(Registro** registro);
 
 /**
- * Escreve no stdout os dados do registro usando as informacoes mais importantes
+ * Escreve no stdout os principais dados do registro
  */
 void registro_imprimir(Registro* registro);
 
 /**
- * Retorna detro dos parametros passados por referencia
+ * Retorna dentro dos parametros passados por referencia
  * os valores armazenado no registro
  * 
  * Se o parametro for NULL, aquele campo nao eh retornado
