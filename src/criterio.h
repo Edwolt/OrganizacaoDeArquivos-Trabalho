@@ -26,16 +26,14 @@ Criterio* criterio_criar();
 /**
  * Le dados do stdin, e retorna um objeto criterio com os dados lidos
  * A entrada deve ser:
- * n campo[1] valor[2] .. campo[n] valor[n]
+ * n campo[1] valor[1] .. campo[n] valor[n]
  * 
  * Obs: Depois, use uma funcao para destruir o objeto
  */
 Criterio* criterio_criarDoStdin();
 
 /**
- * Destroi o objeto
- * Destroi os objetos e desaloca variaveis que estiver dentro dele
- * 
+ * Destroi o objeto, os objetos que o pertence e desaloca variveis
  * Os arrays retornado pelo getArray deixa de ter valor valido e nao deve ser mais usado
  */
 void criterio_apagar(Criterio** criterio);
