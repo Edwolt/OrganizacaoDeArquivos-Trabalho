@@ -2,7 +2,7 @@
 #define REGISTRO_H
 
 #include <stdbool.h>
-#include <stdio.h>
+#include <stdio.h>  // scanf
 #include <stdlib.h>
 #include <string.h>
 #include "alocaString.h"
