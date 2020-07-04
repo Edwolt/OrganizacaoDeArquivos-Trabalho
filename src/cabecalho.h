@@ -12,19 +12,55 @@
  */
 typedef struct Cabecalho Cabecalho;
 
+/**
+ * Cria um novo objeto cabecalho
+ * Retorna NULL se nao for possivel criar o objeto
+ * 
+ * Obs: Depois, use uma funcao para destruir o objeto
+ */
 Cabecalho* cabecalho_criar(bool status, int rrn,
                            int inseridos, int removidos, int atualizados);
 
+/**
+ * Cria um novo objeto cabecalho
+ * com status consistente e outros campos zerados
+ * Retorna NULL se nao for possivel criar o objeto
+ * 
+ * Obs: Depois, use uma funcao para destruir o objeto
+ */
 Cabecalho* cabecalho_criarVazio();
 
+/**
+ * Destroi o objeto e todos os objetos que o pertence
+ */
 void cabecalho_apagar(Cabecalho** cabecalho);
 
+/**
+ * Retorna dentro dos parametros passados por referencia
+ * os valores armazenado no registro
+ * 
+ * Se o parametro for NULL, aquele campo nao eh retornado
+ */
 void cabecalho_extrairDados(Cabecalho* cabecalho,
                             bool* status, int* rrn,
                             int* inseridos, int* removidos, int* atualizados);
 
+/**
+ * Atualiza o cabecalho considerando que um registro foi inserido:
+ * rrn++; inseridos++;
+ */
 void cabecalho_inserir(Cabecalho* cabecalho);
+
+/**
+ * Atualiza o cabecalho considerando que um registro foi removido:
+ * removidos++; inseridos--;
+ */
 void cabecalho_remover(Cabecalho* cebecalho);
+
+/**
+ * Atualiza o cabecalho considerando que um registro foi atualizado:
+ * atualizados++;
+ */
 void cabecalho_atualizar(Cabecalho* cabecalho);
 
 //* ============================= *//
