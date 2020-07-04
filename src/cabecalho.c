@@ -45,6 +45,23 @@ void cabecalho_extrairDados(Cabecalho* cabecalho,
     if (atualizados) *atualizados = cabecalho->atualizados;
 }
 
+void cabecalho_insere(Cabecalho* cabecalho) {
+    if (!cabecalho) return;
+    cabecalho->inseridos++;
+    cabecalho->rrn++;
+}
+
+void cabecalho_remove(Cabecalho* cebecalho) {
+    if (!cebecalho) return;
+    cabecalho->removidos++;
+    cabecalho->inseridos--;
+}
+
+void cabecalho_atualiza(Cabecalho* cabecalho) {
+    if (!cabecalho) return;
+    cabecalho->atualizados++;
+}
+
 //* ============================= *//
 //* ===== Getters e Setters ===== *//
 //* ============================= *//
