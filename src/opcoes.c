@@ -321,7 +321,7 @@ static void opcao4() {
  * Para um registro passar pelo criterio e ser removido
  * No arquivo src o campo[i][j] deve valer valor[i][j]
  */
-static void opcao5() {
+static void opcao5() {  // TODO busca pode ser melhorada se for por ID
     int i, j;  // Iteradores
 
     // Le opcao
@@ -463,8 +463,6 @@ static void opcao5() {
  */
 static void opcao6() {
     int i;  // Iteradores
-    Criterio* criterio = NULL;
-    criterio_apagar(&criterio);
     // Le opcao
     char path[PATH_TAM];
     int n;
@@ -564,7 +562,7 @@ static void opcao6() {
  * O registro de valor rrn[i] passa a tem o valor dos seus campos mudados
  * sendo que o campo[i][j] passa a valer valor[i][j]
  */
-static void opcao7() {
+static void opcao7() { // TODO busca pode ser melhorada se for por ID
     int i;  // Iteradores
 
     // Le opcao
