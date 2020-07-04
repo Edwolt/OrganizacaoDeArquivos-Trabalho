@@ -2,10 +2,9 @@
 #define DUPLA_H
 
 #include <stdlib.h>  // atoi
-#include <string.h>
 
-#include "alocaString.h"
 #include "registro.h"  // INTNULL
+#include "string.h"
 
 // Valores da hash da nome do campo
 #define DUPLA_INVALIDO -1

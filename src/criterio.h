@@ -4,10 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "alocaString.h"
 #include "binarioNaTela.h"  // trim
 #include "dupla.h"
 #include "registro.h"  // STR_TAM
+#include "string.h"
 
 /**
  * TAD Criterio: Vetor de Duplas

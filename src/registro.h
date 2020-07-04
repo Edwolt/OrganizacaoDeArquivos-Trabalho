@@ -4,11 +4,10 @@
 #include <stdbool.h>
 #include <stdio.h>  // scanf
 #include <stdlib.h>
-#include <string.h>
 
-#include "alocaString.h"
 #include "binarioNaTela.h"
 #include "dupla.h"
+#include "string.h"
 
 #define INTNULL -1
 #define STR_TAM 97  // Tamanho maximo de um campo string

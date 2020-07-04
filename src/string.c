@@ -1,4 +1,4 @@
-#include "alocaString.h"
+#include "string.h"
 
 char* string_criar(int tam) {
     return malloc(tam * sizeof(char));
