@@ -1,5 +1,3 @@
-// TODO Substituir strlen(str) == 0 por str[0] == '\0'
-
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>  // EXIT_SUCCESS, EXIT_FAILURE
