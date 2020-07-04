@@ -480,16 +480,16 @@ Cabecalho* binario_getCabecalho(char* path) {
     bool status = (aux == '1');
 
     int rrn;
-    TRYFREAD(rrn, int, 1, binario);
+    TRYFREAD(&rrn, int, 1, binario);
 
     int inseridos;
-    TRYFREAD(inseridos, int, 1, binario);
+    TRYFREAD(&inseridos, int, 1, binario);
 
     int removidos;
-    TRYFREAD(removidos, int, 1, binario);
+    TRYFREAD(&removidos, int, 1, binario);
 
     int atualizados;
-    TRYFREAD(atualizados, int, 1, binario);
+    TRYFREAD(&atualizados, int, 1, binario);
 
     fclose(binario);
     return cabecalho_criar(status, rrn,
@@ -517,10 +517,10 @@ bool binario_setCabecalho(char* path, Cabecalho* cabecalho) {
     char aux = (status ? '1' : '0');
 
     TRYFWRITE(&aux, char, 1, binario);
-    TRYFWRITE(rrn, int, 1, binario);
-    TRYFWRITE(inseridos, int, 1, binario);
-    TRYFWRITE(removidos, int, 1, binario);
-    TRYFWRITE(atualizados, int, 1, binario);
+    TRYFWRITE(&rrn, int, 1, binario);
+    TRYFWRITE(&inseridos, int, 1, binario);
+    TRYFWRITE(&removidos, int, 1, binario);
+    TRYFWRITE(&atualizados, int, 1, binario);
 
     fclose(binario);
     return true;
