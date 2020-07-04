@@ -48,11 +48,7 @@ clean:
 
 #Debug
 test:
-	cp $(TEST_IN)* $(TEST_OUT)
-	cp $(EXEC) $(TEST_OUT)
-	cd $(TEST_OUT)
-	echo "for i in {$(IN)}; do ./$(EXEC) < \$$i.in > \$$i.res || break; done" | bash
-	cd ..
+	sh test.sh $(EXEC)
 
 debug: $(OBJ)
 	$(CC) -g -o $(DEBUG) $(SRC)

@@ -1,5 +1,7 @@
 Backup/
 Ignore/
+Test/
+test.sh
 bin/
 .vscode
 
