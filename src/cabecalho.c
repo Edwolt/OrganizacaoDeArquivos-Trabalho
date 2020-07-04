@@ -44,3 +44,55 @@ void cabecalho_extrairDados(Cabecalho* cabecalho,
     if (removidos) *removidos = cabecalho->removidos;
     if (atualizados) *atualizados = cabecalho->atualizados;
 }
+
+//* ============================= *//
+//* ===== Getters e Setters ===== *//
+//* ============================= *//
+
+// Se cabecalho for NULL, em um getter, retorna uma valor qualquer
+// Se cabecalho for NULL, em um setter, nada eh feito
+
+bool cabecalho_getStatus(Cabecalho* cabecalho) {
+    if (!cabecalho) return false;
+    return cabecalho->status;
+}
+void cabecalho_setStatus(Cabecalho* cabecalho, bool status) {
+    if (!cabecalho) return;
+    cabecalho->status = status;
+}
+
+int cabecalho_getRRN(Cabecalho* cabecalho) {
+    if (!cabecalho) return INTNULL;
+    return cabecalho->rrn;
+}
+void cabecalho_setRRN(Cabecalho* cabecalho, int rrn) {
+    if (!cabecalho) return;
+    cabecalho->rrn = rrn;
+}
+
+int cabecalho_getInseridos(Cabecalho* cabecalho) {
+    if (!cabecalho) return INTNULL;
+    return cabecalho->inseridos;
+}
+void cabecalho_setInseridos(Cabecalho* cabecalho, int inseridos) {
+    if (!cabecalho) return;
+    cabecalho->inseridos = inseridos;
+}
+
+int cabecalho_getRemovidos(Cabecalho* cabecalho) {
+    if (!cabecalho) return INTNULL;
+    return cabecalho->removidos;
+}
+void cabecalho_setRemovidos(Cabecalho* cabecalho, int removidos) {
+    if (!cabecalho) return;
+    cabecalho->removidos = removidos;
+}
+
+int cabecalho_getAtualizados(Cabecalho* cabecalho) {
+    if (!cabecalho) return INTNULL;
+    return cabecalho->atualizados;
+}
+void cabecalho_setAtualizados(Cabecalho* cabecalho, int atualizados) {
+    if (!cabecalho) return;
+    cabecalho->atualizados = atualizados;
+}
