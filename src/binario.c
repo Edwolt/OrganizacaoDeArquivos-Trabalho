@@ -46,7 +46,8 @@ Binario* binario_criar(char* path) {
 
     Binario* binario = fopen(path, "wb");
     if (!binario) return NULL;  // Falha ao abrir arquivo
-//
+
+    // Criando Cabecalho
     char status = '1';
     int rrn = 0;
     int inseridos = 0;
