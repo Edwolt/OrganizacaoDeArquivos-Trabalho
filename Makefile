@@ -9,18 +9,15 @@ DEBUG    := debug
 ZIP      := $(EXEC).zip
 
 #Files
+INCLUDES := $(wildcard src/opcoes/*.c) $(wildcard src/opcoes/*.h)
 SRC      := $(wildcard src/*.c)
 OBJ      := $(SRC:src/%.c=bin/%.o)
 HEADER   := $(wildcard src/*.h)
 MK       := Makefile
-TEST_IN  := TesteIn/
-TEST_OUT := TesteOut/
 
 #Flags
 CFLAGS   := -Wall -lm -Wextra -pedantic -Werror=implicit-function-declaration
 RMFLAGS  := -f -v
-IN       := 1..7
-
 
 #Actions
 all: 
@@ -33,7 +30,7 @@ run: $(EXEC)
 compile: clean $(EXEC)
 
 zip: clean_zip
-	zip $(ZIP) $(SRC) $(HEADER) $(MK)
+	zip $(ZIP) $(SRC) $(HEADER) $(INCLUDES) $(MK)
 
 #Clean
 clean_zip:

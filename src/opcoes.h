@@ -10,6 +10,8 @@
 #include "csv.h"
 #include "registro.h"
 
+#define PATH_TAM 100  // Tamanho do nome do arquivo
+
 /**
  * Executa a instrucao de numero n
  * Considera que so foi lido o codigo da operacao
