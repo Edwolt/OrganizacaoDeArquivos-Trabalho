@@ -100,7 +100,7 @@ void binario_fechar(Binario** binario) {
 bool binario_inserir(Binario* binario, Registro** registros, int n) {
     if (!binario || !registros) return false;  // Objeto nao existe ou nao recebeu parametros
 
-    int i;  // Iteradores
+    int i;
 
     bool ok;
     for (i = 0; i < n; i++) {

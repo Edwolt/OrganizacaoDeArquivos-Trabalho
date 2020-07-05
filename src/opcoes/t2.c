@@ -12,13 +12,13 @@
  * que cada campo[i] tenha o valor[i]
  */
 static void opcao3() {
+    int i;
+
     // Variaveis com alocacao dinamica
     Binario* bin = NULL;
     Cabecalho* cab = NULL;
     Criterio* criterio = NULL;
     Registro* reg = NULL;
-
-    int i;  // Iteradores
 
     // Le opcao
     char path[PATH_TAM];
@@ -179,13 +179,13 @@ falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas
  * No arquivo src o campo[i][j] deve valer valor[i][j]
  */
 static void opcao5() {  // TODO busca pode ser melhorada se for por ID
+    int i, j;
+
     // Variaveis com alocacao dinamica
     Binario* bin = NULL;
     Cabecalho* cab = NULL;
     Registro* reg = NULL;
     Criterio** criterios = NULL;
-
-    int i, j;  // Iteradores
 
     // Le opcao
     char path[PATH_TAM];
@@ -302,12 +302,12 @@ falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas
  * O conteudo de cada registro inserido eh dados[i]
  */
 static void opcao6() {
+    int i;
+
     // Variaveis com alocacao dinamica
     Binario* bin = NULL;
     Cabecalho* cab = NULL;
     Registro** regs = NULL;
-
-    int i;  // Iteradores
 
     // Le opcao
     char path[PATH_TAM];
@@ -410,14 +410,14 @@ falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas
  * sendo que o campo[i][j] passa a valer valor[i][j]
  */
 static void opcao7() {  // TODO busca pode ser melhorada se for por ID
+    int i;
+
     // Variaveis com alocacao dinamica
     Binario* bin = NULL;
     Cabecalho* cab = NULL;
     Registro* reg = NULL;
     int* rrnsAtualizar = NULL;
     Criterio** novosValores = NULL;
-
-    int i;  // Iteradores
 
     // Le opcao
     char path[PATH_TAM];

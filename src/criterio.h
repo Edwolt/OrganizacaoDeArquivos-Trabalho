@@ -73,4 +73,10 @@ Dupla** criterio_getArray(Criterio* criterio, int* n);
  */
 void criterio_setArray(Criterio* criterio, Dupla** duplas, int n);
 
+/**
+ * Retorna se o criterio só pode satisfazer um registro
+ * Para isso acontecer uma das duplas tem que ser idNascimento
+ */
+bool criterio_unico(Criterio* criterio);
+
 #endif

@@ -28,7 +28,7 @@ Criterio* criterio_criarVazio() {
 }
 
 Criterio* criterio_criarDoStdin() {
-    int i;  //Iteradores
+    int i;
 
     Criterio* criterio = malloc(sizeof(Criterio));
     if (!criterio) return NULL;  // Falha ao criar criterios
@@ -80,7 +80,7 @@ Criterio* criterio_criarDoStdin() {
 void criterio_apagar(Criterio** criterio) {
     if (!criterio || !*criterio) return;  // Objeto ja foi apagado
 
-    int i;  //Iteradores
+    int i;
 
     for (i = 0; i < (*criterio)->tam; i++) dupla_apagar(&(*criterio)->duplas[i]);
     free((*criterio)->duplas);
@@ -90,7 +90,7 @@ void criterio_apagar(Criterio** criterio) {
 
 bool criterio_satisfaz(Criterio* criterio, Registro* registro) {
     if (!criterio || !registro) return NULL;  // Algum dos objetos nao existe
-    int i;  // Iteradores
+    int i;
     char* reg;  // Auxilia a guardar uma string do registro
     char* dup;  // Auxilia a guardar uma string da dupla
 
@@ -172,7 +172,7 @@ bool criterio_satisfaz(Criterio* criterio, Registro* registro) {
 void criterio_atualizarRegistro(Criterio** criterio, Registro* registro) {
     if (!criterio || !*criterio || !registro) return;  // Algum dos objetos nao existe
 
-    int i;  // Iteradores
+    int i;
     Dupla* dupla;
 
     for (i = 0; i < (*criterio)->tam; i++) {
@@ -222,6 +222,15 @@ void criterio_atualizarRegistro(Criterio** criterio, Registro* registro) {
     criterio_apagar(criterio);  // As duplas já foram destruidas, mas o vetor de duplas ainda nao
 }
 
+bool criterio_unico(Criterio* criterio) {
+    int i;
+
+    for (i = 0; i < criterio->tam; i++) {
+        if (dupla_getTipo(criterio->duplas[i]) == DUPLA_IDNASCIMENTO) return true;
+    }
+    return false;
+}
+
 //* ============================= *//
 //* ===== Getters e Setters ===== *//
 //* ============================= *//
@@ -237,7 +246,7 @@ Dupla** criterio_getArray(Criterio* criterio, int* n) {
 }
 
 void criterio_setArray(Criterio* criterio, Dupla** duplas, int n) {
-    int i;  //Iteradores;
+    int i;
 
     for (i = 0; i < criterio->tam; i++) dupla_apagar(&criterio->duplas[i]);  // Apaga duplas
     criterio->duplas = duplas;

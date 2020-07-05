@@ -100,12 +100,12 @@ falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas
  * Imprime os dados do arquivo binario com nome path
  */
 static void opcao2() {
+    int i;
+
     // Variaveis com alocacao dinamica
     Binario* bin = NULL;
     Cabecalho* cab = NULL;
     Registro* reg = NULL;
-
-    int i;  // Iteradores
 
     // Le opcao
     char path[PATH_TAM];
