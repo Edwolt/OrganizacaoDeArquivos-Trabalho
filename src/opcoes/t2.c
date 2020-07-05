@@ -220,11 +220,6 @@ static void opcao5() {  // TODO busca pode ser melhorada se for por ID
         goto falha;
     }
 
-    if (cabecalho_getInseridos(cab) == 0) {  // O arquivo nao possui dados
-        printf("Registro Inexistente.\n");
-        goto falha;
-    }
-
     // Marca arquivo como inconsistente
     cabecalho_setStatus(cab, false);
     bool ok = binario_setCabecalho(path, cab);
@@ -241,7 +236,6 @@ static void opcao5() {  // TODO busca pode ser melhorada se for por ID
     }
 
     bool erro;
-    bool apagou = false;
     int numRegs = cabecalho_getRRN(cab);
     for (i = 0; i < numRegs; i++) {  // Itera sobre registro
         reg = binario_lerRegistro(bin, &erro);
@@ -258,7 +252,6 @@ static void opcao5() {  // TODO busca pode ser melhorada se for por ID
                 binario_apontar(bin, -1, SEEK_CUR);  // Volta para o inicio do registro lido
                 binario_remover(bin);
                 cabecalho_remover(cab);
-                apagou = true;
                 break;
             }
         }
@@ -280,12 +273,7 @@ static void opcao5() {  // TODO busca pode ser melhorada se for por ID
         goto falha;
     }
 
-    // Imprime resultado
-    if (apagou) {
-        binarioNaTela(path);
-    } else {
-        printf("Registro Inexistente.\n");  // Nada foi impresso}
-    }
+    binarioNaTela(path);
     return;
 
 falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas devem se NULL)
