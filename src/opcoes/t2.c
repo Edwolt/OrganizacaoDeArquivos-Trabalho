@@ -83,7 +83,7 @@ static void opcao3() {
     if (!imprimiu) printf("Registro Inexistente.\n");  // Nada foi impresso
     return;
 
-falha:  // Label para desalocar (variaveis nao alocadas devem se NULL)
+falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas devem se NULL)
     binario_fechar(&bin);
     cabecalho_apagar(&cab);
     criterio_apagar(&criterio);
@@ -154,7 +154,7 @@ static void opcao4() {
     }
     return;
 
-falha:  // Label para desalocar (variaveis nao alocadas devem se NULL)
+falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas devem se NULL)
     binario_fechar(&bin);
     cabecalho_apagar(&cab);
     registro_apagar(&reg);
@@ -288,7 +288,7 @@ static void opcao5() {  // TODO busca pode ser melhorada se for por ID
     }
     return;
 
-falha:  // Label para desalocar (variaveis nao alocadas devem se NULL)
+falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas devem se NULL)
     binario_fechar(&bin);
     cabecalho_apagar(&cab);
     registro_apagar(&reg);
@@ -394,7 +394,7 @@ static void opcao6() {
     binarioNaTela(path);
     return;
 
-falha:  // Label para desalocar (variaveis nao alocadas devem se NULL)
+falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas devem se NULL)
     binario_fechar(&bin);
     cabecalho_apagar(&cab);
     if (regs) {
@@ -533,7 +533,7 @@ static void opcao7() {  // TODO busca pode ser melhorada se for por ID
     binarioNaTela(path);
     return;
 
-falha:  // Label para desalocar (variaveis nao alocadas devem se NULL)
+falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas devem se NULL)
     binario_fechar(&bin);
     cabecalho_apagar(&cab);
     registro_apagar(&reg);

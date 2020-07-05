@@ -85,7 +85,7 @@ static void opcao1() {
     binarioNaTela(dest);
     return;
 
-falha:  // Label para desalocar (variaveis nao alocadas devem se NULL) 
+falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas devem se NULL)
     binario_fechar(&bin);
     csv_fechar(&csv);
     cabecalho_apagar(&cab);
@@ -155,7 +155,7 @@ static void opcao2() {
     binario_fechar(&bin);
     return;
 
-falha:  // Label para desalocar (variaveis nao alocadas devem se NULL) 
+falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas devem se NULL)
     binario_fechar(&bin);
     cabecalho_apagar(&cab);
     registro_apagar(&reg);

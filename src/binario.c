@@ -146,6 +146,13 @@ Registro* binario_lerRegistro(Binario* binario, bool* erro) {
         return NULL;
     }
 
+    // Variaveis com alocação dinamica
+    char* cidadeMae = NULL;
+    char* cidadeBebe = NULL;
+    char* dataNascimento = NULL;
+    char* estadoMae = NULL;
+    char* estadoBebe = NULL;
+
     *erro = false;  // Salva erro como false, pois caso nao ocorra nenhum erro deve valer false
 
     // Le Campos Variaveis
@@ -160,27 +167,20 @@ Registro* binario_lerRegistro(Binario* binario, bool* erro) {
     int tamCidadeBebe;
     TRYFREAD(&tamCidadeBebe, int, 1, binario);
 
-    char* cidadeMae = NULL;
+    cidadeMae = NULL;
     if (tamCidadeMae > 0) {
         cidadeMae = string_criar(TAM_CVAR + 1);
-        if (!cidadeMae) {  // Falha ao alocar string
-            *erro = true;
-            return NULL;
-        }
+        if (!cidadeMae) goto falha;  // Falha ao alocar string
+
         TRYFREAD(cidadeMae, char, tamCidadeMae, binario);
         cidadeMae[tamCidadeMae] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera alterada (O arquivo tera o '\0')
     }  // Se tem uma cidade armazenada ela foi lida, senao cidadeMae eh NULL
 
-    char* cidadeBebe = NULL;
+    cidadeBebe = NULL;
     if (tamCidadeBebe > 0) {
         cidadeBebe = string_criar(TAM_CVAR + 1);
-        if (!cidadeBebe) {  // Falha ao alocar string
-            // Desaloca o que ja foi alocado
-            string_apagar(&cidadeBebe);
+        if (!cidadeBebe) goto falha;  // Falha ao alocar string
 
-            *erro = true;
-            return NULL;
-        }
         TRYFREAD(cidadeBebe, char, tamCidadeBebe, binario);
         cidadeBebe[tamCidadeBebe] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera alterada (O arquivo tera o '\0')
     }  // Se tem uma cidade armazenada ela foi lida, senao cidadeBebe eh NULL
@@ -196,15 +196,9 @@ Registro* binario_lerRegistro(Binario* binario, bool* erro) {
     int idadeMae;
     TRYFREAD(&idadeMae, int, 1, binario);
 
-    char* dataNascimento = string_criar(TAM_DATA + 1);
-    if (!dataNascimento) {  // Falha ao alocar string
-        // Desaloca o que ja foi alocado
-        string_apagar(&cidadeMae);
-        string_apagar(&cidadeBebe);
+    dataNascimento = string_criar(TAM_DATA + 1);
+    if (!dataNascimento) goto falha;  // Falha ao alocar string
 
-        *erro = true;
-        return NULL;
-    }
     TRYFREAD(dataNascimento, char, TAM_DATA, binario);
     dataNascimento[TAM_DATA] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera alterada (O arquivo tera o '\0')
     string_apagarSeVazio(&dataNascimento);
@@ -212,31 +206,16 @@ Registro* binario_lerRegistro(Binario* binario, bool* erro) {
     char sexoBebe;
     TRYFREAD(&sexoBebe, char, 1, binario);
 
-    char* estadoMae = string_criar(TAM_ESTADO + 1);
-    if (!estadoMae) {  // Falha ao alocar string
-        // Desaloca o que ja foi alocado
-        string_apagar(&cidadeMae);
-        string_apagar(&cidadeBebe);
-        string_apagar(&dataNascimento);
+    estadoMae = string_criar(TAM_ESTADO + 1);
+    if (!estadoMae) goto falha;  // Falha ao alocar string
 
-        *erro = true;
-        return NULL;
-    }
     TRYFREAD(estadoMae, char, TAM_ESTADO, binario);
     estadoMae[TAM_ESTADO] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera alterada (O arquivo tera o '\0')
     string_apagarSeVazio(&estadoMae);
 
-    char* estadoBebe = string_criar(TAM_ESTADO + 1);
-    if (!estadoBebe) {  // Falha ao alocar string
-        // Desaloca o que ja foi alocado
-        string_apagar(&cidadeMae);
-        string_apagar(&cidadeBebe);
-        string_apagar(&dataNascimento);
-        string_apagar(&estadoMae);
+    estadoBebe = string_criar(TAM_ESTADO + 1);
+    if (!estadoBebe) goto falha;  // Falha ao alocar string
 
-        *erro = true;
-        return NULL;
-    }
     TRYFREAD(estadoBebe, char, TAM_ESTADO, binario);
     estadoBebe[TAM_ESTADO] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera alterada (O arquivo tera o '\0')
     string_apagarSeVazio(&estadoBebe);
@@ -248,7 +227,14 @@ Registro* binario_lerRegistro(Binario* binario, bool* erro) {
                           estadoMae, estadoBebe,
                           cidadeMae, cidadeBebe);
 
+falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas devem se NULL)
 fread_error:  // Tratando erros ao ler do arquivo
+    string_apagar(&cidadeMae);
+    string_apagar(&cidadeBebe);
+    string_apagar(&dataNascimento);
+    string_apagar(&estadoMae);
+    string_apagar(&estadoBebe);
+
     *erro = true;
     return NULL;
 }

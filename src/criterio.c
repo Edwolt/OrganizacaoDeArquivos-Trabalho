@@ -67,6 +67,9 @@ Criterio* criterio_criarDoStdin() {
             for (i--; i >= 0; i--) {  // Apaga o que ja tinha sido alocado
                 dupla_apagar(&criterio->duplas[i]);
             }
+            free(criterio);
+            string_apagar(&campo);
+            string_apagar(&valor);
             return NULL;
         }
     }
@@ -216,7 +219,7 @@ void criterio_atualizarRegistro(Criterio** criterio, Registro* registro) {
                 break;
         }
     }
-    criterio_apagar(criterio); // As duplas já foram destruidas, mas o vetor de duplas ainda nao
+    criterio_apagar(criterio);  // As duplas já foram destruidas, mas o vetor de duplas ainda nao
 }
 
 //* ============================= *//
