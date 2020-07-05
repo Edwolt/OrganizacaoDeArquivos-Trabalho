@@ -3,7 +3,7 @@
 /**
  * 3 bin m campo[1] valor[1] ... campo[m] valor[m]
  * 
- * bin: arq+uivo binario de registros
+ * bin: arquivo binario de registros
  * m: numero de duplas campo-valor que tem na linha
  * campo[i]: string
  * valor[i]: depende do campo[i]
@@ -59,6 +59,7 @@ static void opcao3() {
 
     bool erro;
     bool imprimiu = false;
+    bool unico = criterio_unico(criterio); // Diz seo criterio so pode satisfazer um registro
     for (i = 0; i < numRegs; i++) {
         reg = binario_lerRegistro(bin, &erro);
 
@@ -72,6 +73,10 @@ static void opcao3() {
         if (criterio_satisfaz(criterio, reg)) {
             registro_imprimir(reg);
             imprimiu = true;
+            if (unico) { // Não precisa mais passear pelo arquivo
+                registro_apagar(&reg);
+                break;
+            }
         }
 
         registro_apagar(&reg);
@@ -178,7 +183,12 @@ falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas
  * Para um registro passar pelo criterio e ser removido
  * No arquivo src o campo[i][j] deve valer valor[i][j]
  */
-static void opcao5() {  // TODO busca pode ser melhorada se for por ID
+static void opcao5() {
+    /*
+    TODO busca pode ser melhorada se for por ID
+    Nao consegui pensar em uma forma de fazer isso ainda
+    */
+
     int i, j;
 
     // Variaveis com alocacao dinamica
@@ -409,7 +419,7 @@ falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas
  * O registro de valor rrn[i] passa a tem o valor dos seus campos mudados
  * sendo que o campo[i][j] passa a valer valor[i][j]
  */
-static void opcao7() {  // TODO busca pode ser melhorada se for por ID
+static void opcao7() {
     int i;
 
     // Variaveis com alocacao dinamica
