@@ -11,64 +11,57 @@
  * salvando-o com o nome dest
  */
 static void opcao1() {
+    // Variaveis com alocacao dinamica
+    Binario* bin = NULL;
+    CSV* csv = NULL;
+    Cabecalho* cab = NULL;
+    Registro* reg = NULL;
+
     // Le opcao
     char src[PATH_TAM];
     char dest[PATH_TAM];
     scanf(" %s %s", src, dest);
 
     // Criar arquivo com registro cabecalho
-    Binario* bin = binario_criar(dest);
+    bin = binario_criar(dest);
     if (!bin) {  // Falha ao criar arquivo
         printf("Falha no carregamento do arquivo.\n");
-        return;
+        goto falha;
     }
 
     binario_fechar(&bin);
 
-    Cabecalho* cab = cabecalho_criarVazio();  // O cabecalho do arquivo criado está vazios
-    if (!cab) {
+    cab = cabecalho_criarVazio();  // O cabecalho do arquivo criado está vazios
+    if (!cab) {  // Falha ao criar objeto cabecalho
         printf("Falha no carregamento do arquivo.\n");
-        return;
+        goto falha;
     }
-
     // Marca arquivo como insconsistente
     cabecalho_setStatus(cab, false);
     bool ok = binario_setCabecalho(dest, cab);
     if (!ok) {  // Falha ao modificar cabecalho
         printf("Falha no carregamento do arquivo.\n");
-        return;
+        goto falha;
     }
 
     // Leitura e Escrita dos registro
-    Registro* reg;
-
-    CSV* csv = csv_abrir(src);
+    csv = csv_abrir(src);
     if (!csv) {  // Falha ao abrir arquivo
-        cabecalho_apagar(&cab);
-
         printf("Falha no carregamento do arquivo.\n");
-        return;
+        goto falha;
     }
 
     bin = binario_abrirEscrita(dest);
     if (!bin) {  // Falha ao abrir arquivo
-        cabecalho_apagar(&cab);
-        csv_fechar(&csv);
-
         printf("Falha no carregamento do arquivo.\n");
-        return;
+        goto falha;
     }
 
     while ((reg = csv_lerRegistro(csv))) {  // Enquanto houver registros para ler
         ok = binario_escreverRegistro(bin, reg);
         if (!ok) {  // Falha ao escrever registro
-            cabecalho_apagar(&cab);
-            registro_apagar(&reg);
-            csv_fechar(&csv);
-            binario_fechar(&bin);
-
             printf("Falha no carregamento do arquivo.\n");
-            return;
+            goto falha;
         }
 
         registro_apagar(&reg);
@@ -82,15 +75,21 @@ static void opcao1() {
     cabecalho_setStatus(cab, true);
     ok = binario_setCabecalho(dest, cab);
     if (!ok) {  // Falha ao modificar cabecalho
-        cabecalho_apagar(&cab);
         printf("Falha no carregamento do arquivo.\n");
-        return;
+        goto falha;
     }
 
     cabecalho_apagar(&cab);
 
     // Imprimindo resultado
     binarioNaTela(dest);
+    return;
+
+falha:  // Label para desalocar (variaveis nao alocadas devem se NULL) 
+    binario_fechar(&bin);
+    csv_fechar(&csv);
+    cabecalho_apagar(&cab);
+    registro_apagar(&reg);
 }
 
 /** 
@@ -101,6 +100,11 @@ static void opcao1() {
  * Imprime os dados do arquivo binario com nome path
  */
 static void opcao2() {
+    // Variaveis com alocacao dinamica
+    Binario* bin = NULL;
+    Cabecalho* cab = NULL;
+    Registro* reg = NULL;
+
     int i;  // Iteradores
 
     // Le opcao
@@ -108,36 +112,29 @@ static void opcao2() {
     scanf(" %s", path);
 
     // Verifica cabecalho
-    Cabecalho* cab = binario_getCabecalho(path);
+    cab = binario_getCabecalho(path);
     if (!cab) {  // Falha ao ler registro cabecalho
         printf("Falha no processamento do arquivo.\n");
-        return;
+        goto falha;
     }
 
     if (!cabecalho_getStatus(cab)) {  // Arquivo inconsistente
-        cabecalho_apagar(&cab);
-
         printf("Falha no processamento do arquivo.\n");
-        return;
+        goto falha;
     }
 
     if (cabecalho_getInseridos(cab) == 0) {  // Arquivo nao possui dados
-        cabecalho_apagar(&cab);
-
         printf("Registro inexistente.\n");
-        return;
+        goto falha;
     }
 
     // Le e imprime registros
-    Binario* bin = binario_abrirLeitura(path);
+    bin = binario_abrirLeitura(path);
     if (!bin) {  // Arquivo nao abriu
-        cabecalho_apagar(&cab);
-
         printf("Falha no processamento do arquivo.\n");
-        return;
+        goto falha;
     }
 
-    Registro* reg;
     bool erro;
     int numRegs = cabecalho_getRRN(cab);
     cabecalho_apagar(&cab);
@@ -145,10 +142,8 @@ static void opcao2() {
         reg = binario_lerRegistro(bin, &erro);
 
         if (erro) {  // Falha ao ler arquivo
-            binario_fechar(&bin);
-
             printf("Falha no processamento do arquivo.\n");
-            return;
+            goto falha;
         }
 
         if (!reg) continue;  // Registro removido
@@ -158,4 +153,10 @@ static void opcao2() {
     }
 
     binario_fechar(&bin);
+    return;
+
+falha:  // Label para desalocar (variaveis nao alocadas devem se NULL) 
+    binario_fechar(&bin);
+    cabecalho_apagar(&cab);
+    registro_apagar(&reg);
 }
