@@ -48,8 +48,6 @@ done;
 rm -fv *
 
 #Diff
-cmp -s test.sh test.sh || echo "Logica nao funciona";
-
 for i in $s1;
 do cmp -s $t1/out/$i.out $t1/res/$i.res || echo "failed on test T1/$i";
 done;
