@@ -17,7 +17,7 @@
  * Por ser simples, nao tem motivo para cirar uma estrutura
  * por isso eh apenas um typedef
  */
-typedef FILE Binario;
+typedef struct Binario Binario;
 
 /**
  * Cria um novo arquivo binario com nome path
@@ -131,9 +131,12 @@ bool binario_escreverRegistro(Binario* binario, Registro* registro);
  */
 bool binario_atualizarRegistro(Binario* binario, Registro* registro);
 
-//* ============================== *//
-//* ===== Registro Cabecalho ===== *//
-//* ============================== *//
+//* =========================== *//
+//* ===== Getter e Setter ===== *//
+//* =========================== *//
+
+bool binario_getStatus(Binario* binario);
+bool binario_setStatus(Binario* binario);
 
 /**
  * Retorna um objeto cabecalho com
