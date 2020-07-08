@@ -5,7 +5,6 @@
 #include <stdio.h>  // Arquivos
 #include <stdlib.h>  // Alocacao Dinamica
 
-#include "cabecalho.h"
 #include "csv.h"
 #include "registro.h"
 #include "string.h"
@@ -66,11 +65,18 @@ Binario* binario_abrirEscrita(char* path);
 void binario_fechar(Binario** binario);
 
 /**
- * Insere n registros no arquivo binario
- * O binario passa a apontar para o registro seguinte
- * Retorna se a operacao foi possivel
+ * Insere o registro no final do arquivo binario
+ * Retorna se a operacao foi bem sucedida
  */
-bool binario_inserir(Binario* binario, Registro** registros, int n);
+bool binario_inserir(Binario* binario, Registro* registro);
+
+/**
+ * Insere n registros no final do arquivo binario
+ * Retorna se a operacao foi bem sucedida
+ */
+bool binario_inserirVarios(Binario* binario, Registro** registros, int n);
+
+bool binario_atualizar(Binario* binario, Registro* registro);
 
 /**
  * Remove o registro para o qual o arquivo esta apontando
@@ -138,7 +144,9 @@ bool binario_atualizarRegistro(Binario* binario, Registro* registro);
 bool binario_getStatus(Binario* binario);
 void binario_setStatus(Binario* binario, bool status);
 
-bool binario_getRRNProx(Binario* binario);
+int binario_getRRNProx(Binario* binario);
 void binario_setRRNProx(Binario* binario, bool status);
+
+bool binario_estaVazio(Binario* binario);
 
 #endif
