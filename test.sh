@@ -22,7 +22,9 @@ cp $t1/*.bin $area;
 cp $t1/*.csv $area;
 
 for i in $s1;
-do ./$program < $t1/in/$i.in > $t1/res/$i.res
+do echo "> T1/$i";
+   ./$program < $t1/in/$i.in > $t1/res/$i.res
+   
 done;
 
 rm -fv *
@@ -32,7 +34,8 @@ cp $program program;
 cp $t2/*.bin $area;
 
 for i in $s2;
-do ./$program < $t2/in/$i.in > $t2/res/$i.res
+do echo "> T2/$i";
+   ./$program < $t2/in/$i.in > $t2/res/$i.res
 done;
 
 rm -fv *
@@ -42,7 +45,8 @@ cp $program program;
 cp $t3/*.bin $area;
 
 for i in $s3;
-do ./$program < $t3/in/$i.in > $t3/res/$i.res
+do echo "> T3/$i";
+   ./$program < $t3/in/$i.in > $t3/res/$i.res
 done;
 
 rm -fv *
