@@ -16,7 +16,6 @@ static void opcao3() {
 
     // Variaveis com alocacao dinamica
     Binario* bin = NULL;
-    Cabecalho* cab = NULL;
     Criterio* criterio = NULL;
     Registro* reg = NULL;
 
@@ -30,39 +29,31 @@ static void opcao3() {
         goto falha;
     }
 
-    // Verifica cabecalho
-    cab = binario_getCabecalho(path);
-    if (!cab) {  // Falha ao ler cabecalho
-        printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
-
-    if (!cabecalho_getStatus(cab)) {  // Arquivo inconsistente
-        printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
-
-    if (cabecalho_getInseridos(cab) == 0) {  // O arquivo nao possui dados
-        printf("Registro Inexistente.\n");
-        goto falha;
-    }
-
-    // Busca no arquivo
     bin = binario_abrirLeitura(path);
     if (!bin) {  // Falha ao abrir arquivo
         printf("Falha no processamento do arquivo.\n");
         goto falha;
     }
 
-    int numRegs = cabecalho_getRRN(cab);
-    cabecalho_apagar(&cab);
+    // Verifica cabecalho
+    if (!binario_getStatus(bin)) {  // Arquivo inconsistente
+        printf("Falha no processamento do arquivo.\n");
+        goto falha;
+    }
 
+    if (binario_estaVazio(bin)) {  // O arquivo nao possui dados
+        printf("Registro Inexistente.\n");
+        goto falha;
+    }
+
+    // Busca no arquivo
+
+    int numRegs = binario_getRRNProx(bin);
     bool erro;
     bool imprimiu = false;
-    bool unico = criterio_unico(criterio); // Diz seo criterio so pode satisfazer um registro
+    bool unico = criterio_unico(criterio);  // Diz seo criterio so pode satisfazer um registro
     for (i = 0; i < numRegs; i++) {
         reg = binario_lerRegistro(bin, &erro);
-
         if (erro) {  // Falha ao ler registro
             printf("Falha no processamento do arquivo.\n");
             goto falha;
@@ -73,7 +64,7 @@ static void opcao3() {
         if (criterio_satisfaz(criterio, reg)) {
             registro_imprimir(reg);
             imprimiu = true;
-            if (unico) { // Não precisa mais passear pelo arquivo
+            if (unico) {  // Não precisa mais passear pelo arquivo
                 registro_apagar(&reg);
                 break;
             }
@@ -90,7 +81,6 @@ static void opcao3() {
 
 falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas devem se NULL)
     binario_fechar(&bin);
-    cabecalho_apagar(&cab);
     criterio_apagar(&criterio);
     registro_apagar(&reg);
 }
@@ -106,7 +96,6 @@ falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas
 static void opcao4() {
     // Variaveis com alocacao dinamica
     Binario* bin = NULL;
-    Cabecalho* cab = NULL;
     Registro* reg = NULL;
 
     // Le opcao
@@ -116,40 +105,32 @@ static void opcao4() {
     int rrn;
     scanf("%d", &rrn);
 
-    // Verifica cabecalho
-    cab = binario_getCabecalho(path);
-    if (!cab) {  // Falha ao ler registro cabecalho
-        printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
-
-    if (!cabecalho_getStatus(cab)) {  // Arquivo inconsistente
-        printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
-
-    if (rrn <= 0 || rrn > cabecalho_getRRN(cab)) {  // Registro nao existe
-        printf("Registro Inexistente.");
-        goto falha;
-    }
-
-    cabecalho_apagar(&cab);
-
-    // Le e imprime registro
     bin = binario_abrirLeitura(path);
     if (!bin) {  // Falha ao abrir arquivo
         printf("Falha no processamento do arquivo.\n");
         goto falha;
     }
 
+    // Verifica cabecalho
+    if (!binario_getStatus(bin)) {  // Arquivo inconsistente
+        printf("Falha no processamento do arquivo.\n");
+        goto falha;
+    }
+
+    if (rrn <= 0 || rrn > binario_getRRNProx(bin)) {  // Registro nao existe
+        printf("Registro Inexistente.");
+        goto falha;
+    }
+
+    // Le e imprime registro
     bool erro;
     reg = binario_buscar(bin, rrn, &erro);
-    binario_fechar(&bin);
-
     if (erro) {  // Falha ao ler registro
         printf("Falha no processamento do arquivo.\n");
         goto falha;
     }
+
+    binario_fechar(&bin);
 
     if (reg) {  // registro != NULL
         registro_imprimir(reg);
@@ -161,7 +142,6 @@ static void opcao4() {
 
 falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas devem se NULL)
     binario_fechar(&bin);
-    cabecalho_apagar(&cab);
     registro_apagar(&reg);
 }
 
@@ -193,7 +173,6 @@ static void opcao5() {
 
     // Variaveis com alocacao dinamica
     Binario* bin = NULL;
-    Cabecalho* cab = NULL;
     Registro* reg = NULL;
     Criterio** criterios = NULL;
 
@@ -219,22 +198,8 @@ static void opcao5() {
     }
 
     // Verifica cabecalho
-    cab = binario_getCabecalho(path);
-    if (!cab) {  // Falha o ler registro cabecalho
+    if (!binario_getStatus(bin)) {  // Arquivo incosistente
         printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
-
-    if (!cabecalho_getStatus(cab)) {  // Arquivo incosistente
-        printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
-
-    // Marca arquivo como inconsistente
-    cabecalho_setStatus(cab, false);
-    bool ok = binario_setCabecalho(path, cab);
-    if (!ok) {  // Falha ao modificar cabecalho
-        printf("Falha no carregamento do arquivo.\n");
         goto falha;
     }
 
@@ -246,7 +211,7 @@ static void opcao5() {
     }
 
     bool erro;
-    int numRegs = cabecalho_getRRN(cab);
+    int numRegs = binario_getRRNProx(bin);
     for (i = 0; i < numRegs; i++) {  // Itera sobre registro
         reg = binario_lerRegistro(bin, &erro);
 
@@ -261,7 +226,6 @@ static void opcao5() {
             if (criterio_satisfaz(criterios[j], reg)) {
                 binario_apontar(bin, -1, SEEK_CUR);  // Volta para o inicio do registro lido
                 binario_remover(bin);
-                cabecalho_remover(cab);
                 break;
             }
         }
@@ -275,20 +239,11 @@ static void opcao5() {
 
     binario_fechar(&bin);
 
-    // Marca arquivo como consistente e atualiza cabacalho
-    cabecalho_setStatus(cab, true);
-    ok = binario_setCabecalho(path, cab);
-    if (!ok) {  // Falha ao modificar cabecalho
-        printf("Falha no carregamento do arquivo.\n");
-        goto falha;
-    }
-
     binarioNaTela(path);
     return;
 
 falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas devem se NULL)
     binario_fechar(&bin);
-    cabecalho_apagar(&cab);
     registro_apagar(&reg);
     if (criterios) {
         for (i--; i >= 0; i--) criterio_apagar(&criterios[i]);  // Desaloca o que ja foi alocado
@@ -316,7 +271,6 @@ static void opcao6() {
 
     // Variaveis com alocacao dinamica
     Binario* bin = NULL;
-    Cabecalho* cab = NULL;
     Registro** regs = NULL;
 
     // Le opcao
@@ -334,59 +288,31 @@ static void opcao6() {
         }
     }
 
-    // Verifica cabecalho
-    cab = binario_getCabecalho(path);
-    if (!cab) {  // Falha ao ler registro cabecalho
-        printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
-
-    if (!cabecalho_getStatus(cab)) {  // Arquivo inconsistente
-        printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
-
-    // Marca arquivo como inconsistente
-    cabecalho_setStatus(cab, false);
-    bool ok = binario_setCabecalho(path, cab);
-    if (!ok) {  // Falha ao modificar cabecalho
-        printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
-
-    // Insere registros no arquivo
     bin = binario_abrirEscrita(path);
     if (!bin) {
         printf("Falha no processamento do arquivo.\n");
         goto falha;
     }
 
-    binario_apontar(bin, cabecalho_getRRN(cab), SEEK_SET);
+    // Verifica cabecalho
+    if (!binario_getStatus(bin)) {  // Arquivo inconsistente
+        printf("Falha no processamento do arquivo.\n");
+        goto falha;
+    }
 
-    ok = binario_inserir(bin, regs, n);
+    // Insere registros no arquivo
 
-    for (i = 0; i < n; i++) registro_apagar(&regs[i]);
-    free(regs);
-    regs = NULL;
-
+    bool ok = binario_inserirVarios(bin, regs, n);
     if (!ok) {  // Falha ao inserir no arquivo
         printf("Falha no processamento do arquivo.\n");
         goto falha;
     }
 
+    for (i = 0; i < n; i++) registro_apagar(&regs[i]);
+    free(regs);
+    regs = NULL;
+
     binario_fechar(&bin);
-
-    // Atualiza Cabecalho
-    cabecalho_setStatus(cab, true);
-    cabecalho_setRRN(cab, cabecalho_getRRN(cab) + n);  // rrn += n;
-    cabecalho_setInseridos(cab, cabecalho_getInseridos(cab) + n);  // inseridos += n;
-
-    ok = binario_setCabecalho(path, cab);
-    cabecalho_apagar(&cab);
-    if (!ok) {  // Falha ao modificar cabecalho
-        printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
 
     // Imprimindo resultado
     binarioNaTela(path);
@@ -394,7 +320,6 @@ static void opcao6() {
 
 falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas devem se NULL)
     binario_fechar(&bin);
-    cabecalho_apagar(&cab);
     if (regs) {
         for (i = 0; i < n; i++) registro_apagar(&regs[i]);
         free(regs);
@@ -424,7 +349,6 @@ static void opcao7() {
 
     // Variaveis com alocacao dinamica
     Binario* bin = NULL;
-    Cabecalho* cab = NULL;
     Registro* reg = NULL;
     int* rrnsAtualizar = NULL;
     Criterio** novosValores = NULL;
@@ -458,21 +382,7 @@ static void opcao7() {
     }
 
     // Verifica Cabecalho
-    cab = binario_getCabecalho(path);
-    if (!cab) {  // Falha ao ler registro cabecalho
-        printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
-
-    if (!cabecalho_getStatus(cab)) {
-        printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
-
-    // Marca arquivo como insconsistente
-    cabecalho_setStatus(cab, false);
-    bool ok = binario_setCabecalho(path, cab);
-    if (!ok) {  // Falha ao modificar cabecalho
+    if (!binario_getStatus(bin)) {
         printf("Falha no processamento do arquivo.\n");
         goto falha;
     }
@@ -485,7 +395,8 @@ static void opcao7() {
     }
 
     bool erro;
-    int numRegs = cabecalho_getRRN(cab);
+    int numRegs = binario_getRRNProx(bin);
+    bool ok;
     for (i = 0; i < n; i++) {
         if (rrnsAtualizar[i] < 0 || rrnsAtualizar[i] >= numRegs) continue;  // Verifica RRN
 
@@ -507,7 +418,6 @@ static void opcao7() {
             goto falha;
         }
 
-        cabecalho_atualizar(cab);
         registro_apagar(&reg);
     }
 
@@ -518,22 +428,12 @@ static void opcao7() {
     free(novosValores);
     novosValores = NULL;
 
-    // Atualiza cabecalho
-    cabecalho_setStatus(cab, true);
-    ok = binario_setCabecalho(path, cab);
-    cabecalho_apagar(&cab);
-    if (!ok) {  // Falha ao modificar cabecalho
-        printf("Falha no processamento do arquivo.\n");
-        return;
-    }
-
     // Imprime resultado
     binarioNaTela(path);
     return;
 
 falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas devem se NULL)
     binario_fechar(&bin);
-    cabecalho_apagar(&cab);
     registro_apagar(&reg);
     free(rrnsAtualizar);
     if (novosValores) {
