@@ -136,21 +136,9 @@ bool binario_atualizarRegistro(Binario* binario, Registro* registro);
 //* =========================== *//
 
 bool binario_getStatus(Binario* binario);
-bool binario_setStatus(Binario* binario);
+void binario_setStatus(Binario* binario, bool status);
 
-/**
- * Retorna um objeto cabecalho com
- * os dados no cabecalho do arquivo com nome path
- * 
- * Retorna NULL se nao for possivel criar o objeto Cabecalho
- * Retorna NULL se nao for possivel ler o registro cabecalho
- */
-Cabecalho* binario_getCabecalho(char* path);
-
-/**
- * Atuliza o cabeçalho do arquivo com nome path usando os dados do objeto cabecalho
- * Retorna se teve sucesso ao alterar o registro cabecalho
- */
-bool binario_setCabecalho(char* path, Cabecalho* cabecalho);
+bool binario_getRRNProx(Binario* binario);
+void binario_setRRNProx(Binario* binario, bool status);
 
 #endif

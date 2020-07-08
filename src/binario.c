@@ -6,7 +6,7 @@ struct Binario {
     const char* modes;
 
     // Cabecalho
-    bool status;  // Status
+    char status;  // Status
     int rrnProx;  // RRNProxRegistro
     int inseridos;  // numeroRegistrosInseridos
     int removidos;  // numeroRegistrosRemovidos
@@ -40,65 +40,85 @@ static const char LIXO[TAM_REG + 1] = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
  * Tenta escrever qtde valores do tipo type a partir ponteiro ptr no arquivo file
  * Se não der certo, desvia para o label fwrite_error
  */
-#define TRYFWRITE(ptr, type, qtde, bin) \
-    if (fwrite((ptr), sizeof(type), (qtde), (bin)->file) != ((size_t)qtde)) goto fwrite_erro
+#define TRYFWRITE(ptr, type, qtde, file) \
+    if (fwrite((ptr), sizeof(type), (qtde), (file)) != ((size_t)qtde)) goto fwrite_erro
 
 /**
  * Tenta ler qtde valores do tipo type para o ponteiro ptr no arquivo file
  * Se não der certo, desvia para o label fread_error
  */
-#define TRYFREAD(ptr, type, qtde, bin) \
-    if (fread((ptr), sizeof(type), (qtde), (bin)->file) != ((size_t)qtde)) goto fread_erro
+#define TRYFREAD(ptr, type, qtde, file) \
+    if (fread((ptr), sizeof(type), (qtde), (file)) != ((size_t)qtde)) goto fread_erro
 
 //* ============================ *//
 //* ===== Métodos Privados ===== *//
 //* ============================ *//
 
-static Binario* binario_criarVazio(char* path, const char* modes) {
-    if (!path) return NULL;  // Nao recebeu parametros
-
-    Binario* binario = malloc(sizeof(Binario));
-    if (!binario) return NULL;
-
-    binario->path = path;
-    binario->modes = modes;
-    binario->file = fopen(path, modes);
-    if (!binario->file) {  // Falha ao abrir arquivo
-        free(binario);
-        return NULL;
-    }
-
-    return binario;
+// TODO melhorar nome
+static void abrir(Binario* binario) {
+    if (binario->file) fclose(binario->file);
+    binario->file = fopen(binario->path, binario->modes);
 }
 
-static char* escreveString(Binario* binario, char* str, int maxTam, bool* erro) {
+// TODO melhorar nome e separar em dois metodos
+static bool cabecalho(Binario* binario, bool escrita) {
+    if (!binario) return false;  // Nao recebeu caminho
+
+    binario->file = fopen(binario->path, escrita ? "rb" : "rb+");
+    if (!binario->file) {
+        binario->file = NULL;
+        return false;
+    }
+
+    TRYFREAD(&binario->status, char, 1, binario->file);
+    TRYFREAD(&binario->rrnProx, int, 1, binario->file);
+    TRYFREAD(&binario->inseridos, int, 1, binario->file);
+    TRYFREAD(&binario->removidos, int, 1, binario->file);
+    TRYFREAD(&binario->atualizados, int, 1, binario->file);
+    if (escrita) {
+        fseek(binario->file, 0, SEEK_CUR);
+        binario->status = '0';
+        TRYFWRITE(&binario->status, char, 1, binario->file);
+    }
+
+    return true;
+
+fwrite_erro:
+fread_erro:  // Tratando erros ao ler do arquivo
+    fclose(binario->file);
+    binario->file = NULL;
+    return false;
+}
+
+static bool escreveString(Binario* binario, char* str, int maxTam) {
     const char CHARNULO = '\0';
     int qtdeLixo = maxTam;
     int len;
 
     if (str) {  // str != NULL
         len = strlen(str);
-        TRYFWRITE(str, char, len, binario);
+        TRYFWRITE(str, char, len, binario->file);
         qtdeLixo -= len;  // Descontando o que foi escrito
 
         if (qtdeLixo > 0) {  // Sobrou espaço vazio
             // Escreve '\0', e se tiver sobrado escreve lixo
-            TRYFWRITE(&CHARNULO, char, 1, binario);
+            TRYFWRITE(&CHARNULO, char, 1, binario->file);
             qtdeLixo--;
-            TRYFWRITE(LIXO, char, qtdeLixo, binario);
+            TRYFWRITE(LIXO, char, qtdeLixo, binario->file);
         }
     } else {  // dataNascimento == NULL
         // Escreve '\0', e se tiver sobrado escreve lixo
-        TRYFWRITE(&CHARNULO, char, 1, binario);
+        TRYFWRITE(&CHARNULO, char, 1, binario->file);
         qtdeLixo--;
-        TRYFWRITE(LIXO, char, qtdeLixo, binario);
+        TRYFWRITE(LIXO, char, qtdeLixo, binario->file);
     }
+    return true;
 
 fwrite_erro:
-    *erro = true;
+    return false;
 }
 
-static char* atualizaString(Binario* binario, char* str, int maxTam, bool* erro) {
+static bool atualizaString(Binario* binario, char* str, int maxTam, bool* erro) {
     const char CHARNULO = '\0';
     int espaco = maxTam;
     int len;
@@ -106,23 +126,140 @@ static char* atualizaString(Binario* binario, char* str, int maxTam, bool* erro)
     *erro = false;
     if (str) {  // str != NULL
         len = strlen(str);
-        TRYFWRITE(str, char, len, binario);
+        TRYFWRITE(str, char, len, binario->file);
         espaco -= len;
 
         if (espaco > 0) {  // Sobrou espaco vazio
-            TRYFWRITE(&CHARNULO, char, 1, binario);  // Escreve '\0'
+            TRYFWRITE(&CHARNULO, char, 1, binario->file);  // Escreve '\0'
             espaco--;
             fseek(binario->file, espaco, SEEK_CUR);
         }
     } else {  // str == NULL
-        TRYFWRITE(&CHARNULO, char, 1, binario);  // Escreve '\0'
+        TRYFWRITE(&CHARNULO, char, 1, binario->file);  // Escreve '\0'
         espaco--;
         fseek(binario->file, espaco, SEEK_CUR);
     }
+    return true;
 
 fwrite_erro:
-    *erro = true;
-    return NULL;
+    return false;
+}
+
+static bool escreverRegistro(Binario* binario, Registro* registro) {
+    if (!binario || !registro) return false;  // Objeto nao existe ou nao recebeu os paramentro
+
+    int qtdeLixo;
+
+    // Extraindo dados do registro
+    int idNascimento;
+    int idadeMae;
+    char* dataNascimento;
+    char sexoBebe;
+    char *estadoMae, *estadoBebe;
+    char *cidadeMae, *cidadeBebe;
+    registro_extrairDados(registro,
+                          &idNascimento,
+                          &idadeMae, &dataNascimento,
+                          &sexoBebe,
+                          &estadoMae, &estadoBebe,
+                          &cidadeMae, &cidadeBebe);
+
+    sexoBebe = (sexoBebe != '\0' ? sexoBebe : '0');  // Se sexoBebe for nulo ele recebe '0'
+
+    // Calculando tamanho dos campos variaveis
+    // Mesmo que tamCidadee = (cidade != NULL ? strlen(cidade) : 0);
+    int tamCidadeMae = (cidadeMae ? strlen(cidadeMae) : 0);
+    int tamCidadeBebe = (cidadeBebe ? strlen(cidadeBebe) : 0);
+
+    // Escrevendo campos variaveis
+    qtdeLixo = TAM_CVAR;  // Espaco disponivel para campos variaveis
+    TRYFWRITE(&tamCidadeMae, int, 1, binario->file);
+    TRYFWRITE(&tamCidadeBebe, int, 1, binario->file);
+    if (cidadeMae) TRYFWRITE(cidadeMae, char, tamCidadeMae, binario->file);
+    if (cidadeBebe) TRYFWRITE(cidadeBebe, char, tamCidadeBebe, binario->file);
+
+    // Preenche o espaço que sobrou com lixo o restante
+    qtdeLixo -= tamCidadeMae + tamCidadeBebe;
+    TRYFWRITE(LIXO, char, qtdeLixo, binario->file);
+
+    // Escrevendo campos fixos
+    TRYFWRITE(&idNascimento, int, 1, binario->file);
+    TRYFWRITE(&idadeMae, int, 1, binario->file);
+
+    bool ok;
+    ok = escreveString(binario, dataNascimento, TAM_DATA);
+    if (ok) goto fwrite_erro;  // Falha ao escrever no arquivo
+
+    TRYFWRITE(&sexoBebe, char, 1, binario->file);
+
+    ok = escreveString(binario, estadoMae, TAM_ESTADO);
+    if (ok) goto fwrite_erro;  // Falha ao ecrever no arquivo
+
+    ok = escreveString(binario, estadoBebe, TAM_ESTADO);
+    if (ok) goto fwrite_erro;  // Falha ao escrever no arquivo
+
+    return true;
+
+fwrite_erro:  // Tratando erros ao escrever no arquivo
+    return false;
+}
+
+static bool atualizarRegistro(Binario* binario, Registro* registro) {
+    if (!binario || !registro) return false;  // Objeto nao existe ou nao recebeu os paramentro
+
+    int espaco;
+    bool erro;
+
+    // Extraindo dados do registro
+    int idNascimento;
+    int idadeMae;
+    char* dataNascimento;
+    char sexoBebe;
+    char *estadoMae, *estadoBebe;
+    char *cidadeMae, *cidadeBebe;
+    registro_extrairDados(registro,
+                          &idNascimento,
+                          &idadeMae, &dataNascimento,
+                          &sexoBebe,
+                          &estadoMae, &estadoBebe,
+                          &cidadeMae, &cidadeBebe);
+
+    sexoBebe = (sexoBebe != '\0' ? sexoBebe : '0');  // Se sexoBebe for nulo ele recebe '0'
+
+    // Calculando tamanho dos campos variaveis
+    // Mesmo que tamCidadee = (cidade != NULL ? strlen(cidade) : 0);
+    int tamCidadeMae = (cidadeMae ? strlen(cidadeMae) : 0);
+    int tamCidadeBebe = (cidadeBebe ? strlen(cidadeBebe) : 0);
+
+    // Escrevendo campos variaveis
+    TRYFWRITE(&tamCidadeMae, int, 1, binario->file);
+    TRYFWRITE(&tamCidadeBebe, int, 1, binario->file);
+    if (cidadeMae) TRYFWRITE(cidadeMae, char, tamCidadeMae, binario->file);
+    if (cidadeBebe) TRYFWRITE(cidadeBebe, char, tamCidadeBebe, binario->file);
+
+    // Pula lixo
+    espaco = TAM_CVAR - tamCidadeBebe - tamCidadeMae;
+    fseek(binario->file, espaco, SEEK_CUR);
+
+    // Escrevendo campos fixos
+    TRYFWRITE(&idNascimento, int, 1, binario->file);
+    TRYFWRITE(&idadeMae, int, 1, binario->file);
+
+    atualizaString(binario, dataNascimento, TAM_DATA, &erro);
+    if (erro) goto fwrite_erro;  // Falha ao escrever no arquivo
+
+    TRYFWRITE(&sexoBebe, char, 1, binario->file);
+
+    atualizaString(binario, estadoMae, TAM_ESTADO, &erro);
+    if (erro) goto fwrite_erro;  // Falha ao escrever no arquivo
+
+    atualizaString(binario, estadoBebe, TAM_ESTADO, &erro);
+    if (erro) goto fwrite_erro;  // Falha ao escrever no arquivo
+
+    return true;
+
+fwrite_erro:  // Tratando erros ao escrever no arquivo
+    return false;
 }
 
 //* ============================ *//
@@ -130,24 +267,34 @@ fwrite_erro:
 //* ============================ *//
 
 Binario* binario_criar(char* path) {
-    Binario* binario = binario_criarVazio(path, "wb");
+    Binario* binario = malloc(sizeof(Binario));
+    if (!binario) return NULL;
+
+    binario->file = NULL;
+    binario->path = path;
+    binario->modes = "wb";
+
+    abrir(binario);
+    if (!binario->file) {  // Falha ao abrir arquivo
+        free(binario);
+        return NULL;
+    }
 
     // Criando Cabecalho
-    binario->status = true;
+    binario->status = '1';
     binario->rrnProx = 0;
     binario->inseridos = 0;
     binario->removidos = 0;
     binario->atualizados = 0;
 
     // Escrevendo o cabecalho no arquivo
-    char aux = '1';  // binario->status ? '1' : '0';
 
-    TRYFWRITE(&aux, char, 1, binario);
-    TRYFWRITE(&binario->rrnProx, int, 1, binario);
-    TRYFWRITE(&binario->inseridos, int, 1, binario);
-    TRYFWRITE(&binario->removidos, int, 1, binario);
-    TRYFWRITE(&binario->atualizados, int, 1, binario);
-    TRYFWRITE(LIXO, char, 111, binario);
+    TRYFWRITE(&binario->status, char, 1, binario->file);
+    TRYFWRITE(&binario->rrnProx, int, 1, binario->file);
+    TRYFWRITE(&binario->inseridos, int, 1, binario->file);
+    TRYFWRITE(&binario->removidos, int, 1, binario->file);
+    TRYFWRITE(&binario->atualizados, int, 1, binario->file);
+    TRYFWRITE(LIXO, char, 111, binario->file);
 
     return binario;
 
@@ -159,8 +306,18 @@ fwrite_erro:  // Tratando erros ao escrever no arquivo
 Binario* binario_abrirLeitura(char* path) {
     if (!path) return NULL;  // Nao recebeu parametros
 
-    Binario* binario = binario_criarVazio(path, "rb");
-    if (!binario) return NULL;  // Falha ao abrir arquivo
+    Binario* binario = malloc(sizeof(Binario));
+    if (!binario) return NULL;
+
+    binario->file = NULL;
+    binario->path = path;
+    binario->modes = "rb";
+
+    cabecalho(binario, false);
+    abrir(binario);
+    if (!binario->file) {  // Falha ao abrir arquivo
+        return NULL;
+    }
 
     binario_apontar(binario, 0, SEEK_SET);  // Vai para o primeiro registro do arquivo
     return binario;
@@ -169,11 +326,18 @@ Binario* binario_abrirLeitura(char* path) {
 Binario* binario_abrirEscrita(char* path) {
     if (!path) return NULL;  // Nao recebeu paramentros
 
-    Binario* binario = binario_criarVazio(path, "rb+");
-    if (!binario) return NULL;  // Falha ao abrir arquivo
+    Binario* binario = malloc(sizeof(Binario));
+    if (!binario) return NULL;
 
-    binario->status = false;
-    binario_atualizarCabecalho();
+    binario->path = path;
+    binario->modes = "rb+";
+
+    cabecalho(binario, true);
+    abrir(binario);
+    if (!binario->file) {  // Falha ao abrir arquivo
+        free(binario);
+        return NULL;
+    }
 
     binario_apontar(binario, 0, SEEK_SET);  // Vai para o primeiro registro do arquivo
     return binario;
@@ -183,7 +347,7 @@ void binario_fechar(Binario** binario) {
     if (!binario || !*binario) return;  // Objeto ja foi apagado (arquivo ja foi fechado)
 
     // Fecha o arquivo
-    fclose((*binario)->file);
+    if ((*binario)->file) fclose((*binario)->file);
     free(*binario);
     *binario = NULL;
 }
@@ -206,9 +370,11 @@ bool binario_remover(Binario* binario) {
     if (!binario) return false;  // Objeto nao existe
 
     int removido = REMOVIDO;
-    TRYFWRITE(&removido, int, 1, binario);
+    TRYFWRITE(&removido, int, 1, binario->file);
     binario_apontar(binario, 1, SEEK_CUR);  // Pula para o proximo registro
 
+    binario->inseridos--;
+    binario->removidos++;
     return true;
 
 fwrite_erro:
@@ -248,7 +414,7 @@ Registro* binario_lerRegistro(Binario* binario, bool* erro) {
 
     // Le Campos Variaveis
     int tamCidadeMae;
-    TRYFREAD(&tamCidadeMae, int, 1, binario);
+    TRYFREAD(&tamCidadeMae, int, 1, binario->file);
 
     if (tamCidadeMae == REMOVIDO) {  // Registro foi removido
         binario_apontar(binario, 1, SEEK_CUR);  // Pula registro
@@ -256,14 +422,14 @@ Registro* binario_lerRegistro(Binario* binario, bool* erro) {
     }
 
     int tamCidadeBebe;
-    TRYFREAD(&tamCidadeBebe, int, 1, binario);
+    TRYFREAD(&tamCidadeBebe, int, 1, binario->file);
 
     cidadeMae = NULL;
     if (tamCidadeMae > 0) {
         cidadeMae = string_criar(TAM_CVAR + 1);
         if (!cidadeMae) goto falha;  // Falha ao alocar string
 
-        TRYFREAD(cidadeMae, char, tamCidadeMae, binario);
+        TRYFREAD(cidadeMae, char, tamCidadeMae, binario->file);
         cidadeMae[tamCidadeMae] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera alterada (O arquivo tera o '\0')
     }  // Se tem uma cidade armazenada ela foi lida, senao cidadeMae eh NULL
 
@@ -272,7 +438,7 @@ Registro* binario_lerRegistro(Binario* binario, bool* erro) {
         cidadeBebe = string_criar(TAM_CVAR + 1);
         if (!cidadeBebe) goto falha;  // Falha ao alocar string
 
-        TRYFREAD(cidadeBebe, char, tamCidadeBebe, binario);
+        TRYFREAD(cidadeBebe, char, tamCidadeBebe, binario->file);
         cidadeBebe[tamCidadeBebe] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera alterada (O arquivo tera o '\0')
     }  // Se tem uma cidade armazenada ela foi lida, senao cidadeBebe eh NULL
 
@@ -282,32 +448,32 @@ Registro* binario_lerRegistro(Binario* binario, bool* erro) {
 
     // Le campos fixos
     int idNascimento;
-    TRYFREAD(&idNascimento, int, 1, binario);
+    TRYFREAD(&idNascimento, int, 1, binario->file);
 
     int idadeMae;
-    TRYFREAD(&idadeMae, int, 1, binario);
+    TRYFREAD(&idadeMae, int, 1, binario->file);
 
     dataNascimento = string_criar(TAM_DATA + 1);
     if (!dataNascimento) goto falha;  // Falha ao alocar string
 
-    TRYFREAD(dataNascimento, char, TAM_DATA, binario);
+    TRYFREAD(dataNascimento, char, TAM_DATA, binario->file);
     dataNascimento[TAM_DATA] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera alterada (O arquivo tera o '\0')
     string_apagarSeVazio(&dataNascimento);
 
     char sexoBebe;
-    TRYFREAD(&sexoBebe, char, 1, binario);
+    TRYFREAD(&sexoBebe, char, 1, binario->file);
 
     estadoMae = string_criar(TAM_ESTADO + 1);
     if (!estadoMae) goto falha;  // Falha ao alocar string
 
-    TRYFREAD(estadoMae, char, TAM_ESTADO, binario);
+    TRYFREAD(estadoMae, char, TAM_ESTADO, binario->file);
     estadoMae[TAM_ESTADO] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera alterada (O arquivo tera o '\0')
     string_apagarSeVazio(&estadoMae);
 
     estadoBebe = string_criar(TAM_ESTADO + 1);
     if (!estadoBebe) goto falha;  // Falha ao alocar string
 
-    TRYFREAD(estadoBebe, char, TAM_ESTADO, binario);
+    TRYFREAD(estadoBebe, char, TAM_ESTADO, binario->file);
     estadoBebe[TAM_ESTADO] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera alterada (O arquivo tera o '\0')
     string_apagarSeVazio(&estadoBebe);
 
@@ -330,191 +496,60 @@ fread_erro:  // Tratando erros ao ler do arquivo
     return NULL;
 }
 
-bool binario_escreverRegistro(Binario* binario, Registro* registro) {
-    if (!binario || !registro) return false;  // Objeto nao existe ou nao recebeu os paramentro
+bool binario_inserirRegistro(Binario* binario, Registro* registro) {
+    binario_apontar(binario, binario->rrnProx, SEEK_SET);
+    bool ok = escreverRegistro(binario, registro);
+    if (!ok) return false;
 
-    const char CHARNULO = '\0';
-    int tamDado;  // Tamanho do dado escrito para calcular quanto lixo escrever
-    int qtdeLixo;  // Guardar a qunatidade de espaco vazio para preencher com lixo
-
-    // Extraindo dados do registro
-    int idNascimento;
-    int idadeMae;
-    char* dataNascimento;
-    char sexoBebe;
-    char *estadoMae, *estadoBebe;
-    char *cidadeMae, *cidadeBebe;
-    registro_extrairDados(registro,
-                          &idNascimento,
-                          &idadeMae, &dataNascimento,
-                          &sexoBebe,
-                          &estadoMae, &estadoBebe,
-                          &cidadeMae, &cidadeBebe);
-
-    sexoBebe = (sexoBebe != '\0' ? sexoBebe : '0');  // Se sexoBebe for nulo ele recebe '0'
-
-    // Calculando tamanho dos campos variaveis
-    // Mesmo que tamCidadee = (cidade != NULL ? strlen(cidade) : 0);
-    int tamCidadeMae = (cidadeMae ? strlen(cidadeMae) : 0);
-    int tamCidadeBebe = (cidadeBebe ? strlen(cidadeBebe) : 0);
-
-    // Escrevendo campos variaveis
-    qtdeLixo = TAM_CVAR;  // Espaco disponivel para campos variaveis
-    TRYFWRITE(&tamCidadeMae, int, 1, binario);
-    TRYFWRITE(&tamCidadeBebe, int, 1, binario);
-    if (cidadeMae) TRYFWRITE(cidadeMae, char, tamCidadeMae, binario);
-    if (cidadeBebe) TRYFWRITE(cidadeBebe, char, tamCidadeBebe, binario);
-
-    // Preenche o espaço que sobrou com lixo o restante
-    qtdeLixo -= tamCidadeMae + tamCidadeBebe;
-    TRYFWRITE(LIXO, char, qtdeLixo, binario);
-
-    // Escrevendo campos fixos
-    TRYFWRITE(&idNascimento, int, 1, binario);
-    TRYFWRITE(&idadeMae, int, 1, binario);
-
-    bool erro;
-    escreveString(binario, dataNascimento, TAM_DATA, &erro);
-    if (erro) goto fwrite_erro;  // Falha ao escrever no arquivo
-
-    TRYFWRITE(&sexoBebe, char, 1, binario);
-
-    escreveString(binario, estadoMae, TAM_ESTADO, &erro);
-    if (erro) goto fwrite_erro;  // Falha ao ecrever no arquivo
-
-    escreveString(binario, estadoBebe, TAM_ESTADO, &erro);
-    if (erro) goto fwrite_erro;  // Falha ao escrever no arquivo
-
+    binario->rrnProx++;
+    binario->inseridos++;
     return true;
-
-fwrite_erro:  // Tratando erros ao escrever no arquivo
-    return false;
 }
 
 bool binario_atualizarRegistro(Binario* binario, Registro* registro) {
-    if (!binario || !registro) return false;  // Objeto nao existe ou nao recebeu os paramentro
+    bool ok = atualizarRegistro(binario, registro);
+    if (!ok) return false;
 
-    const char CHARNULO = '\0';
-    int tamDado;  // Tamanho do dado escrito para saber se precisa colocar o '\0'
-    int espaco;
-    bool erro;
-
-    // Extraindo dados do registro
-    int idNascimento;
-    int idadeMae;
-    char* dataNascimento;
-    char sexoBebe;
-    char *estadoMae, *estadoBebe;
-    char *cidadeMae, *cidadeBebe;
-    registro_extrairDados(registro,
-                          &idNascimento,
-                          &idadeMae, &dataNascimento,
-                          &sexoBebe,
-                          &estadoMae, &estadoBebe,
-                          &cidadeMae, &cidadeBebe);
-
-    sexoBebe = (sexoBebe != '\0' ? sexoBebe : '0');  // Se sexoBebe for nulo ele recebe '0'
-
-    // Calculando tamanho dos campos variaveis
-    // Mesmo que tamCidadee = (cidade != NULL ? strlen(cidade) : 0);
-    int tamCidadeMae = (cidadeMae ? strlen(cidadeMae) : 0);
-    int tamCidadeBebe = (cidadeBebe ? strlen(cidadeBebe) : 0);
-
-    // Escrevendo campos variaveis
-    TRYFWRITE(&tamCidadeMae, int, 1, binario);
-    TRYFWRITE(&tamCidadeBebe, int, 1, binario);
-    if (cidadeMae) TRYFWRITE(cidadeMae, char, tamCidadeMae, binario);
-    if (cidadeBebe) TRYFWRITE(cidadeBebe, char, tamCidadeBebe, binario);
-
-    // Pula lixo
-    espaco = TAM_CVAR - tamCidadeBebe - tamCidadeMae;
-    fseek(binario->file, espaco, SEEK_CUR);
-
-    // Escrevendo campos fixos
-    TRYFWRITE(&idNascimento, int, 1, binario);
-    TRYFWRITE(&idadeMae, int, 1, binario);
-
-    atualizaString(binario, dataNascimento, TAM_DATA, &erro);
-    if (erro) goto fwrite_erro;  // Falha ao escrever no arquivo
-
-    TRYFWRITE(&sexoBebe, char, 1, binario);
-
-    atualizaString(binario, estadoMae, TAM_ESTADO, &erro);
-    if (erro) goto fwrite_erro;  // Falha ao escrever no arquivo
-
-    atualizaString(binario, estadoBebe, TAM_ESTADO, &erro);
-    if (erro) goto fwrite_erro;  // Falha ao escrever no arquivo
-
+    binario->atualizados++;
     return true;
-
-fwrite_erro:  // Tratando erros ao escrever no arquivo
-    return false;
 }
 
 //* ============================== *//
 //* ===== Registro Cabecalho ===== *//
 //* ============================== *//
 
-Cabecalho* binario_getCabecalho(char* path) {
-    if (!path) return false;  // Nao recebeu caminho
-
-    Binario* binario = fopen(path, "rb");
-    if (!binario) return false;  // Falha ao abrir arquivo
-
-    char aux;
-    TRYFREAD(&aux, char, 1, binario);
-    bool status = (aux == '1');
-
-    int rrn;
-    TRYFREAD(&rrn, int, 1, binario);
-
-    int inseridos;
-    TRYFREAD(&inseridos, int, 1, binario);
-
-    int removidos;
-    TRYFREAD(&removidos, int, 1, binario);
-
-    int atualizados;
-    TRYFREAD(&atualizados, int, 1, binario);
-
-    fclose(binario);
-    return cabecalho_criar(status, rrn,
-                           inseridos, removidos, atualizados);
-
-fread_erro:  // Tratando erros ao ler do arquivo
-    fclose(binario);
-    return NULL;
-}
-
+// TODO
 bool binario_atualizarCabecalho(Binario* binario) {
     if (!binario) return false;
 
-    Binario* binario = fopen(path, "rb+");
-    if (!binario) return false;  // Falha ao abrir arquivo
+    fclose(binario->file);
+    binario->file = NULL;
 
-    bool status;
-    int rrn;
-    int inseridos, removidos, atualizados;
+    binario->file = fopen(binario->path, "rb+");
+    if (!binario->file) return false;  // Falha ao abrir arquivo
 
-    cabecalho_extrairDados(cabecalho, &status, &rrn,
-                           &inseridos, &removidos, &atualizados);
+    char aux = (binario->status ? '1' : '0');
 
-    char aux = (status ? '1' : '0');
+    TRYFWRITE(&aux, char, 1, binario->file);
+    TRYFWRITE(&binario->rrnProx, int, 1, binario->file);
+    TRYFWRITE(&binario->inseridos, int, 1, binario->file);
+    TRYFWRITE(&binario->removidos, int, 1, binario->file);
+    TRYFWRITE(&binario->atualizados, int, 1, binario->file);
 
-    TRYFWRITE(&aux, char, 1, binario);
-    TRYFWRITE(&rrn, int, 1, binario);
-    TRYFWRITE(&inseridos, int, 1, binario);
-    TRYFWRITE(&removidos, int, 1, binario);
-    TRYFWRITE(&atualizados, int, 1, binario);
-
-    fclose(binario);
+    fclose(binario->file);
+    binario->file = fopen(binario->path, binario->modes);
     return true;
 
 fwrite_erro:  // Tratando erros ao escrever no arquivo
-    fclose(binario);
+    fclose(binario->file);
+    binario->file = NULL;
     return false;
 }
 
 bool binario_getStatus(Binario* binario) {
-    return binario->status;
+    return binario->status == '1';
+}
+
+void binario_setStatus(Binario* binario, bool status) {
+    binario->status = (status ? '1' : '0');
 }
