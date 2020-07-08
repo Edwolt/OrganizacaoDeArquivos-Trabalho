@@ -31,16 +31,11 @@ static void opcao3() {
 
     bin = binario_abrirLeitura(path);
     if (!bin) {  // Falha ao abrir arquivo
-        printf("Falha no processamento do arquivo.\n");
+        printf("Falha no processamento do arquivo. (opne)\n");
         goto falha;
     }
 
     // Verifica cabecalho
-    if (!binario_getStatus(bin)) {  // Arquivo inconsistente
-        printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
-
     if (binario_estaVazio(bin)) {  // O arquivo nao possui dados
         printf("Registro Inexistente.\n");
         goto falha;
@@ -55,7 +50,7 @@ static void opcao3() {
     for (i = 0; i < numRegs; i++) {
         reg = binario_lerRegistro(bin, &erro);
         if (erro) {  // Falha ao ler registro
-            printf("Falha no processamento do arquivo.\n");
+            printf("Falha no processamento do arquivo. (ler)\n");
             goto falha;
         }
 
@@ -112,11 +107,6 @@ static void opcao4() {
     }
 
     // Verifica cabecalho
-    if (!binario_getStatus(bin)) {  // Arquivo inconsistente
-        printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
-
     if (rrn <= 0 || rrn > binario_getRRNProx(bin)) {  // Registro nao existe
         printf("Registro Inexistente.");
         goto falha;
@@ -199,12 +189,6 @@ static void opcao5() {
 
     bin = binario_abrirEscrita(path);
     if (!bin) {  // Falha ao abrir arquivo
-        printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
-
-    // Verifica cabecalho
-    if (!binario_getStatus(bin)) {  // Arquivo incosistente
         printf("Falha no processamento do arquivo.\n");
         goto falha;
     }
@@ -293,12 +277,6 @@ static void opcao6() {
         goto falha;
     }
 
-    // Verifica cabecalho
-    if (!binario_getStatus(bin)) {  // Arquivo inconsistente
-        printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
-
     // Insere registros no arquivo
 
     bool ok = binario_inserirVarios(bin, regs, n);
@@ -382,12 +360,6 @@ static void opcao7() {
 
     bin = binario_abrirEscrita(path);
     if (!bin) {  // Falha ao abrir arquivo
-        printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
-
-    // Verifica Cabecalho
-    if (!binario_getStatus(bin)) {
         printf("Falha no processamento do arquivo.\n");
         goto falha;
     }

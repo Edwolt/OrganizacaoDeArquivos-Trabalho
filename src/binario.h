@@ -65,36 +65,6 @@ Binario* binario_abrirEscrita(char* path);
 void binario_fechar(Binario** binario);
 
 /**
- * Insere o registro no final do arquivo binario
- * Retorna se a operacao foi bem sucedida
- */
-bool binario_inserir(Binario* binario, Registro* registro);
-
-/**
- * Insere n registros no final do arquivo binario
- * Retorna se a operacao foi bem sucedida
- */
-bool binario_inserirVarios(Binario* binario, Registro** registros, int n);
-
-bool binario_atualizar(Binario* binario, Registro* registro);
-
-/**
- * Remove o registro para o qual o arquivo esta apontando
- * O binario passa a apontar para o registro seguinte
- */
-bool binario_remover(Binario* binario);
-
-/**
- * Retorna o registro que esta no rrn
- * Retorna NULL se o registro estiver logicamente removido
- * O binario passa a apontar para o registro seguinte
- * 
- * Salva em erro se ocorreu um erro
- * Retorna NULL se ocorrer um erro
- */
-Registro* binario_buscar(Binario* binario, int rrn, bool* erro);
-
-/**
  * Faz o binario passar a apontar para o rrn dado
  * 
  * whence segue a mesma logica que o fseek:
@@ -119,34 +89,40 @@ void binario_apontar(Binario* binario, int rrn, int whence);
 Registro* binario_lerRegistro(Binario* binario, bool* erro);
 
 /**
- * Insere um registro no arquivo onde está sendo apontando
- * 
+ * Retorna o registro que esta no rrn
+ * Retorna NULL se o registro estiver logicamente removido
  * O binario passa a apontar para o registro seguinte
  * 
- * Retorna se foi possivel inserir o registro no arquivo
+ * Salva em erro se ocorreu um erro
+ * Retorna NULL se ocorrer um erro
  */
-bool binario_escreverRegistro(Binario* binario, Registro* registro);
+Registro* binario_buscar(Binario* binario, int rrn, bool* erro);
 
 /**
- * Atualiza um registro do arquivo
- * Obs: Nao verifica se esta no final do arquivo
- * A diferenca entre do escrever eh nao prencher o espaco nao ocupado com lixo
- * O binario passa a apontar para o registro seguinte
- * 
- * Retorna se foi possivel inserir o registro no arquivo
+ * Insere o registro no final do arquivo binario
+ * Retorna se a operacao foi bem sucedida
  */
-bool binario_atualizarRegistro(Binario* binario, Registro* registro);
+bool binario_inserir(Binario* binario, Registro* registro);
+
+/**
+ * Insere n registros no final do arquivo binario
+ * Retorna se a operacao foi bem sucedida
+ */
+bool binario_inserirVarios(Binario* binario, Registro** registros, int n);
+
+bool binario_atualizar(Binario* binario, Registro* registro);
+
+/**
+ * Remove o registro para o qual o arquivo esta apontando
+ * O binario passa a apontar para o registro seguinte
+ */
+bool binario_remover(Binario* binario);
 
 //* =========================== *//
 //* ===== Getter e Setter ===== *//
 //* =========================== *//
 
-bool binario_getStatus(Binario* binario);
-void binario_setStatus(Binario* binario, bool status);
-
 int binario_getRRNProx(Binario* binario);
-void binario_setRRNProx(Binario* binario, bool status);
-
 bool binario_estaVazio(Binario* binario);
 
 #endif

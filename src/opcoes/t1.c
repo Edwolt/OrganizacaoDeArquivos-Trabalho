@@ -84,11 +84,6 @@ static void opcao2() {
     }
 
     // Verifica cabecalho
-    if (!binario_getStatus(bin)) {  // Arquivo inconsistente
-        printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
-
     if (binario_estaVazio(bin)) {  // Arquivo nao possui dados
         printf("Registro inexistente.\n");
         goto falha;
