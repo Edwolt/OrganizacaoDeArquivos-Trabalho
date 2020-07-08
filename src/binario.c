@@ -117,6 +117,8 @@ static bool fecharCabecalho(Binario* binario) {
     TRYFWRITE(&binario->inseridos, int, 1, binario->file);
     TRYFWRITE(&binario->removidos, int, 1, binario->file);
     TRYFWRITE(&binario->atualizados, int, 1, binario->file);
+    fclose(binario->file);
+    binario->file = NULL;
 
     return true;
 
@@ -147,10 +149,10 @@ static bool escreveString(Binario* binario, char* str, int maxTam) {
         qtdeLixo--;
         TRYFWRITE(LIXO, char, qtdeLixo, binario->file);
     }
-    return true;
+    return false;
 
 fwrite_erro:
-    return false;
+    return true;
 }
 
 static bool atualizaString(Binario* binario, char* str, int maxTam, bool* erro) {

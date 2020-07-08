@@ -197,6 +197,12 @@ static void opcao5() {
         }
     }
 
+    bin = binario_abrirEscrita(path);
+    if (!bin) {  // Falha ao abrir arquivo
+        printf("Falha no processamento do arquivo.\n");
+        goto falha;
+    }
+
     // Verifica cabecalho
     if (!binario_getStatus(bin)) {  // Arquivo incosistente
         printf("Falha no processamento do arquivo.\n");
@@ -204,17 +210,10 @@ static void opcao5() {
     }
 
     // Remove registros
-    bin = binario_abrirEscrita(path);
-    if (!bin) {  // Falha ao abrir arquivo
-        printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
-
     bool erro;
     int numRegs = binario_getRRNProx(bin);
     for (i = 0; i < numRegs; i++) {  // Itera sobre registro
         reg = binario_lerRegistro(bin, &erro);
-
         if (erro) {  // Falha ao ler registro
             printf("Falha no processamento do arquivo.\n");
             goto falha;
@@ -381,6 +380,12 @@ static void opcao7() {
         }
     }
 
+    bin = binario_abrirEscrita(path);
+    if (!bin) {  // Falha ao abrir arquivo
+        printf("Falha no processamento do arquivo.\n");
+        goto falha;
+    }
+
     // Verifica Cabecalho
     if (!binario_getStatus(bin)) {
         printf("Falha no processamento do arquivo.\n");
@@ -388,12 +393,6 @@ static void opcao7() {
     }
 
     // Atualiza registros
-    bin = binario_abrirEscrita(path);
-    if (!bin) {  // Falha ao abrir arquivo
-        printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
-
     bool erro;
     int numRegs = binario_getRRNProx(bin);
     bool ok;
@@ -412,7 +411,7 @@ static void opcao7() {
 
         // Atualiza registro
         criterio_atualizarRegistro(&novosValores[i], reg);  // Pega os valores em criterio e colocar no registro
-        ok = binario_atualizarRegistro(bin, reg);  // Escreve o registro em cima do anterior
+        ok = binario_atualizar(bin, reg);  // Escreve o registro em cima do anterior
         if (!ok) {
             printf("Falha no processamento do arquivo.\n");
             goto falha;
