@@ -21,8 +21,6 @@ typedef struct Binario Binario;
  * O arquivo aponta para o primeiro registro de dados
  * 
  * Se o arquivo ja existir, sobrescreve ele com um arquivo novo
- * Obs: O arquivo aponta para o primeiro registro
- * 
  * Retorna NULL se nao for possivel criar o arquivo
  */
 Binario* binario_criar(char* path);
