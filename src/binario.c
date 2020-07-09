@@ -77,7 +77,7 @@ static bool cabecalhoLeitura(Binario* binario) {
     if (binario->file) fclose(binario->file);
     binario->file = NULL;
 
-    binario->file = fopen(binario->path, (isEscrita(binario) ? "rb+" : "rb"));
+    binario->file = fopen(binario->path, "rb");
     if (!binario->file) return false;
 
     TRYFREAD(&binario->status, char, 1, binario->file);
@@ -94,12 +94,12 @@ static bool cabecalhoLeitura(Binario* binario) {
     fclose(binario->file);
     binario->file = NULL;
 
-    return false;
+    return true;
 
 fread_erro:  // Tratando erros ao ler do arquivo
     fclose(binario->file);
     binario->file = NULL;
-    return true;
+    return false;
 }
 
 static bool cabecalhoEscrita(Binario* binario) {
@@ -123,28 +123,26 @@ static bool cabecalhoEscrita(Binario* binario) {
     TRYFREAD(&binario->removidos, int, 1, binario->file);
     TRYFREAD(&binario->atualizados, int, 1, binario->file);
 
-    fseek(binario->file, 0, SEEK_CUR);
+    fseek(binario->file, 0, SEEK_SET);
     binario->status = '0';
     TRYFWRITE(&binario->status, char, 1, binario->file);
 
     fclose(binario->file);
     binario->file = NULL;
 
-    return false;
+    return true;
 
 fwrite_erro:
 fread_erro:  // Tratando erros ao ler do arquivo
     fclose(binario->file);
     binario->file = NULL;
-    return true;
+    return false;
 }
 
-static bool fecharCabecalho(Binario* binario) {
-    if (binario->file) fclose(binario->file);
-    binario->file = NULL;
-
-    binario->file = fopen(binario->path, "rb+");
+static bool salvarCabecalho(Binario* binario) {
+    if (!binario->file) binario->file = fopen(binario->path, "rb+");
     if (!binario->file) return false;
+    fseek(binario->file, 0, SEEK_SET);
 
     binario->status = '1';
     TRYFWRITE(&binario->status, char, 1, binario->file);
@@ -152,6 +150,7 @@ static bool fecharCabecalho(Binario* binario) {
     TRYFWRITE(&binario->inseridos, int, 1, binario->file);
     TRYFWRITE(&binario->removidos, int, 1, binario->file);
     TRYFWRITE(&binario->atualizados, int, 1, binario->file);
+
     fclose(binario->file);
     binario->file = NULL;
 
@@ -386,7 +385,9 @@ Binario* binario_abrirLeitura(char* path) {
     binario->modes = "rb";
 
     bool ok = cabecalhoLeitura(binario);
-    if (!ok) goto falha;
+    if (!ok) {
+        goto falha;
+    }
 
     abrirArquivo(binario);
     if (!binario->file) goto falha;  // Falha ao abrir arquivo
@@ -430,7 +431,7 @@ void binario_fechar(Binario** binario) {
 
     // Fecha o arquivo
     if (isEscrita(*binario)) {
-        fecharCabecalho(*binario);
+        salvarCabecalho(*binario);
     } else {
         if ((*binario)->file) fclose((*binario)->file);
     }
@@ -567,16 +568,12 @@ bool binario_inserirVarios(Binario* binario, Registro** registros, int n) {
     if (!binario || !registros) return false;  // Objeto nao existe ou nao recebeu parametros
 
     int i;
-    binario_apontar(binario, binario->rrnProx, SEEK_SET);
-
     bool ok;
     for (i = 0; i < n; i++) {
-        ok = binario_escreverRegistro(binario, registros[i]);
+        ok = binario_inserir(binario, registros[i]);
         if (!ok) return false;
     }
 
-    binario->inseridos += n;
-    binario->rrnProx += n;
     return true;
 }
 
@@ -591,8 +588,8 @@ bool binario_atualizar(Binario* binario, Registro* registro) {
 bool binario_remover(Binario* binario) {
     if (!binario) return false;  // Objeto nao existe
 
-    int removido = REMOVIDO;
-    TRYFWRITE(&removido, int, 1, binario->file);
+    const int REM = REMOVIDO;
+    TRYFWRITE(&REM, int, 1, binario->file);
     binario_apontar(binario, 1, SEEK_CUR);  // Pula para o proximo registro
 
     binario->inseridos--;

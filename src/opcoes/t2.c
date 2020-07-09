@@ -31,7 +31,7 @@ static void opcao3() {
 
     bin = binario_abrirLeitura(path);
     if (!bin) {  // Falha ao abrir arquivo
-        printf("Falha no processamento do arquivo. (opne)\n");
+        printf("Falha no processamento do arquivo.\n");
         goto falha;
     }
 
@@ -50,7 +50,7 @@ static void opcao3() {
     for (i = 0; i < numRegs; i++) {
         reg = binario_lerRegistro(bin, &erro);
         if (erro) {  // Falha ao ler registro
-            printf("Falha no processamento do arquivo. (ler)\n");
+            printf("Falha no processamento do arquivo.\n");
             goto falha;
         }
 
@@ -172,13 +172,13 @@ static void opcao5() {
 
     scanf(" %s %d", path, &n);
 
+    // Le criterios
     criterios = malloc(n * sizeof(Criterio*));
     if (!criterios) {  // Falha ao alocar vetor
         printf("Falha no processamento do arquivo.\n");
         goto falha;
     }
 
-    // Le criterios
     for (i = 0; i < n; i++) {
         criterios[i] = criterio_criarDoStdin();
         if (!criterios[i]) {  // Nao foi possivel criar criterios
@@ -187,6 +187,7 @@ static void opcao5() {
         }
     }
 
+    // Abri arquivo
     bin = binario_abrirEscrita(path);
     if (!bin) {  // Falha ao abrir arquivo
         printf("Falha no processamento do arquivo.\n");
