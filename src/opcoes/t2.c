@@ -108,7 +108,7 @@ static void opcao4() {
 
     // Verifica cabecalho
     if (rrn <= 0 || rrn > binario_getRRNProx(bin)) {  // Registro nao existe
-        printf("Registro Inexistente.");
+        printf("Registro Inexistente.\n");
         goto falha;
     }
 
@@ -126,7 +126,7 @@ static void opcao4() {
         registro_imprimir(reg);
         registro_apagar(&reg);
     } else {
-        printf("Registro Inexistente.");
+        printf("Registro Inexistente.\n");
     }
     return;
 
