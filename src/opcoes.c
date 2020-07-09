@@ -4,8 +4,8 @@
 
 /**
  * Ponteiro para vetor de funcoes
- * 
  * Cada funcao deve ler os parametros necessarios para execucao do stdin
+ * (exceto pelo numero da instrucao que ja foi lido para chama-la)
  */
 typedef void Opcao();
 

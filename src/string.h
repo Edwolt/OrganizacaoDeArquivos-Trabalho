@@ -1,12 +1,12 @@
 #ifndef ALOCA_STRING_H
 #define ALOCA_STRING_H
 
+#include <stdlib.h>
+#include <string.h>
+
 /*
 Funcoes para auxiliar na alocacao dinamica de strings
 */
-
-#include <stdlib.h>
-#include <string.h>
 
 /**
  * Aloca uma string dinamicamente

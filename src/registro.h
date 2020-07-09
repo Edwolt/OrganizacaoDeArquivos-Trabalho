@@ -26,8 +26,6 @@ typedef struct Registro Registro;
 /**
  * Cria um novo objeto registro
  * Retorna NULL se nao for possivel criar o objeto
- * 
- * Obs: Depois, use uma funcao para destruir o objeto
  */
 Registro* registro_criar(int idNascimento,
                          int idadeMae, char* dataNascimento,
@@ -38,8 +36,6 @@ Registro* registro_criar(int idNascimento,
 /**
  * Cria um novo objeto registro sem nenhum dado
  * Retorna NULL se nao for possivel criar o objeto
- * 
- * Obs: Depois, use uma funcao para destruir o objeto
  */
 Registro* registro_criarVazio();
 
@@ -47,10 +43,8 @@ Registro* registro_criarVazio();
  * Cria um novo objeto registro pegando dados do stdin
  * Retorna NULL se nao for possivel criar o objeto
  * 
- * Padrao que o stdin deve seguir
+ * Padrao que o stdin deve seguir:
  * cidadeMae cidadeBebe idNascimento idadeMae dataNascimento sexoBebe estadoMae estadoBebe
- * 
- * Obs: Depois, use uma funcao para destruir o objeto
  */
 Registro* registro_criarDoStdin();
 

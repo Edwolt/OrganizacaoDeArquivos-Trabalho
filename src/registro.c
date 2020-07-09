@@ -8,7 +8,7 @@ struct Registro {
     int idNascimento;  // int
     int idadeMae;  // int
     char* dataNascimento;  // string: AAAA-MM-DD
-    char sexoBebe;  // Ignorado ('0'), Masculino ('1'), ou Feminino ('2')
+    char sexoBebe;  // Ignorado ('0'), Masculino ('1') ou Feminino ('2')
     char* estadoMae;  // 2 chars (string)
     char* estadoBebe;  // 2 chars (string)
 

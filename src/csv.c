@@ -94,71 +94,49 @@ void csv_fechar(CSV** csv) {
 Registro* csv_lerRegistro(CSV* csv) {
     if (!csv) return NULL;  // Objeto nao existe
 
-    char* cidadeMae = leStr(csv);
-    if (feof(csv)) return NULL;  // Fim do arquivo ou falha ao ler string
+    // Variaveis com alocacao dincamica
+    char* cidadeMae = NULL;
+    char* cidadeBebe = NULL;
+    char* dataNascimento = NULL;
+    char* estadoMae = NULL;
+    char* estadoBebe = NULL;
 
-    char* cidadeBebe = leStr(csv);
-    if (feof(csv)) {  // Fim do arquivo ou falha ao ler string
-        // Desaloca o que ja foi alocado
-        string_apagar(&cidadeMae);
-        return NULL;
-    }
+    // Leituras
+    cidadeMae = leStr(csv);
+    if (feof(csv)) goto falha;  // Fim do arquivo ou falha ao ler string
+
+    cidadeBebe = leStr(csv);
+    if (feof(csv)) goto falha;  // Fim do arquivo ou falha ao ler string
 
     int idNascimento = leInt(csv);
-    if (feof(csv)) {
-        // Desaloca o que ja foi alocado
-        string_apagar(&cidadeMae);
-        string_apagar(&cidadeBebe);
-        return NULL;
-    }
+    if (feof(csv)) goto falha;  // Fim do arquivo ou falha ao ler string
 
     int idadeMae = leInt(csv);
-    if (feof(csv)) {
-        // Desaloca o que ja foi alocado
-        string_apagar(&cidadeMae);
-        string_apagar(&cidadeBebe);
-        return NULL;
-    }
+    if (feof(csv)) goto falha;  // Fim do arquivo ou falha ao ler string
 
-    char* dataNascimento = leStr(csv);
-    if (feof(csv)) {  // Fim do arquivo ou falha ao ler string
-        // Desaloca o que ja foi alocado
-        string_apagar(&cidadeMae);
-        string_apagar(&cidadeBebe);
-        return NULL;
-    }
+    dataNascimento = leStr(csv);
+    if (feof(csv)) goto falha;  // Fim do arquivo ou falha ao ler string
 
     char sexoBebe = leChar(csv);
-    if (feof(csv)) {
-        // Desaloca o que ja foi alocado
-        string_apagar(&cidadeMae);
-        string_apagar(&cidadeBebe);
-        string_apagar(&dataNascimento);
-        return NULL;
-    }
+    if (feof(csv)) goto falha;  // Fim do arquivo ou falha ao ler string
 
-    char* estadoMae = leStr(csv);
-    if (feof(csv)) {  // Fim do arquivo ou falha ao ler string
-        // Desaloca o que ja foi alocado
-        string_apagar(&cidadeMae);
-        string_apagar(&cidadeBebe);
-        string_apagar(&dataNascimento);
-        return NULL;
-    }
+    estadoMae = leStr(csv);
+    if (feof(csv)) goto falha;  // Fim do arquivo ou falha ao ler string
 
-    char* estadoBebe = leStr(csv);
-    if (feof(csv)) {  // Fim do arquivo ou falha ao ler string
-        // Desaloca o que ja foi alocado
-        string_apagar(&cidadeMae);
-        string_apagar(&cidadeBebe);
-        string_apagar(&dataNascimento);
-        string_apagar(&estadoMae);
-        return NULL;
-    }
+    estadoBebe = leStr(csv);
+    if (feof(csv)) goto falha;  // Fim do arquivo ou falha ao ler string
 
     return registro_criar(idNascimento,
                           idadeMae, dataNascimento,
                           sexoBebe,
                           estadoMae, estadoBebe,
                           cidadeMae, cidadeBebe);
+
+falha:  // Falha na execucao da funcao
+    string_apagar(&cidadeMae);
+    string_apagar(&cidadeBebe);
+    string_apagar(&dataNascimento);
+    string_apagar(&estadoMae);
+    string_apagar(&estadoBebe);
+    return NULL;
 }

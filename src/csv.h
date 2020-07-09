@@ -24,14 +24,11 @@ typedef FILE CSV;
  * 
  * Retorna NULL se nao for possivel abrir o arquivo
  * Retorna NULL se nao receber um path
- * 
- * Obs: Depois, use uma função para destruir o objeto
  */
 CSV* csv_abrir(char* path);
 
 /**
- * Destroi o objeto
- * Obs: Não apaga o arquivo, apenas desaloca memoria
+ * Fecha o arquivo
  */
 void csv_fechar(CSV** csv);
 

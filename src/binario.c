@@ -69,11 +69,23 @@ static bool ehEscrita(Binario* binario) {
     return false;
 }
 
+/**
+ * Abri um arquivo e salva em binario
+ * Se já tiver um arquivo aberto fecha ele
+ */
 inline static void abrirArquivo(Binario* binario) {
     if (binario->file) fclose(binario->file);
     binario->file = fopen(binario->path, binario->modes);
 }
 
+/**
+ * Le o cabecalho do arquivo
+ * Se já tiver um arquivo aberto fecha ele
+ * O valor de file no final será NULL
+ * 
+ * Retorna false se houver uma falha
+ * Retorna false se o arquivo for inconsistente e para a leitura do cabecalho
+ */
 static bool cabecalhoLeitura(Binario* binario) {
     if (!binario) return false;  // Nao recebeu caminho
 
@@ -99,12 +111,20 @@ static bool cabecalhoLeitura(Binario* binario) {
 
     return true;
 
-fread_erro:  // Tratando erros ao ler do arquivo
+fread_erro:  // Falha ao ler do arquivo
     fclose(binario->file);
     binario->file = NULL;
     return false;
 }
 
+/**
+ * Le o cabecalho do arquivo e o marca como inconsistente
+ * Se já tiver um arquivo aberto fecha ele
+ * O valor de file no final será NULL
+ * 
+ * Retorna false se houver uma falha
+ * Retorna false se o arquivo ja estava inconsistente e para a leitura do cabecalho
+ */
 static bool cabecalhoEscrita(Binario* binario) {
     if (!binario) return false;  // Nao recebeu caminho
 
@@ -135,13 +155,17 @@ static bool cabecalhoEscrita(Binario* binario) {
 
     return true;
 
-fwrite_erro:
-fread_erro:  // Tratando erros ao ler do arquivo
+fwrite_erro:  // Falha ao escrever no arquivo
+fread_erro:  // Falha ao ler do arquivo
     fclose(binario->file);
     binario->file = NULL;
     return false;
 }
 
+/**
+ * Escreve as alteracoes do cabecalho
+ * Retorna se a operacao foi bem sucedida
+ */
 static bool salvarCabecalho(Binario* binario) {
     if (!binario->file) binario->file = fopen(binario->path, "rb+");
     if (!binario->file) return false;
@@ -159,11 +183,18 @@ static bool salvarCabecalho(Binario* binario) {
 
     return true;
 
-fwrite_erro:
+fwrite_erro:  // Falha ao escrever no arquivo
     fclose(binario->file);
     return false;
 }
 
+/**
+ * Escreve um string onde o binario aponta
+ * e preenche o espaco que faltou com lixo
+ *
+ * maxTam: tamanho reservado para string
+ * Retorna se a operacao foi sucedida
+ */
 static bool escreveString(Binario* binario, char* str, int maxTam) {
     const char CHARNULO = '\0';
     int qtdeLixo = maxTam;
@@ -186,12 +217,18 @@ static bool escreveString(Binario* binario, char* str, int maxTam) {
         qtdeLixo--;
         TRYFWRITE(LIXO, char, qtdeLixo, binario->file);
     }
-    return false;
-
-fwrite_erro:
     return true;
+
+fwrite_erro:  // Falha ao escrever no arquivo
+    return false;
 }
 
+/**
+ * Escreve um string onde o binario aponta
+ * maxTam: tamanho reservado para string
+
+ * Retorna se a operacao foi sucedida
+ */
 static bool atualizaString(Binario* binario, char* str, int maxTam, bool* erro) {
     const char CHARNULO = '\0';
     int espaco = maxTam;
@@ -215,10 +252,13 @@ static bool atualizaString(Binario* binario, char* str, int maxTam, bool* erro) 
     }
     return true;
 
-fwrite_erro:
+fwrite_erro:  // Falha ao escrever no arquivo
     return false;
 }
 
+/**
+ * Escreve o registro onde o binario aponta
+ */
 static bool binario_escreverRegistro(Binario* binario, Registro* registro) {
     if (!binario || !registro) return false;  // Objeto nao existe ou nao recebeu os paramentro
 
@@ -262,19 +302,19 @@ static bool binario_escreverRegistro(Binario* binario, Registro* registro) {
 
     bool ok;
     ok = escreveString(binario, dataNascimento, TAM_DATA);
-    if (ok) goto fwrite_erro;  // Falha ao escrever no arquivo
+    if (!ok) goto fwrite_erro;  // Falha ao escrever no arquivo
 
     TRYFWRITE(&sexoBebe, char, 1, binario->file);
 
     ok = escreveString(binario, estadoMae, TAM_ESTADO);
-    if (ok) goto fwrite_erro;  // Falha ao ecrever no arquivo
+    if (!ok) goto fwrite_erro;  // Falha ao ecrever no arquivo
 
     ok = escreveString(binario, estadoBebe, TAM_ESTADO);
-    if (ok) goto fwrite_erro;  // Falha ao escrever no arquivo
+    if (!ok) goto fwrite_erro;  // Falha ao escrever no arquivo
 
     return true;
 
-fwrite_erro:  // Tratando erros ao escrever no arquivo
+fwrite_erro:  // Falha ao escrever no arquivo
     return false;
 }
 
@@ -332,7 +372,7 @@ static bool binario_atualizarRegistro(Binario* binario, Registro* registro) {
 
     return true;
 
-fwrite_erro:  // Tratando erros ao escrever no arquivo
+fwrite_erro:  // Falha ao escrever no arquivo
     return false;
 }
 
@@ -372,7 +412,7 @@ Binario* binario_criar(char* path) {
 
     return binario;
 
-fwrite_erro:  // Tratando erros ao escrever no arquivo
+fwrite_erro:  // Falha ao escrever no arquivo
     fclose(binario->file);
     return NULL;
 }
@@ -398,7 +438,7 @@ Binario* binario_abrirLeitura(char* path) {
     binario_apontar(binario, 0, SEEK_SET);  // Vai para o primeiro registro do arquivo
     return binario;
 
-falha:
+falha:  // Falha na execucao da funcao
     if (binario->file) fclose(binario->file);
     free(binario);
     return NULL;
@@ -423,7 +463,7 @@ Binario* binario_abrirEscrita(char* path) {
     binario_apontar(binario, 0, SEEK_SET);  // Vai para o primeiro registro do arquivo
     return binario;
 
-falha:
+falha:  // Falha na execucao da funcao
     if (binario->file) fclose(binario->file);
     free(binario);
     return NULL;
@@ -540,8 +580,8 @@ Registro* binario_lerRegistro(Binario* binario, bool* erro) {
                           estadoMae, estadoBebe,
                           cidadeMae, cidadeBebe);
 
-falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas devem se NULL)
-fread_erro:  // Tratando erros ao ler do arquivo
+falha:  // Falha na execucao da funcao
+fread_erro:  // Erro ao ler do arquivo
     string_apagar(&cidadeMae);
     string_apagar(&cidadeBebe);
     string_apagar(&dataNascimento);
@@ -599,7 +639,7 @@ bool binario_remover(Binario* binario) {
     binario->removidos++;
     return true;
 
-fwrite_erro:
+fwrite_erro:  // Falha ao escrever no arquivo
     return false;
 }
 

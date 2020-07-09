@@ -24,7 +24,7 @@
 #define DUPLA_STRING 2
 
 /**
- * TAD Dupla campo valor
+ * TAD Dupla campo(string) valor
  * Representando a dupla de parametros campo valor
  */
 typedef struct Dupla Dupla;
@@ -47,9 +47,7 @@ Dupla* dupla_criar(char* campo, char* valor);
 void dupla_apagar(Dupla** dupla);
 
 /**
- * Destroi o objeto
- * nao destroi os objetos que o pertence, nem desaloca variveis
- * 
+ * Destroi o objeto, mas nao os objetos que o pertence, nem desaloca variveis
  * O motivo dessa instrução existir eh poder desalocar a dupla e ainda ter a string utilizavel
  */
 void dupla_destruir(Dupla** dupla);
@@ -59,7 +57,7 @@ void dupla_destruir(Dupla** dupla);
 //* =================== *//
 
 /**
- * Retorn qual o valor do dupla
+ * Retorna qual o valor do dupla
  * Se dupla for NULL retorna DUPLA_INVALIDO
  */
 int dupla_getCampo(Dupla* dupla);

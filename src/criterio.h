@@ -15,26 +15,21 @@
 typedef struct Criterio Criterio;
 
 /**
- * Cria um novo objeto criterio
- * 
+ * Cria um criterio
  * Retorna NULL se nao for possivel criar o objeto
- * 
- * Obs: Depois, use uma funcao para destruir o objeto
  */
-Criterio* criterio_criar();
+Criterio* criterio_criar(Dupla** duplas, int n);
 
 /**
  * Le dados do stdin, e retorna um objeto criterio com os dados lidos
  * A entrada deve ser:
  * n campo[1] valor[1] .. campo[n] valor[n]
- * 
- * Obs: Depois, use uma funcao para destruir o objeto
  */
 Criterio* criterio_criarDoStdin();
 
 /**
  * Destroi o objeto, os objetos que o pertence e desaloca variveis
- * Os arrays retornado pelo getArray deixa de ter valor valido e nao deve ser mais usado
+ * Os arrays retornado pelo getArray deixam de ter valor valido
  */
 void criterio_apagar(Criterio** criterio);
 
@@ -42,7 +37,7 @@ void criterio_apagar(Criterio** criterio);
  * Retorna se um registro satisfaz o criterio
  * Para cada dupla no criterio o registro precisa no campo descrito pela dupla ter o valor que esta na dupla
  * 
- * Retorna false se registro ou duplas for NULL
+ * Retorna false se registro for NULL
  */
 bool criterio_satisfaz(Criterio* criterio, Registro* registro);
 
@@ -65,11 +60,8 @@ void criterio_atualizarRegistro(Criterio** criterio, Registro* registro);
 Dupla** criterio_getArray(Criterio* criterio, int* n);
 
 /**
- * Muda o array
- * 
  * Se houver um array armazenado ele eh apagado
- * Os arrays retornado pelo getArray deixa de ter valor valido e nao deve ser mais usado
- * Se você quer evitar isso faça uma copia dos dados do array antes
+ * Os arrays retornado pelo getArray deixa de ter valor valido
  */
 void criterio_setArray(Criterio* criterio, Dupla** duplas, int n);
 
