@@ -20,10 +20,10 @@ struct Binario {
 #define REMOVIDO -1  // Valor do campo 1 se o registro estiver logicamente removido
 
 #define TAM_REG 128  // Tamanho do registro
-#define TAM_CVAR 97  // Tamanho resevado para campos variaveis (excluido indicadores de tamanho)
-#define TAM_ESTADO 2  // Tamanho da string estado
-#define TAM_DATA 10  //Tamanho da string data
-#define TAM_LIXOC 111  //Tamanho do espaco vazio no final do registro cabecalho
+#define TAM_CVAR 97  // Tamanho resevado para campos variaveis, desconsiderando indicadores de tamanho
+#define TAM_ESTADO 2  // Tamanho reservado para string estado
+#define TAM_DATA 10  // Tamanho reservado para string data
+#define TAM_LIXOC 111  // Espaco vazio no final do registro cabecalho
 
 /**
  * Vetor com $ para preencher espacos vazios
@@ -54,7 +54,10 @@ static const char LIXO[TAM_REG + 1] = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 //* ===== Métodos Privados ===== *//
 //* ============================ *//
 
-static bool isEscrita(Binario* binario) {
+/**
+ * Retorna se binario eh para arquivo de escrita
+ */
+static bool ehEscrita(Binario* binario) {
     int i;
     for (i = 0; binario->modes[i] != '\0'; i++) {
         if (binario->modes[i] == 'w' ||
@@ -365,7 +368,7 @@ Binario* binario_criar(char* path) {
     TRYFWRITE(&binario->inseridos, int, 1, binario->file);
     TRYFWRITE(&binario->removidos, int, 1, binario->file);
     TRYFWRITE(&binario->atualizados, int, 1, binario->file);
-    TRYFWRITE(LIXO, char, 111, binario->file);
+    TRYFWRITE(LIXO, char, TAM_LIXOC, binario->file);
 
     return binario;
 
@@ -430,7 +433,7 @@ void binario_fechar(Binario** binario) {
     if (!binario || !*binario) return;  // Objeto ja foi apagado (arquivo ja foi fechado)
 
     // Fecha o arquivo
-    if (isEscrita(*binario)) {
+    if (ehEscrita(*binario)) {
         salvarCabecalho(*binario);
     } else {
         if ((*binario)->file) fclose((*binario)->file);

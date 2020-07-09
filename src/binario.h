@@ -12,62 +12,50 @@
 /**
  * TAD Arquivo binario
  * Manipula um arquivo binario de registros
- * 
- * Por ser simples, nao tem motivo para cirar uma estrutura
- * por isso eh apenas um typedef
  */
 typedef struct Binario Binario;
 
 /**
- * Cria um novo arquivo binario com nome path
- * Cria nele o registro cabecalho
- * Se o arquivo ja existir, sobrescreve ele com um arquivo novo
+ * Cria um novo arquivo com nome path
+ * No arquivo ja eh escrito o registro cabecalho marcando o arquivo como inconsistente
+ * O arquivo aponta para o primeiro registro de dados
  * 
- * Retorna o arquivo para escrita
- * Obs: Nao eh necessario pular o registro cabecalho
+ * Se o arquivo ja existir, sobrescreve ele com um arquivo novo
+ * Obs: O arquivo aponta para o primeiro registro
  * 
  * Retorna NULL se nao for possivel criar o arquivo
- * Retorna NULL se nao receber um path
- * 
- * Obs: Depois, use uma função para destruir o objeto
  */
 Binario* binario_criar(char* path);
 
 /**
- * Retorna arquivo binario com nome path aberto para leitura
- * Obs: Nao eh necessario pular o registro cabecalho
+ * Abre arquivo com nome path para leitura
+ * O arquivo aponta para o primeiro registro de dados
  * 
  * Retorna NULL se nao for possivel abrir o arquivo
- * Retorna NULL se nao receber um path
- * 
- * Obs: Depois, use uma funcao para destruir o objeto
+ * Retorna NULL se o arquivo estiver inconsistente
  */
 Binario* binario_abrirLeitura(char* path);
 
 /**
- * Retorna o arquivo binario com nome path aberto para escrita
- * O arquivo tambem permite leitura
- * Obs: Nao eh necessario pular o registro cabecalho
+ * Abre o arquivo com nome path para leitura e escrita
+ * O arquivo aponta para o primeiro registro de dados
  * 
  * Retorna NULL se nao for possivel abrir o arquivo
- * Retorna NULL se nao receber um path
- * 
- * Obs: Depois, use uma funcao para destruir o objeto
+ * Retorna NULL se o arquivo estiver inconsistente
  */
 Binario* binario_abrirEscrita(char* path);
 
 /**
- * Destroi o objeto
- * 
- * Obs: Não apaga o arquivo, apenas desaloca memoria
- * Obs: Se for um arquivo de escrita, depois da execucao (senao ocorre erros) arquivo estara em disco
+ * Fecha o arquivo (depois disso as escritas certamente estaram salvas no disco)
+ * Se o arquivo estiver no modo escrita também atualiza o cabecalho
+ * marcando o arquivo como inconsistente
  */
 void binario_fechar(Binario** binario);
 
 /**
  * Faz o binario passar a apontar para o rrn dado
  * 
- * whence segue a mesma logica que o fseek:
+ * whence usa as mesmas constantes que o fseek:
  * * SEEK_SET: Vai para o registro com o rrn passado (Desconsidera na contagem o registro cabecalho)
  * * SEEK_CUR: Anda rrn registros a partir do registro dado
  * * SEEK_END: Anda rrn registros a partir do fim do arquivo
@@ -76,25 +64,21 @@ void binario_apontar(Binario* binario, int rrn, int whence);
 
 /**
  * Le um registro do arquivo onde esta sendo apontado
- * Retorna o Registro lido
- * Retorna NULL se o registro estiver logicamente removido
- * 
- * Salva em erro se ocorreu um erro
- * Retorna NULL se ocorrer um erro
- * 
  * O binario passa a apontar para o registro seguinte
  * 
- * Obs: Destrua o registro depois de usar
+ * Retorna NULL se o registro estiver logicamente removido
+ * Retorna NULL se ocorrer um erro
+ * Retorna em erro se ocorreu um erro
  */
 Registro* binario_lerRegistro(Binario* binario, bool* erro);
 
 /**
- * Retorna o registro que esta no rrn
- * Retorna NULL se o registro estiver logicamente removido
+ * Retorna o registro que esta no rrn passado
  * O binario passa a apontar para o registro seguinte
  * 
- * Salva em erro se ocorreu um erro
+ * Retorna NULL se o registro estiver logicamente removido
  * Retorna NULL se ocorrer um erro
+ * Retorna em erro se ocorreu um erro
  */
 Registro* binario_buscar(Binario* binario, int rrn, bool* erro);
 
@@ -110,11 +94,19 @@ bool binario_inserir(Binario* binario, Registro* registro);
  */
 bool binario_inserirVarios(Binario* binario, Registro** registros, int n);
 
+/**
+ * Atualiza o registro para o qual o arquivo aponta
+ * O binario passa a apontar para o registro seguinte
+ * 
+ * Retorna se a operacao foi bem sucedida
+ */
 bool binario_atualizar(Binario* binario, Registro* registro);
 
 /**
- * Remove o registro para o qual o arquivo esta apontando
+ * Remove o registro para o qual o arquivo aponta
  * O binario passa a apontar para o registro seguinte
+ * 
+ * Retorna se a operacao foi bem sucedida
  */
 bool binario_remover(Binario* binario);
 
