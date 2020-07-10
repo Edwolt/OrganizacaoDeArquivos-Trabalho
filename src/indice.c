@@ -163,6 +163,9 @@ fread_erro:
     return NULL;
 }
 
+static ordenaPagina(Pagina* pagina) {  // TODO Algum algoritmo de ordenação
+}
+
 //* ============================ *//
 //* ===== Métodos Publicos ===== *//
 //* ============================ *//
@@ -271,7 +274,7 @@ void indice_apontar(Indice* indice, int rrn, int whence) {
     }
 }
 
-int indice_buscar(Indice* indice, int id) {  // TODO
+int indice_buscar(Indice* indice, int id) {  // TODO Devolver
     int rrn = indice->noRaiz;
     int l, r, mid;
 
@@ -308,5 +311,18 @@ bool indice_inserir(Indice* indice, int id, int rrn) {  // TODO
     if (!indice) return false;
     if (indice_buscar(indice, id) != RRNNULL) return false;
 
-    // TODO Insere
+    Pagina* pagina = lerPagina(indice);  // Lendo a mesma pagina de disco 2 vezes seguidas não deveria se tornar um leitura em disco
+    if (!pagina) return false;
+
+    if (pagina->n == ORDEM) {
+        // TODO Split
+    } else {
+        pagina->chaves[pagina->n] = id;
+        pagina->dados[pagina->n] = rrn;
+        pagina->dados[pagina->n + 1] = RRNNULL;  // TODO nao tenho certeza disso
+
+        ordenaPagina(pagina);
+
+        // TODO Escreve pagina
+    }
 }
