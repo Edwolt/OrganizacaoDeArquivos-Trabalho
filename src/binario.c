@@ -31,43 +31,9 @@ struct Binario {
  */
 static const char LIXO[TAM_REG + 1] = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
 
-//* ================== *//
-//* ===== Macros ===== *//
-//* ================== *//
-// Para reduzir trechos de código repetitivos
-
-/**
- * Tenta escrever qtde valores do tipo type a partir ponteiro ptr no arquivo file
- * Se não der certo, desvia para o label fwrite_error
- */
-#define TRYFWRITE(ptr, type, qtde, file) \
-    if (fwrite((ptr), sizeof(type), (qtde), (file)) != ((size_t)qtde)) goto fwrite_erro
-
-/**
- * Tenta ler qtde valores do tipo type para o ponteiro ptr no arquivo file
- * Se não der certo, desvia para o label fread_error
- */
-#define TRYFREAD(ptr, type, qtde, file) \
-    if (fread((ptr), sizeof(type), (qtde), (file)) != ((size_t)qtde)) goto fread_erro
-
 //* ============================ *//
 //* ===== Métodos Privados ===== *//
 //* ============================ *//
-
-/**
- * Retorna se binario eh para arquivo de escrita
- */
-static bool ehEscrita(Binario* binario) {
-    int i;
-    for (i = 0; binario->modes[i] != '\0'; i++) {
-        if (binario->modes[i] == 'w' ||
-            binario->modes[i] == 'a' ||
-            binario->modes[i] == '+') {
-            return true;
-        }
-    }
-    return false;
-}
 
 /**
  * Abri um arquivo e salva em binario
@@ -402,7 +368,6 @@ Binario* binario_criar(char* path) {
     binario->atualizados = 0;
 
     // Escrevendo o cabecalho no arquivo
-
     TRYFWRITE(&binario->status, char, 1, binario->file);
     TRYFWRITE(&binario->rrnProx, int, 1, binario->file);
     TRYFWRITE(&binario->inseridos, int, 1, binario->file);
@@ -473,7 +438,7 @@ void binario_fechar(Binario** binario) {
     if (!binario || !*binario) return;  // Objeto ja foi apagado (arquivo ja foi fechado)
 
     // Fecha o arquivo
-    if (ehEscrita(*binario)) {
+    if (ehEscrita((*binario)->modes)) {
         salvarCabecalho(*binario);
     } else {
         if ((*binario)->file) fclose((*binario)->file);
