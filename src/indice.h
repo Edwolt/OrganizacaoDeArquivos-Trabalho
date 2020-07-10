@@ -17,7 +17,7 @@ typedef struct Indice Indice;
 /**
  * Cria um arquivo de indice vazio para escrita com nome path
  * No arquivo ja eh escrito o registro cabecalho marcando o arquivo como inconsistente
- * O arquivo aponta para o primeiro ?
+ * O arquivo aponta para a primeira pagina
  * 
  * Se o arquivo ja existir, sobrescreve ele com um arquivo novo
  * Retorna NULL se nao for possivel criar o arquivo
@@ -32,6 +32,8 @@ void indice_fechar(Indice** indice);
 
 void indice_apontar(Indice* indice, int rrn, int whence);
 
-Registro* indice_buscar(char* path);
+Registro* indice_buscar(Indice* indice, int id);
+
+bool indice_inserir(Indice* indice);
 
 #endif

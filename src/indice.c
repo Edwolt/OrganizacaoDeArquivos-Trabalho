@@ -1,6 +1,7 @@
 #include "indice.h"
 
 #define CHAVES_NUM 2
+#define RRNNULL -1
 
 typedef struct Pagina Pagina;
 
@@ -22,7 +23,8 @@ struct Pagina {
     int nivel;
     int n;
     int chaves[CHAVES_NUM];
-    int ponteiro[CHAVES_NUM - 1];
+    int dados[CHAVES_NUM];
+    int subarvores[CHAVES_NUM - 1];
 };
 
 //* ====================== *//
@@ -140,6 +142,63 @@ fwrite_erro:  // Falha ao escrever no arquivo
     return false;
 }
 
+Pagina* lerPagina(Indice* indice) {  // TODO esta errado
+    int i;
+
+    Pagina* pagina = malloc(sizeof(Pagina));
+    if (!pagina) return NULL;
+
+    TRYFREAD(&pagina->nivel, int, 1, indice->file);
+    TRYFREAD(&pagina->n, int, 1, indice->file);
+    for (i = 0; i < pagina->n; i++) {
+        TRYFREAD(&pagina->chaves, int, 1, indice->file);
+        TRYFREAD(&pagina->dados, int, 1, indice->file);
+    }
+    TRYFREAD(&pagina->subarvores, int, pagina->n - 1, indice->file);
+
+    return pagina;
+
+fread_erro:
+    free(pagina);
+    return NULL;
+}
+
+/**
+ * Faz indice apontar para a pagina com a chave
+ */
+static int buscar(Indice* indice, int id) {  // TODO
+    int rrn = indice->noRaiz;
+    int l, r, mid;
+
+    while (rrn != RRNNULL) {
+        indice_apontar(indice, rrn, SEEK_SET);
+        Pagina* pagina = lerPagina(pagina);
+        if (!pagina) return RRNNULL;
+
+        l = 0;
+        r = pagina->n;
+
+        while (r - l > 1) {
+            mid = (l + r) / 2;
+            if (pagina->chaves[mid] == id) {
+                return pagina->dados[mid];
+            } else if (pagina->chaves[mid] < id) {
+                l = mid;
+            } else {
+                r = mid;
+            }
+        }
+
+        rrn = pagina->subarvores[l];
+
+        free(pagina);
+        pagina = NULL;
+    }
+
+    // Se tiver tamanho 1, vai para proxima pagina
+    // Busca binaria
+}
+
 //* ============================ *//
 //* ===== Métodos Publicos ===== *//
 //* ============================ *//
@@ -207,7 +266,7 @@ falha:  // Falha na execucao da funcao
     return NULL;
 }
 
-Indice* indice_abrirEscrita(char* path) {
+Indice* indice_abrirEscrita(char* path) {  // TODO
     if (!path) return NULL;
 
     Indice* indice = malloc(sizeof(Indice));
@@ -218,9 +277,9 @@ Indice* indice_abrirEscrita(char* path) {
     indice->modes = "rb+";
 
     bool ok = cabecalhoEscrita(indice);
-    if (!ok) goto falha;
+    //if (!ok) goto falha;
 
-falha:
+    //falha:
 }
 
 void indice_fechar(Indice** indice) {
@@ -246,4 +305,10 @@ void indice_apontar(Indice* indice, int rrn, int whence) {
     } else if (whence == SEEK_END) {
         fseek(indice->file, rrn * TAM_REG, SEEK_END);
     }
+}
+
+Registro* indice_buscar(Indice* indice, int id) {
+}
+
+bool indice_inserir(Indice* indice) {
 }
