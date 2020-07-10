@@ -61,6 +61,7 @@ static bool cabecalhoLeitura(Binario* binario) {
     binario->file = fopen(binario->path, "rb");
     if (!binario->file) return false;
 
+    // Le cabecalho
     TRYFREAD(&binario->status, char, 1, binario->file);
     if (binario->status == '0') {  // Arquivo inconsistente
         fclose(binario->file);
@@ -72,9 +73,10 @@ static bool cabecalhoLeitura(Binario* binario) {
     TRYFREAD(&binario->inseridos, int, 1, binario->file);
     TRYFREAD(&binario->removidos, int, 1, binario->file);
     TRYFREAD(&binario->atualizados, int, 1, binario->file);
+
+    // Fecha arquivo
     fclose(binario->file);
     binario->file = NULL;
-
     return true;
 
 fread_erro:  // Falha ao ler do arquivo
@@ -100,6 +102,7 @@ static bool cabecalhoEscrita(Binario* binario) {
     binario->file = fopen(binario->path, "rb+");
     if (!binario->file) return false;
 
+    // Le cabecalho
     TRYFREAD(&binario->status, char, 1, binario->file);
     if (binario->status == '0') {  // Arquivo inconsistente
         fclose(binario->file);
@@ -112,13 +115,14 @@ static bool cabecalhoEscrita(Binario* binario) {
     TRYFREAD(&binario->removidos, int, 1, binario->file);
     TRYFREAD(&binario->atualizados, int, 1, binario->file);
 
+    // Marca arquivo como inconsistente
     fseek(binario->file, 0, SEEK_SET);
     binario->status = '0';
     TRYFWRITE(&binario->status, char, 1, binario->file);
 
+    // Fecha arquivo
     fclose(binario->file);
     binario->file = NULL;
-
     return true;
 
 fwrite_erro:  // Falha ao escrever no arquivo
@@ -347,6 +351,8 @@ fwrite_erro:  // Falha ao escrever no arquivo
 //* ============================ *//
 
 Binario* binario_criar(char* path) {
+    if (!path) return NULL;  // Nao recebeu parametros
+
     Binario* binario = malloc(sizeof(Binario));
     if (!binario) return NULL;
 
@@ -393,9 +399,7 @@ Binario* binario_abrirLeitura(char* path) {
     binario->modes = "rb";
 
     bool ok = cabecalhoLeitura(binario);
-    if (!ok) {
-        goto falha;
-    }
+    if (!ok) goto falha;
 
     abrirArquivo(binario);
     if (!binario->file) goto falha;  // Falha ao abrir arquivo
