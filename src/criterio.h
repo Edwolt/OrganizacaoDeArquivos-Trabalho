@@ -7,7 +7,7 @@
 #include "binarioNaTela.h"  // trim
 #include "dupla.h"
 #include "registro.h"  // STR_TAM
-#include "string.h"
+#include "util.h"
 
 /**
  * TAD Criterio: Vetor de Duplas

@@ -7,7 +7,7 @@
 
 #include "binarioNaTela.h"
 #include "dupla.h"
-#include "string.h"
+#include "util.h"
 
 #define INTNULL -1
 #define STR_TAM 97  // Tamanho maximo de um campo string

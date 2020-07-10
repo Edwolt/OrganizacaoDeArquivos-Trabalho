@@ -6,7 +6,7 @@
 
 #include "binarioNaTela.h"  // Funcao trim()
 #include "registro.h"
-#include "string.h"
+#include "util.h"
 
 /**
  * TAD Arquivo CSV

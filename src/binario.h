@@ -7,7 +7,6 @@
 
 #include "csv.h"
 #include "registro.h"
-#include "string.h"
 #include "util.h"
 
 /**

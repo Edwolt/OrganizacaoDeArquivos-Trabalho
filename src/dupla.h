@@ -4,7 +4,7 @@
 #include <stdlib.h>  // atoi
 
 #include "registro.h"  // INTNULL
-#include "string.h"
+#include "util.h"
 
 // Valores da hash de nome do campo
 #define DUPLA_INVALIDO -1
