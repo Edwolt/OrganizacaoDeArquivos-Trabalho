@@ -163,7 +163,12 @@ fread_erro:
     return NULL;
 }
 
-static ordenaPagina(Pagina* pagina) {  // TODO Algum algoritmo de ordenação
+static void ordenaPagina(Pagina* pagina) {  // TODO Algum algoritmo de ordenacao
+}
+
+static Pagina* pagina_criar() {  // TODO retornar uma pagina de verdade
+    // Talvez so ler pagina seja suficiente
+    return NULL;
 }
 
 //* ============================ *//
@@ -309,20 +314,32 @@ int indice_buscar(Indice* indice, int id) {  // TODO Devolver
 
 bool indice_inserir(Indice* indice, int id, int rrn) {  // TODO
     if (!indice) return false;
+
+    // Variaveis com alocacao dinamica
+    Pagina* pagina = NULL;
+
+    // Buscando pagina
     if (indice_buscar(indice, id) != RRNNULL) return false;
 
-    Pagina* pagina = lerPagina(indice);  // Lendo a mesma pagina de disco 2 vezes seguidas não deveria se tornar um leitura em disco
+    // Lendo pagina
+    pagina = lerPagina(indice);  // Lendo a mesma pagina de disco 2 vezes seguidas não deveria se tornar um leitura em disco
     if (!pagina) return false;
 
     if (pagina->n == ORDEM) {
         // TODO Split
+        return true;
     } else {
         pagina->chaves[pagina->n] = id;
         pagina->dados[pagina->n] = rrn;
         pagina->dados[pagina->n + 1] = RRNNULL;  // TODO nao tenho certeza disso
 
-        ordenaPagina(pagina);
+        ordenaPagina(pagina);  // TODO essa funcao ainda nao existe
 
         // TODO Escreve pagina
+        return true;
     }
+
+falha:  // Falha na execucao da funcao
+    pagina_apagar(&pagina);  // TODO criar essa função
+    return false;
 }
