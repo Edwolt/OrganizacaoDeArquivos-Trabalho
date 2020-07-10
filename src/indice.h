@@ -30,4 +30,6 @@ Indice* indice_abrirEscrita(char* path);
 
 Registro* indice_buscar(char* path);
 
+void indice_apontar(Indice* indice, int rrn, int whence);
+
 #endif
