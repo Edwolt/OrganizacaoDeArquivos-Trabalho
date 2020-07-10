@@ -1,6 +1,6 @@
 #include "indice.h"
 
-#define CHAVES_NUM 2
+#define ORDEM 2
 #define RRNNULL -1
 
 typedef struct Pagina Pagina;
@@ -22,9 +22,9 @@ struct Indice {
 struct Pagina {
     int nivel;
     int n;
-    int chaves[CHAVES_NUM];
-    int dados[CHAVES_NUM];
-    int subarvores[CHAVES_NUM - 1];
+    int chaves[ORDEM + 1];
+    int dados[ORDEM + 1];
+    int subarvores[ORDEM];
 };
 
 //* ====================== *//
@@ -163,42 +163,6 @@ fread_erro:
     return NULL;
 }
 
-/**
- * Faz indice apontar para a pagina com a chave
- */
-static int buscar(Indice* indice, int id) {  // TODO
-    int rrn = indice->noRaiz;
-    int l, r, mid;
-
-    while (rrn != RRNNULL) {
-        indice_apontar(indice, rrn, SEEK_SET);
-        Pagina* pagina = lerPagina(pagina);
-        if (!pagina) return RRNNULL;
-
-        l = 0;
-        r = pagina->n;
-
-        while (r - l > 1) {
-            mid = (l + r) / 2;
-            if (pagina->chaves[mid] == id) {
-                return pagina->dados[mid];
-            } else if (pagina->chaves[mid] < id) {
-                l = mid;
-            } else {
-                r = mid;
-            }
-        }
-
-        rrn = pagina->subarvores[l];
-
-        free(pagina);
-        pagina = NULL;
-    }
-
-    // Se tiver tamanho 1, vai para proxima pagina
-    // Busca binaria
-}
-
 //* ============================ *//
 //* ===== Métodos Publicos ===== *//
 //* ============================ *//
@@ -307,8 +271,42 @@ void indice_apontar(Indice* indice, int rrn, int whence) {
     }
 }
 
-Registro* indice_buscar(Indice* indice, int id) {
+int indice_buscar(Indice* indice, int id) {  // TODO
+    int rrn = indice->noRaiz;
+    int l, r, mid;
+
+    while (rrn != RRNNULL) {
+        indice_apontar(indice, rrn, SEEK_SET);
+        Pagina* pagina = lerPagina(pagina);
+        if (!pagina) return RRNNULL;
+
+        l = 0;
+        r = pagina->n;
+
+        while (r - l > 1) {
+            mid = (l + r) / 2;
+            if (pagina->chaves[mid] == id) {
+                indice_apontar(indice, -1, SEEK_CUR);
+                return pagina->dados[mid];
+            } else if (pagina->chaves[mid] < id) {
+                l = mid;
+            } else {
+                r = mid;
+            }
+        }
+
+        rrn = pagina->subarvores[l];
+
+        free(pagina);
+        pagina = NULL;
+    }
+
+    return RRNNULL;
 }
 
-bool indice_inserir(Indice* indice) {
+bool indice_inserir(Indice* indice, int id, int rrn) {  // TODO
+    if (!indice) return false;
+    if (indice_buscar(indice, id) != RRNNULL) return false;
+
+    // TODO Insere
 }

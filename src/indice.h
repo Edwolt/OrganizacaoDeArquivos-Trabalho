@@ -32,8 +32,8 @@ void indice_fechar(Indice** indice);
 
 void indice_apontar(Indice* indice, int rrn, int whence);
 
-Registro* indice_buscar(Indice* indice, int id);
+int indice_buscar(Indice* indice, int id);
 
-bool indice_inserir(Indice* indice);
+bool indice_inserir(Indice* indice, int id, int rrn);
 
 #endif
