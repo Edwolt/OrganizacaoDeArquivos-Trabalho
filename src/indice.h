@@ -28,8 +28,10 @@ Indice* indice_abrirLeitura(char* path);
 
 Indice* indice_abrirEscrita(char* path);
 
-Registro* indice_buscar(char* path);
+void indice_fechar(Indice** indice);
 
 void indice_apontar(Indice* indice, int rrn, int whence);
+
+Registro* indice_buscar(char* path);
 
 #endif

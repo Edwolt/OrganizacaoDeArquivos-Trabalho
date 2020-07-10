@@ -223,6 +223,20 @@ Indice* indice_abrirEscrita(char* path) {
 falha:
 }
 
+void indice_fechar(Indice** indice) {
+    if (!indice || !*indice) return;  // Objeto ja foi apagado (arquivo ja foi fechado)
+
+    // Fecha o arquivo
+    if (ehEscrita((*indice)->modes)) {
+        salvarCabecalho(*indice);
+    } else {
+        if ((*indice)->file) fclose((*indice)->file);
+    }
+
+    free(*indice);
+    *indice = NULL;
+}
+
 void indice_apontar(Indice* indice, int rrn, int whence) {
     if (whence == SEEK_SET) {
         fseek(indice->file, (rrn + 1) * TAM_REG, SEEK_SET);
