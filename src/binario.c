@@ -150,12 +150,32 @@ static bool salvarCabecalho(Binario* binario) {
 
     fclose(binario->file);
     binario->file = NULL;
-
     return true;
 
 fwrite_erro:  // Falha ao escrever no arquivo
     fclose(binario->file);
     return false;
+}
+
+static char* lerString(Binario* binario, int maxTam, bool* erro) {
+    *erro = false;
+
+    char* str = string_criar(maxTam + 1);
+    if (!str) {  // Falha ao alocar string
+        *erro = true;
+        return NULL;
+    }
+
+    TRYFREAD(str, char, maxTam, binario->file);
+    str[maxTam] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera alterada (O arquivo tera o '\0')
+    string_apagarSeVazio(&str);
+
+    return str;
+
+fread_erro:
+    *erro = true;
+    string_apagar(&str);
+    return NULL;
 }
 
 /**
@@ -165,7 +185,7 @@ fwrite_erro:  // Falha ao escrever no arquivo
  * maxTam: tamanho reservado para string
  * Retorna se a operacao foi sucedida
  */
-static bool escreveString(Binario* binario, char* str, int maxTam) {
+static bool escreverString(Binario* binario, char* str, int maxTam) {
     const char CHARNULO = '\0';
     int qtdeLixo = maxTam;
     int len;
@@ -199,7 +219,7 @@ fwrite_erro:  // Falha ao escrever no arquivo
 
  * Retorna se a operacao foi sucedida
  */
-static bool atualizaString(Binario* binario, char* str, int maxTam, bool* erro) {
+static bool atualizarString(Binario* binario, char* str, int maxTam, bool* erro) {
     const char CHARNULO = '\0';
     int espaco = maxTam;
     int len;
@@ -271,15 +291,15 @@ static bool binario_escreverRegistro(Binario* binario, Registro* registro) {
     TRYFWRITE(&idadeMae, int, 1, binario->file);
 
     bool ok;
-    ok = escreveString(binario, dataNascimento, TAM_DATA);
+    ok = escreverString(binario, dataNascimento, TAM_DATA);
     if (!ok) goto fwrite_erro;  // Falha ao escrever no arquivo
 
     TRYFWRITE(&sexoBebe, char, 1, binario->file);
 
-    ok = escreveString(binario, estadoMae, TAM_ESTADO);
+    ok = escreverString(binario, estadoMae, TAM_ESTADO);
     if (!ok) goto fwrite_erro;  // Falha ao ecrever no arquivo
 
-    ok = escreveString(binario, estadoBebe, TAM_ESTADO);
+    ok = escreverString(binario, estadoBebe, TAM_ESTADO);
     if (!ok) goto fwrite_erro;  // Falha ao escrever no arquivo
 
     return true;
@@ -329,15 +349,15 @@ static bool binario_atualizarRegistro(Binario* binario, Registro* registro) {
     TRYFWRITE(&idNascimento, int, 1, binario->file);
     TRYFWRITE(&idadeMae, int, 1, binario->file);
 
-    atualizaString(binario, dataNascimento, TAM_DATA, &erro);
+    atualizarString(binario, dataNascimento, TAM_DATA, &erro);
     if (erro) goto fwrite_erro;  // Falha ao escrever no arquivo
 
     TRYFWRITE(&sexoBebe, char, 1, binario->file);
 
-    atualizaString(binario, estadoMae, TAM_ESTADO, &erro);
+    atualizarString(binario, estadoMae, TAM_ESTADO, &erro);
     if (erro) goto fwrite_erro;  // Falha ao escrever no arquivo
 
-    atualizaString(binario, estadoBebe, TAM_ESTADO, &erro);
+    atualizarString(binario, estadoBebe, TAM_ESTADO, &erro);
     if (erro) goto fwrite_erro;  // Falha ao escrever no arquivo
 
     return true;
@@ -447,6 +467,7 @@ void binario_fechar(Binario** binario) {
     } else {
         if ((*binario)->file) fclose((*binario)->file);
     }
+
     free(*binario);
     *binario = NULL;
 }
@@ -476,6 +497,7 @@ Registro* binario_lerRegistro(Binario* binario, bool* erro) {
     char* estadoBebe = NULL;
 
     *erro = false;  // Salva erro como false, pois caso nao ocorra nenhum erro deve valer false
+    bool erroLer;
 
     // Le Campos Variaveis
     int tamCidadeMae;
@@ -518,29 +540,17 @@ Registro* binario_lerRegistro(Binario* binario, bool* erro) {
     int idadeMae;
     TRYFREAD(&idadeMae, int, 1, binario->file);
 
-    dataNascimento = string_criar(TAM_DATA + 1);
-    if (!dataNascimento) goto falha;  // Falha ao alocar string
-
-    TRYFREAD(dataNascimento, char, TAM_DATA, binario->file);
-    dataNascimento[TAM_DATA] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera alterada (O arquivo tera o '\0')
-    string_apagarSeVazio(&dataNascimento);
+    dataNascimento = lerString(binario, TAM_DATA, &erroLer);
+    if (erroLer) goto fread_erro;
 
     char sexoBebe;
     TRYFREAD(&sexoBebe, char, 1, binario->file);
 
-    estadoMae = string_criar(TAM_ESTADO + 1);
-    if (!estadoMae) goto falha;  // Falha ao alocar string
+    estadoMae = lerString(binario, TAM_ESTADO, &erroLer);
+    if (erroLer) goto fread_erro;
 
-    TRYFREAD(estadoMae, char, TAM_ESTADO, binario->file);
-    estadoMae[TAM_ESTADO] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera alterada (O arquivo tera o '\0')
-    string_apagarSeVazio(&estadoMae);
-
-    estadoBebe = string_criar(TAM_ESTADO + 1);
-    if (!estadoBebe) goto falha;  // Falha ao alocar string
-
-    TRYFREAD(estadoBebe, char, TAM_ESTADO, binario->file);
-    estadoBebe[TAM_ESTADO] = '\0';  // Poe '\0' no fim da string. Se ela for menor ela nao sera alterada (O arquivo tera o '\0')
-    string_apagarSeVazio(&estadoBebe);
+    estadoBebe = lerString(binario, TAM_ESTADO, &erroLer);
+    if (erroLer) goto fread_erro;
 
     // Cria o objeto registro e retorna
     return registro_criar(idNascimento,
