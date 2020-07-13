@@ -417,12 +417,8 @@ Binario* binario_abrir(char* path, bool escrita) {
     binario->file = NULL;
     binario->path = path;
     binario->modes = (escrita ? "rb+" : "rb");
-    bool ok;
-    if (escrita) {
-        ok = cabecalhoEscrita(binario);
-    } else {
-        ok = cabecalhoLeitura(binario);
-    }
+
+    bool ok = escrita ? cabecalhoEscrita(binario) : cabecalhoLeitura(binario);
     if (!ok) goto falha;
 
     abrirArquivo(binario);
