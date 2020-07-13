@@ -382,13 +382,18 @@ bool indice_inserir(Indice* indice, int id, int rrn) {  // TODO Reimplementar de
         return true;
     } else {
         for (i = 0; i < pagina->n; i++) {
-            if (id < pagina->chaves[i]) {  // insere ordenado
-                for (j = pagina->n; j > i; j--) {  // Desloca chaves para dar espaco para a nova
+            if (id < pagina->chaves[i]) {  // Insere ordenado
+                // Desloca chaves para dar espaco para a nova
+                for (j = pagina->n; j > i; j--) {
                     pagina->chaves[j] = pagina->chaves[j - 1];
                     pagina->dados[j] = pagina->dados[j - 1];
                 }
                 pagina->chaves[pagina->n + 1] = RRNNULL;
                 pagina->n++;
+
+                // Insere a pagina
+                pagina->chaves[i] = id;
+                pagina->dados[i] = rrn;
                 break;
             }
 
