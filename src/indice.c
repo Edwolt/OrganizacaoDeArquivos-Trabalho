@@ -180,7 +180,7 @@ static Pagina* lerPagina(Indice* indice) {
         TRYFREAD(&pagina->chaves, int, 1, indice->file);
         TRYFREAD(&pagina->dados, int, 1, indice->file);
     }
-    TRYFREAD(&pagina->subarvores, int, pagina->n - 1, indice->file);
+    TRYFREAD(&pagina->subarvores, int, pagina->n + 1, indice->file);  // TODO nao tenho certeza disso
 
     return pagina;
 
@@ -189,7 +189,22 @@ fread_erro:
     return NULL;
 }
 
-static bool escreverPagina(Indice* indice, Pagina* pagina) {  // TODO
+static bool escreverPagina(Indice* indice, Pagina* pagina) {
+    if (!indice || !pagina) return false;
+
+    int i;
+
+    TRYFWRITE(&pagina->nivel, int, 1, indice->file);
+    TRYFWRITE(&pagina->n, int, 1, indice->file);
+    for (i = 0; i < ORDEM; i++) {
+        TRYFWRITE(&pagina->chaves, int, 1, indice->file);
+        TRYFWRITE(&pagina->dados, int, 1, indice->file);
+    }
+    TRYFWRITE(&pagina->subarvores, int, ORDEM + 1, indice->file);
+
+    return true;
+
+fwrite_erro:
     return false;
 }
 
