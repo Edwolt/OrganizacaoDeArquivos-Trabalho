@@ -622,9 +622,9 @@ fwrite_erro:  // Falha ao escrever no arquivo
     return false;
 }
 
-//* ============================== *//
-//* ===== Registro Cabecalho ===== *//
-//* ============================== *//
+//* =========================== *//
+//* ===== Getter e Setter ===== *//
+//* =========================== *//
 
 int binario_getRRNProx(Binario* binario) { return binario->rrnProx; }
 bool binario_estaVazio(Binario* binario) { return binario->inseridos == 0; }
