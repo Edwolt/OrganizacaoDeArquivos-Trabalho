@@ -304,7 +304,7 @@ void indice_apontar(Indice* indice, int rrn, int whence) {
 
 int indice_buscar(Indice* indice, int id) {
     int rrn = indice->noRaiz;
-    int l, r, mid;
+    int l, r, m;
 
     while (rrn != RRNNULL) {
         indice_apontar(indice, rrn, SEEK_SET);
@@ -315,14 +315,14 @@ int indice_buscar(Indice* indice, int id) {
         r = pagina->n;
 
         while (r - l > 1) {
-            mid = (l + r) / 2;
-            if (pagina->chaves[mid] == id) {
+            m = (l + r) / 2;
+            if (pagina->chaves[m] == id) {
                 indice_apontar(indice, -1, SEEK_CUR);
-                return pagina->dados[mid];
-            } else if (pagina->chaves[mid] < id) {
-                l = mid;
+                return pagina->dados[m];
+            } else if (pagina->chaves[m] < id) {
+                l = m;
             } else {
-                r = mid;
+                r = m;
             }
         }
 
