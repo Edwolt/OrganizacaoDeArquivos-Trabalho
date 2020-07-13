@@ -187,13 +187,9 @@ fread_erro:
     return NULL;
 }
 
-static void ordenaPagina(Pagina* pagina) {  // TODO Algum algoritmo de ordenacao
-}
-
-static Pagina* pagina_criar() {  // TODO retornar uma pagina de verdade
-    // Talvez so ler pagina seja suficiente
-    return NULL;
-}
+// static bool escreverPagina(Indice* indice, Pagina* pagina) {  // TODO
+// return false;
+// }
 
 //* ============================ *//
 //* ===== Métodos Publicos ===== *//
@@ -244,7 +240,7 @@ Indice* indice_abrir(char* path, bool escrita) {
     if (!indice) return NULL;
 
     indice->file = NULL;
-    indice->path;
+    indice->path = path;
     indice->modes = escrita ? "rb+" : "rb";
 
     bool ok = escrita ? cabecalhoEscrita(indice) : cabecalhoLeitura(indice);
@@ -266,7 +262,7 @@ void indice_fechar(Indice** indice) {
     if (!indice || !*indice) return;  // Objeto ja foi apagado (arquivo ja foi fechado)
 
     // Fecha o arquivo
-    if (ehEscrita((*indice)->modes)) {
+    if (isEscrita((*indice)->modes)) {
         salvarCabecalho(*indice);
     } else {
         if ((*indice)->file) fclose((*indice)->file);
@@ -293,7 +289,7 @@ int indice_buscar(Indice* indice, int id) {
 
     while (rrn != RRNNULL) {
         indice_apontar(indice, rrn, SEEK_SET);
-        Pagina* pagina = lerPagina(pagina);
+        Pagina* pagina = lerPagina(indice);
         if (!pagina) return RRNNULL;
 
         l = 0;

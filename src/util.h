@@ -34,7 +34,7 @@ Macros para facilitar o uso do fwrite e do fread
 /**
  * Retorna se binario eh para arquivo de escrita
  */
-bool ehEscrita(const char* modes);
+bool isEscrita(const char* modes);
 
 //* ================== *//
 //* ===== String ===== *//

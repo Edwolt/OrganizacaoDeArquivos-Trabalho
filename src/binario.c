@@ -437,7 +437,7 @@ void binario_fechar(Binario** binario) {
     if (!binario || !*binario) return;  // Objeto ja foi apagado (arquivo ja foi fechado)
 
     // Fecha o arquivo
-    if (ehEscrita((*binario)->modes)) {
+    if (isEscrita((*binario)->modes)) {
         salvarCabecalho(*binario);
     } else {
         if ((*binario)->file) fclose((*binario)->file);

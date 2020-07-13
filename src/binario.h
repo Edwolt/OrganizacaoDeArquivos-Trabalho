@@ -34,7 +34,7 @@ Binario* binario_abrir(char* path, bool escrita);
  * Retorna NULL se nao for possivel abrir o arquivo
  * Retorna NULL se o arquivo estiver inconsistente
  */
-inline static Binario* binario_abrirLeitura(char* path, bool escrita) { return binario_abrir(path, false); }
+inline static Binario* binario_abrirLeitura(char* path) { return binario_abrir(path, false); }
 
 /**
  * Abre o arquivo com nome path para leitura e escrita
