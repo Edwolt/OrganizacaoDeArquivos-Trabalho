@@ -339,6 +339,8 @@ int indice_buscar(Indice* indice, int id) {  // TODO Devolver
 bool indice_inserir(Indice* indice, int id, int rrn) {  // TODO
     if (!indice) return false;
 
+    int i, j;
+
     // Variaveis com alocacao dinamica
     Pagina* pagina = NULL;
 
@@ -353,17 +355,23 @@ bool indice_inserir(Indice* indice, int id, int rrn) {  // TODO
         // TODO Split
         return true;
     } else {
-        pagina->chaves[pagina->n] = id;
-        pagina->dados[pagina->n] = rrn;
-        pagina->dados[pagina->n + 1] = RRNNULL;  // TODO nao tenho certeza disso
+        for (i = 0; i < pagina->n; i++) {
+            if (id < pagina->chaves[i]) {  // insere ordenado
+                for (j = pagina->n; j > i; j--) {  // Desloca chaves para dar espaco para a nova
+                    pagina->chaves[j] = pagina->chaves[j - 1];
+                    pagina->dados[j] = pagina->dados[j - 1];
+                }
+                pagina->chaves[pagina->n + 1] = RRNNULL;
+                pagina->n++;
+                break;
+            }
 
-        ordenaPagina(pagina);  // TODO essa funcao ainda nao existe
-
-        // TODO Escreve pagina
-        return true;
+            // TODO Escreve pagina
+            return true;
+        }
     }
 
 falha:  // Falha na execucao da funcao
-    pagina_apagar(&pagina);  // TODO criar essa função
+    pagina_apagar(&pagina);
     return false;
 }
