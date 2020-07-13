@@ -335,7 +335,7 @@ int indice_buscar(Indice* indice, int id) {
     return RRNNULL;
 }
 
-bool indice_inserir(Indice* indice, int id, int rrn) {  // TODO
+bool indice_inserir(Indice* indice, int id, int rrn) {  // TODO Reimplementar de forma recursiva
     if (!indice) return false;
 
     int i, j;
@@ -350,8 +350,34 @@ bool indice_inserir(Indice* indice, int id, int rrn) {  // TODO
     // Lendo pagina
     pagina = lerPagina(indice);  // Lendo a mesma pagina de disco 2 vezes seguidas não deveria se tornar um leitura em disco
     if (!pagina) return false;
+    indice_apontar(indice, -1, SEEK_CUR);  // Volta indice para o inicio do registro pois ele será escrito
 
-    if (pagina->n == ORDEM) {
+    if (pagina->n == ORDEM) {  // TODO Ocorre Split
+        Pagina* direita = pagina_criar();
+        if (!direita) goto falha;
+
+        Pagina* esquerda = pagina_criar();
+        if (!esquerda) goto falha;
+
+        int promover = pagina->chaves[ORDEM / 2];  // TODO esta faltando pegar outros dados
+
+        // Distribui uniformemente
+        for (i = 0; i < ORDEM / 2; i++) {
+            // TODO transfere de pagina para esquerda
+        }
+        for (i++; i < ORDEM; i++) {
+            // TODO transfere de pagina para direita
+        }
+
+        /* 
+        TODO Linhas gerais do que deve ser impĺementado
+        [x] Encontra qual chave vai ser promovida
+        [ ] Distribui chaves uniformemente
+        [ ] Escreve esquerda no lugar onde indice aponta - 1
+        [ ] Escreve direita no fim do arquivo
+        [ ] Tenta inserir no nó pai, se der overflow segue fazendo o mesmo (Eu acredito que se tornará um while ou um recursão)
+        */
+
         // TODO Split
         return true;
     } else {
@@ -366,7 +392,6 @@ bool indice_inserir(Indice* indice, int id, int rrn) {  // TODO
                 break;
             }
 
-            indice_apontar(indice, -1, SEEK_CUR);
             ok = escreverPagina(indice, pagina);
             if (!ok) goto falha;
             return true;
