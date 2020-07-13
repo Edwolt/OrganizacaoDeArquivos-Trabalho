@@ -13,6 +13,7 @@
  */
 static void opcao3() {
     int i;
+    bool erro;
 
     // Variaveis com alocacao dinamica
     Binario* bin = NULL;
@@ -44,7 +45,6 @@ static void opcao3() {
     // Busca no arquivo
 
     int numRegs = binario_getRRNProx(bin);
-    bool erro;
     bool imprimiu = false;
     bool unico = criterio_unico(criterio);  // Diz seo criterio so pode satisfazer um registro
     for (i = 0; i < numRegs; i++) {
@@ -89,6 +89,8 @@ falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas
  * Imprime o valor do regitro de RRN igual a rrn do arquivo binario bin
  */
 static void opcao4() {
+    bool erro;
+
     // Variaveis com alocacao dinamica
     Binario* bin = NULL;
     Registro* reg = NULL;
@@ -113,7 +115,6 @@ static void opcao4() {
     }
 
     // Le e imprime registro
-    bool erro;
     reg = binario_buscar(bin, rrn, &erro);
     if (erro) {  // Falha ao ler registro
         printf("Falha no processamento do arquivo.\n");
@@ -160,6 +161,7 @@ static void opcao5() {
     */
 
     int i, j;
+    bool erro;
 
     // Variaveis com alocacao dinamica
     Binario* bin = NULL;
@@ -195,7 +197,6 @@ static void opcao5() {
     }
 
     // Remove registros
-    bool erro;
     int numRegs = binario_getRRNProx(bin);
     for (i = 0; i < numRegs; i++) {  // Itera sobre registro
         reg = binario_lerRegistro(bin, &erro);
@@ -252,6 +253,7 @@ falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas
  */
 static void opcao6() {
     int i;
+    bool ok;
 
     // Variaveis com alocacao dinamica
     Binario* bin = NULL;
@@ -280,7 +282,7 @@ static void opcao6() {
 
     // Insere registros no arquivo
 
-    bool ok = binario_inserirVarios(bin, regs, n);
+    ok = binario_inserirVarios(bin, regs, n);
     if (!ok) {  // Falha ao inserir no arquivo
         printf("Falha no processamento do arquivo.\n");
         goto falha;
@@ -324,6 +326,7 @@ falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas
  */
 static void opcao7() {
     int i;
+    bool erro, ok;
 
     // Variaveis com alocacao dinamica
     Binario* bin = NULL;
@@ -366,9 +369,7 @@ static void opcao7() {
     }
 
     // Atualiza registros
-    bool erro;
     int numRegs = binario_getRRNProx(bin);
-    bool ok;
     for (i = 0; i < n; i++) {
         if (rrnsAtualizar[i] < 0 || rrnsAtualizar[i] >= numRegs) continue;  // Verifica RRN
 

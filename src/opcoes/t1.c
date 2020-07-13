@@ -11,6 +11,8 @@
  * salvando-o com o nome dest
  */
 static void opcao1() {
+    bool ok;
+
     // Variaveis com alocacao dinamica
     Binario* bin = NULL;
     CSV* csv = NULL;
@@ -35,7 +37,6 @@ static void opcao1() {
         goto falha;
     }
 
-    bool ok;
     while ((reg = csv_lerRegistro(csv))) {  // Enquanto houver registros para ler
         ok = binario_inserir(bin, reg);
         if (!ok) {  // Falha ao escrever registro
@@ -68,6 +69,7 @@ falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas
  */
 static void opcao2() {
     int i;
+    bool erro;
 
     // Variaveis com alocacao dinamica
     Binario* bin = NULL;
@@ -90,8 +92,6 @@ static void opcao2() {
     }
 
     // Le e imprime registros
-
-    bool erro;
     int numRegs = binario_getRRNProx(bin);
     for (i = 0; i < numRegs; i++) {
         reg = binario_lerRegistro(bin, &erro);

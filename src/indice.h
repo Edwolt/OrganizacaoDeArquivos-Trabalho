@@ -24,9 +24,11 @@ typedef struct Indice Indice;
  */
 Indice* indice_criar(char* path);
 
-Indice* indice_abrirLeitura(char* path);
+Indice* indice_abrir(char* path, bool escrita);
 
-Indice* indice_abrirEscrita(char* path);
+Indice* indice_abrirLeitura(char* path) { return indice_abrir(path, false); }
+
+Indice* indice_abrirEscrita(char* path) { return indice_abrir(path, true); }
 
 void indice_fechar(Indice** indice);
 

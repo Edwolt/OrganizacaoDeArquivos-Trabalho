@@ -252,6 +252,7 @@ fwrite_erro:  // Falha ao escrever no arquivo
 static bool binario_escreverRegistro(Binario* binario, Registro* registro) {
     if (!binario || !registro) return false;  // Objeto nao existe ou nao recebeu os paramentro
 
+    bool ok;
     int qtdeLixo;
 
     // Extraindo dados do registro
@@ -290,7 +291,6 @@ static bool binario_escreverRegistro(Binario* binario, Registro* registro) {
     TRYFWRITE(&idNascimento, int, 1, binario->file);
     TRYFWRITE(&idadeMae, int, 1, binario->file);
 
-    bool ok;
     ok = escreverString(binario, dataNascimento, TAM_DATA);
     if (!ok) goto fwrite_erro;  // Falha ao escrever no arquivo
 
@@ -411,6 +411,8 @@ fwrite_erro:  // Falha ao escrever no arquivo
 Binario* binario_abrir(char* path, bool escrita) {
     if (!path) return NULL;  // Nao recebeu parametros
 
+    bool ok;
+
     Binario* binario = malloc(sizeof(Binario));
     if (!binario) return NULL;
 
@@ -418,7 +420,7 @@ Binario* binario_abrir(char* path, bool escrita) {
     binario->path = path;
     binario->modes = (escrita ? "rb+" : "rb");
 
-    bool ok = escrita ? cabecalhoEscrita(binario) : cabecalhoLeitura(binario);
+    ok = escrita ? cabecalhoEscrita(binario) : cabecalhoLeitura(binario);
     if (!ok) goto falha;
 
     abrirArquivo(binario);
@@ -566,6 +568,7 @@ bool binario_inserirVarios(Binario* binario, Registro** registros, int n) {
 
     int i;
     bool ok;
+
     for (i = 0; i < n; i++) {
         ok = binario_inserir(binario, registros[i]);
         if (!ok) return false;

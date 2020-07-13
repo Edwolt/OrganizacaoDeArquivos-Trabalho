@@ -157,6 +157,8 @@ static Pagina* pagina_criar() {
     }
     pagina->chaves[ORDEM] = RRNNULL;
     pagina->dados[ORDEM] = RRNNULL;
+
+    return pagina;
 }
 
 static void pagina_apagar(Pagina** pagina) {
@@ -187,9 +189,9 @@ fread_erro:
     return NULL;
 }
 
-// static bool escreverPagina(Indice* indice, Pagina* pagina) {  // TODO
-// return false;
-// }
+static bool escreverPagina(Indice* indice, Pagina* pagina) {  // TODO
+    return false;
+}
 
 //* ============================ *//
 //* ===== Métodos Publicos ===== *//
@@ -236,6 +238,8 @@ fwrite_erro:  // Falha ao escrever no arquivo
 Indice* indice_abrir(char* path, bool escrita) {
     if (!path) return NULL;  // Nao recebeu parametros
 
+    bool ok;
+
     Indice* indice = malloc(sizeof(Indice));
     if (!indice) return NULL;
 
@@ -243,7 +247,7 @@ Indice* indice_abrir(char* path, bool escrita) {
     indice->path = path;
     indice->modes = escrita ? "rb+" : "rb";
 
-    bool ok = escrita ? cabecalhoEscrita(indice) : cabecalhoLeitura(indice);
+    ok = escrita ? cabecalhoEscrita(indice) : cabecalhoLeitura(indice);
     if (!ok) goto falha;
 
     abrirArquivo(indice);
@@ -320,6 +324,7 @@ bool indice_inserir(Indice* indice, int id, int rrn) {  // TODO
     if (!indice) return false;
 
     int i, j;
+    bool ok;
 
     // Variaveis com alocacao dinamica
     Pagina* pagina = NULL;
@@ -346,7 +351,9 @@ bool indice_inserir(Indice* indice, int id, int rrn) {  // TODO
                 break;
             }
 
-            // TODO Escreve pagina
+            indice_apontar(indice, -1, SEEK_CUR);
+            ok = escreverPagina(indice, pagina);
+            if (!ok) goto falha;
             return true;
         }
     }
