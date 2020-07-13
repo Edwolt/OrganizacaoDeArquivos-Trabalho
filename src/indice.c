@@ -287,7 +287,7 @@ void indice_apontar(Indice* indice, int rrn, int whence) {
     }
 }
 
-int indice_buscar(Indice* indice, int id) {  // TODO Devolver
+int indice_buscar(Indice* indice, int id) {
     int rrn = indice->noRaiz;
     int l, r, mid;
 
