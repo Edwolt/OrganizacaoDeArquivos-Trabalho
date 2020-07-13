@@ -237,7 +237,7 @@ fwrite_erro:  // Falha ao escrever no arquivo
     return NULL;
 }
 
-Indice* indice_abrirLeitura(char* path) {
+Indice* indice_abrir(char* path, bool escrita) {
     if (!path) return NULL;  // Nao recebeu parametros
 
     Indice* indice = malloc(sizeof(Indice));
@@ -245,9 +245,9 @@ Indice* indice_abrirLeitura(char* path) {
 
     indice->file = NULL;
     indice->path;
-    indice->modes = "rb";
+    indice->modes = escrita ? "rb+" : "rb";
 
-    bool ok = cabecalhoLeitura(indice);
+    bool ok = escrita ? cabecalhoEscrita(indice) : cabecalhoLeitura(indice);
     if (!ok) goto falha;
 
     abrirArquivo(indice);
@@ -260,22 +260,6 @@ falha:  // Falha na execucao da funcao
     if (indice->file) fclose(indice->file);
     free(indice);
     return NULL;
-}
-
-Indice* indice_abrirEscrita(char* path) {  // TODO
-    if (!path) return NULL;
-
-    Indice* indice = malloc(sizeof(Indice));
-    if (!indice) return NULL;
-
-    indice->file = NULL;
-    indice->path;
-    indice->modes = "rb+";
-
-    bool ok = cabecalhoEscrita(indice);
-    //if (!ok) goto falha;
-
-    //falha:
 }
 
 void indice_fechar(Indice** indice) {
