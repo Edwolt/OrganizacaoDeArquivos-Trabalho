@@ -408,7 +408,7 @@ fwrite_erro:  // Falha ao escrever no arquivo
     return NULL;
 }
 
-Binario* binario_abrirLeitura(char* path) {
+Binario* binario_abrir(char* path, bool escrita) {
     if (!path) return NULL;  // Nao recebeu parametros
 
     Binario* binario = malloc(sizeof(Binario));
@@ -416,34 +416,13 @@ Binario* binario_abrirLeitura(char* path) {
 
     binario->file = NULL;
     binario->path = path;
-    binario->modes = "rb";
-
-    bool ok = cabecalhoLeitura(binario);
-    if (!ok) goto falha;
-
-    abrirArquivo(binario);
-    if (!binario->file) goto falha;  // Falha ao abrir arquivo
-
-    binario_apontar(binario, 0, SEEK_SET);  // Vai para o primeiro registro do arquivo
-    return binario;
-
-falha:  // Falha na execucao da funcao
-    if (binario->file) fclose(binario->file);
-    free(binario);
-    return NULL;
-}
-
-Binario* binario_abrirEscrita(char* path) {
-    if (!path) return NULL;  // Nao recebeu paramentros
-
-    Binario* binario = malloc(sizeof(Binario));
-    if (!binario) return NULL;
-
-    binario->file = NULL;
-    binario->path = path;
-    binario->modes = "rb+";
-
-    bool ok = cabecalhoEscrita(binario);
+    binario->modes = (escrita ? "rb+" : "rb");
+    bool ok;
+    if (escrita) {
+        ok = cabecalhoEscrita(binario);
+    } else {
+        ok = cabecalhoLeitura(binario);
+    }
     if (!ok) goto falha;
 
     abrirArquivo(binario);

@@ -25,6 +25,8 @@ typedef struct Binario Binario;
  */
 Binario* binario_criar(char* path);
 
+Binario* binario_abrir(char* path, bool escrita);
+
 /**
  * Abre arquivo com nome path para leitura
  * O arquivo aponta para o primeiro registro de dados
@@ -32,7 +34,7 @@ Binario* binario_criar(char* path);
  * Retorna NULL se nao for possivel abrir o arquivo
  * Retorna NULL se o arquivo estiver inconsistente
  */
-Binario* binario_abrirLeitura(char* path);
+inline static Binario* binario_abrirLeitura(char* path, bool escrita) { return binario_abrir(path, false); }
 
 /**
  * Abre o arquivo com nome path para leitura e escrita
@@ -41,7 +43,7 @@ Binario* binario_abrirLeitura(char* path);
  * Retorna NULL se nao for possivel abrir o arquivo
  * Retorna NULL se o arquivo estiver inconsistente
  */
-Binario* binario_abrirEscrita(char* path);
+inline static Binario* binario_abrirEscrita(char* path) { return binario_abrir(path, true); }
 
 /**
  * Fecha o arquivo (depois disso as escritas certamente estaram salvas no disco)
