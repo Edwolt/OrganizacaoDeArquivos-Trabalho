@@ -25,23 +25,26 @@ typedef struct Binario Binario;
  */
 Binario* binario_criar(char* path);
 
-Binario* binario_abrir(char* path, bool escrita);
-
 /**
- * Abre arquivo com nome path para leitura
+ * Abre arquivo com nome path
+ * Pode ser aberto para leitra ou para escrita dependendo da variavel escrita
+ * Se for aberto para escrita ainda sera possivel ler dados do arquivo
  * O arquivo aponta para o primeiro registro de dados
  * 
  * Retorna NULL se nao for possivel abrir o arquivo
  * Retorna NULL se o arquivo estiver inconsistente
  */
+Binario* binario_abrir(char* path, bool escrita);
+
+/**
+ * Abre arquivo para leitura
+ * Wrapper para binario_abrir
+ */
 inline static Binario* binario_abrirLeitura(char* path) { return binario_abrir(path, false); }
 
 /**
- * Abre o arquivo com nome path para leitura e escrita
- * O arquivo aponta para o primeiro registro de dados
- * 
- * Retorna NULL se nao for possivel abrir o arquivo
- * Retorna NULL se o arquivo estiver inconsistente
+ * Abre arquivo para escrita
+ * Wrapper para binario_abrir
  */
 inline static Binario* binario_abrirEscrita(char* path) { return binario_abrir(path, true); }
 
@@ -85,18 +88,21 @@ Registro* binario_buscar(Binario* binario, int rrn, bool* erro);
 /**
  * Insere o registro no final do arquivo binario
  * Retorna se a operacao foi bem sucedida
+ * Obs: Operacao requer escrita
  */
 bool binario_inserir(Binario* binario, Registro* registro);
 
 /**
  * Insere n registros no final do arquivo binario
  * Retorna se a operacao foi bem sucedida
+ * Obs: Operacao requer escrita
  */
 bool binario_inserirVarios(Binario* binario, Registro** registros, int n);
 
 /**
  * Atualiza o registro para o qual o arquivo aponta
  * O binario passa a apontar para o registro seguinte
+ * Obs: Operacao requer escrita
  * 
  * Retorna se a operacao foi bem sucedida
  */
