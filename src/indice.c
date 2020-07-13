@@ -142,10 +142,34 @@ fwrite_erro:  // Falha ao escrever no arquivo
     return false;
 }
 
-Pagina* lerPagina(Indice* indice) {  // TODO esta errado
+static Pagina* pagina_criar() {
+    Pagina* pagina = malloc(sizeof(Pagina));
+    if (!pagina) return NULL;
+
     int i;
 
-    Pagina* pagina = malloc(sizeof(Pagina));
+    pagina->nivel = 0;
+    pagina->n = 0;
+    for (i = 0; i < ORDEM; i++) {
+        pagina->chaves[i] = RRNNULL;
+        pagina->dados[i] = RRNNULL;
+        pagina->subarvores[i] = RRNNULL;
+    }
+    pagina->chaves[ORDEM] = RRNNULL;
+    pagina->dados[ORDEM] = RRNNULL;
+}
+
+static void pagina_apagar(Pagina** pagina) {
+    if (!pagina || !*pagina) return;
+
+    free(*pagina);
+    *pagina = NULL;
+}
+
+static Pagina* lerPagina(Indice* indice) {
+    int i;
+
+    Pagina* pagina = pagina_criar();
     if (!pagina) return NULL;
 
     TRYFREAD(&pagina->nivel, int, 1, indice->file);
