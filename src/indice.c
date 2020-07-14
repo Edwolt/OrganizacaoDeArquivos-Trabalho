@@ -335,6 +335,53 @@ int indice_buscar(Indice* indice, int id) {
     return RRNNULL;
 }
 
+bool indice_inserir_recursivo(Indice* indice, int atual, int id, int rrn) {
+    if (!indice) return false;
+
+    bool ok;
+
+    // Variaveis com alocao dinamica
+    Pagina* pagina = NULL;
+    Pagina* direita = NULL;
+    Pagina* esquerda = NULL;
+
+    indice_apontar(indice, atual, rrn);
+
+    // Busca chave
+    int l = 0, r = pagina->n, m;
+
+    while (r - l > 1) {
+        m = (l + r) / 2;
+        if (pagina->chaves[m] == id) {  // TODO Tornar mais legivel
+            goto falha;  // A chave ja existe
+        } else if (pagina->chaves[m] < id) {
+            l = m;
+        } else {
+            r = m;
+        }
+    }
+
+    if (pagina->subarvores[l] != RRNNULL) {  // Existe subarvore para continuar inserindo
+        return indice_inserir_recursivo(indice, l, id, rrn);  // TODO virou uma busca
+    } else {
+        if (pagina->n == ORDEM) {
+            // TODO split
+        } else {
+            //TODO insere simplesmente
+        }
+    }
+
+    // TODO Inserir de fato
+
+    return true;
+
+falha:
+    pagina_apagar(&pagina);
+    pagina_apagar(&direita);
+    pagina_apagar(&esquerda);
+    return false;
+}
+
 bool indice_inserir(Indice* indice, int id, int rrn) {  // TODO essa funcao precisa ser recursiva, pois tem que empilhar os pais na busca
     if (!indice) return false;
 
