@@ -40,6 +40,9 @@ static const char LIXO[TAM_REG + 1] = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 //* ===== Métodos Privados ===== *//
 //* ============================ *//
 
+inline static esq(int i) { return i; }  // TODO essa funcao pode ser desnecessaria
+inline static dir(int i) { return i + 1; }  // TODO essa funcao pode ser desnecessaria
+
 /**
  * Abri um arquivo e salva em indice
  * Se já tiver um arquivo aberto fecha ele
@@ -326,7 +329,7 @@ int indice_buscar(Indice* indice, int id) {
             }
         }
 
-        rrn = pagina->subarvores[l];
+        rrn = pagina->subarvores[esq(r)];  // dir(l) == esq(r)
 
         free(pagina);
         pagina = NULL;
@@ -335,7 +338,8 @@ int indice_buscar(Indice* indice, int id) {
     return RRNNULL;
 }
 
-bool indice_inserir_recursivo(Indice* indice, int atual, int id, int rrn) {
+// TODO melhorar nome dos parametros
+bool indice_inserir_recursivo(Indice* indice, int atual, int id, int rrn, int* pid, int* prrn, int* rrndir) {
     if (!indice) return false;
 
     bool ok;
@@ -360,15 +364,25 @@ bool indice_inserir_recursivo(Indice* indice, int atual, int id, int rrn) {
             r = m;
         }
     }
+    // TODO obs: l < id < r
 
+    // TODO melhorar nome das variaveis
+    int Pid;
+    int Prrn;
+    int Rrndir;
     if (pagina->subarvores[l] != RRNNULL) {  // Existe subarvore para continuar inserindo
-        return indice_inserir_recursivo(indice, l, id, rrn);  // TODO virou uma busca
+        indice_inserir_recursivo(indice, pagina->subarvores[esq(r)], id, rrn, &Pid, &Prrn, &Rrndir);  // TODO virou uma busca
     } else {
-        if (pagina->n == ORDEM) {
-            // TODO split
-        } else {
-            //TODO insere simplesmente
-        }
+        Pid = id;
+        Prrn = rrn;
+        Rrndir = RRNNULL;
+    }
+
+    if (pagina->n == ORDEM) {
+        // TODO split
+    } else {
+        // TODO insere simplesmente
+        // Insere {chave: Pid; dado: Prrn} com filho direito Rrndir
     }
 
     // TODO Inserir de fato
