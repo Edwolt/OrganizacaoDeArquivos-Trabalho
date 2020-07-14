@@ -4,6 +4,7 @@
 #define RRNNULL -1
 
 typedef struct Pagina Pagina;
+typedef struct Chave Chave;
 
 struct Indice {
     FILE* file;
@@ -19,11 +20,15 @@ struct Indice {
     int nroChaves;
 };
 
+struct Chave {
+    int id;
+    int dado;
+};
+
 struct Pagina {
     int nivel;
     int n;
-    int chaves[ORDEM + 1];
-    int dados[ORDEM + 1];
+    Chave chaves[ORDEM + 1];
     int subarvores[ORDEM];
 };
 
@@ -154,12 +159,12 @@ static Pagina* pagina_criar() {
     pagina->nivel = 0;
     pagina->n = 0;
     for (i = 0; i < ORDEM; i++) {
-        pagina->chaves[i] = RRNNULL;
-        pagina->dados[i] = RRNNULL;
+        pagina->chaves[i].id = RRNNULL;
+        pagina->chaves[i].dado = RRNNULL;
         pagina->subarvores[i] = RRNNULL;
     }
-    pagina->chaves[ORDEM] = RRNNULL;
-    pagina->dados[ORDEM] = RRNNULL;
+    pagina->chaves[ORDEM].id = RRNNULL;
+    pagina->chaves[ORDEM].dado = RRNNULL;
 
     return pagina;
 }
@@ -180,8 +185,8 @@ static Pagina* lerPagina(Indice* indice) {
     TRYFREAD(&pagina->nivel, int, 1, indice->file);
     TRYFREAD(&pagina->n, int, 1, indice->file);
     for (i = 0; i < pagina->n; i++) {
-        TRYFREAD(&pagina->chaves, int, 1, indice->file);
-        TRYFREAD(&pagina->dados, int, 1, indice->file);
+        TRYFREAD(&pagina->chaves[i].id, int, 1, indice->file);
+        TRYFREAD(&pagina->chaves[i].dado, int, 1, indice->file);
     }
     TRYFREAD(&pagina->subarvores, int, pagina->n + 1, indice->file);  // TODO nao tenho certeza disso
 
@@ -200,8 +205,8 @@ static bool escreverPagina(Indice* indice, Pagina* pagina) {
     TRYFWRITE(&pagina->nivel, int, 1, indice->file);
     TRYFWRITE(&pagina->n, int, 1, indice->file);
     for (i = 0; i < ORDEM; i++) {
-        TRYFWRITE(&pagina->chaves, int, 1, indice->file);
-        TRYFWRITE(&pagina->dados, int, 1, indice->file);
+        TRYFWRITE(&pagina->chaves[i].id, int, 1, indice->file);
+        TRYFWRITE(&pagina->chaves[i].dado, int, 1, indice->file);
     }
     TRYFWRITE(&pagina->subarvores, int, ORDEM + 1, indice->file);
 
@@ -319,10 +324,10 @@ int indice_buscar(Indice* indice, int id) {
 
         while (r - l > 1) {
             m = (l + r) / 2;
-            if (pagina->chaves[m] == id) {
+            if (pagina->chaves[m].id == id) {
                 indice_apontar(indice, -1, SEEK_CUR);
-                return pagina->dados[m];
-            } else if (pagina->chaves[m] < id) {
+                return pagina->chaves[m].dado;
+            } else if (pagina->chaves[m].id < id) {
                 l = m;
             } else {
                 r = m;
@@ -356,9 +361,9 @@ bool indice_inserir_recursivo(Indice* indice, int atual, int id, int rrn, int* p
 
     while (r - l > 1) {
         m = (l + r) / 2;
-        if (pagina->chaves[m] == id) {  // TODO Tornar mais legivel
+        if (pagina->chaves[m].id == id) {  // TODO Tornar mais legivel
             goto falha;  // A chave ja existe
-        } else if (pagina->chaves[m] < id) {
+        } else if (pagina->chaves[m].id < id) {
             l = m;
         } else {
             r = m;
@@ -427,19 +432,17 @@ bool indice_inserir(Indice* indice, int id, int rrn) {  // TODO essa funcao prec
         // Distribui uniformemente
         for (i = 0; i < ORDEM / 2; i++) {  // Inicio de pagina vai para esqueda
             esquerda->chaves[i] = pagina->chaves[i];
-            esquerda->dados[i] = pagina->dados[i];
             esquerda->subarvores[i] = pagina->subarvores[i];
         }
         esquerda->subarvores[i] = pagina->subarvores[i];
         esquerda->n = i;
 
         // Chave do meio
-        int promover = pagina->chaves[i++];
+        int promover = pagina->chaves[i++].id;
         int dir = indice->proxRRN;
 
         for (j = 0; i < ORDEM; i++, j++) {  // Final de pagina vai para direita
             direita->chaves[j] = pagina->chaves[i];
-            direita->dados[j] = pagina->dados[i];
             direita->subarvores[j] = pagina->subarvores[i];
         }
         direita->subarvores[j] = pagina->subarvores[j];
@@ -461,18 +464,17 @@ bool indice_inserir(Indice* indice, int id, int rrn) {  // TODO essa funcao prec
         return true;
     } else {
         for (i = 0; i < pagina->n; i++) {
-            if (id < pagina->chaves[i]) {  // Insere ordenado
+            if (id < pagina->chaves[i].id) {  // Insere ordenado
                 // Desloca chaves para dar espaco para a nova
                 for (j = pagina->n; j > i; j--) {
                     pagina->chaves[j] = pagina->chaves[j - 1];
-                    pagina->dados[j] = pagina->dados[j - 1];
                 }
-                pagina->chaves[pagina->n + 1] = RRNNULL;
+                pagina->chaves[pagina->n + 1].id = RRNNULL;
                 pagina->n++;
 
                 // Insere a pagina
-                pagina->chaves[i] = id;
-                pagina->dados[i] = rrn;
+                pagina->chaves[i].id = id;
+                pagina->chaves[i].dado = rrn;
                 break;
             }
 
