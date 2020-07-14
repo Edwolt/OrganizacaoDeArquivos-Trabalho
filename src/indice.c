@@ -354,15 +354,17 @@ bool indice_inserir_recursivo(Indice* indice, int atual, int id, int rrn, Chave*
     Pagina* direita = NULL;
     Pagina* esquerda = NULL;
 
-    indice_apontar(indice, atual, rrn);
-
     // Busca chave
+    indice_apontar(indice, atual, rrn);
+    pagina = lerPagina(indice);
+
     int l = 0, r = pagina->n, m;
 
     while (r - l > 1) {
         m = (l + r) / 2;
-        if (pagina->chaves[m].id == id) {  // TODO Tornar mais legivel
-            goto falha;  // A chave ja existe
+        if (pagina->chaves[m].id == id) {  // Chave duplicada
+            pagina_apagar(&pagina);
+            return false;
         } else if (pagina->chaves[m].id < id) {
             l = m;
         } else {
@@ -381,6 +383,7 @@ bool indice_inserir_recursivo(Indice* indice, int atual, int id, int rrn, Chave*
         inserirDir = RRNNULL;
     }
 
+    // Insere chave
     if (pagina->n == ORDEM) {  // Nao tem espaco para inserir
         direita = pagina_criar();
         if (!direita) goto falha;
@@ -403,7 +406,7 @@ bool indice_inserir_recursivo(Indice* indice, int atual, int id, int rrn, Chave*
         return true;
     }
 
-falha:
+falha:  // Falha na execucao da funcao
     pagina_apagar(&pagina);
     pagina_apagar(&direita);
     pagina_apagar(&esquerda);
