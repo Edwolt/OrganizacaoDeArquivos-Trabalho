@@ -353,32 +353,50 @@ bool indice_inserir(Indice* indice, int id, int rrn) {  // TODO Reimplementar de
     indice_apontar(indice, -1, SEEK_CUR);  // Volta indice para o inicio do registro pois ele será escrito
 
     if (pagina->n == ORDEM) {  // TODO Ocorre Split
-        Pagina* direita = pagina_criar();
-        if (!direita) goto falha;
-
-        Pagina* esquerda = pagina_criar();
-        if (!esquerda) goto falha;
-
-        int promover = pagina->chaves[ORDEM / 2];  // TODO esta faltando pegar outros dados
-
-        // Distribui uniformemente
-        for (i = 0; i < ORDEM / 2; i++) {
-            // TODO transfere de pagina para esquerda
-        }
-        for (i++; i < ORDEM; i++) {
-            // TODO transfere de pagina para direita
-        }
-
         /* 
         TODO Linhas gerais do que deve ser impĺementado
         [x] Encontra qual chave vai ser promovida
-        [ ] Distribui chaves uniformemente
-        [ ] Escreve esquerda no lugar onde indice aponta - 1
-        [ ] Escreve direita no fim do arquivo
+        [x] Distribui chaves uniformemente
+        [x] Escreve esquerda no lugar onde indice aponta - 1
+        [x] Escreve direita no fim do arquivo
         [ ] Tenta inserir no nó pai, se der overflow segue fazendo o mesmo (Eu acredito que se tornará um while ou um recursão)
         */
 
-        // TODO Split
+        Pagina* direita = pagina_criar();
+        if (!direita) goto falha;
+        direita->nivel = pagina->nivel + 1;
+
+        Pagina* esquerda = pagina_criar();
+        if (!esquerda) goto falha;
+        esquerda->nivel = pagina->nivel + 1;
+
+        // Distribui uniformemente
+        for (i = 0; i < ORDEM / 2; i++) {  // Inicio de pagina vai para esqueda
+            esquerda->chaves[i] = pagina->chaves[i];
+            esquerda->dados[i] = pagina->dados[i];
+            esquerda->subarvores[i] = pagina->subarvores[i];
+        }
+        esquerda->subarvores[i] = pagina->subarvores[i];
+        direita->n = i;
+
+        // Chave do meio
+        int promover = pagina->chaves[i++];
+        int dir = indice->proxRRN;
+
+        for (j = 0; i < ORDEM; i++, j++) {  // Final de pagina vai para direita
+            direita->chaves[j] = pagina->chaves[i];
+            direita->dados[j] = pagina->dados[i];
+            direita->subarvores[j] = pagina->subarvores[i];
+        }
+        esquerda->subarvores[j] = pagina->subarvores[j];
+        esquerda->n = i;
+
+        escreverPagina(indice, esquerda);
+        indice_apontar(indice, indice->proxRRN, SEEK_SET);
+        escreverPagina(indice, direita);
+        indice->proxRRN++;  // Prox RRN
+        // Insere no nó pai dando split
+        
         return true;
     } else {
         for (i = 0; i < pagina->n; i++) {
