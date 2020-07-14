@@ -1,6 +1,7 @@
 #!/bin/sh
-rm -fv Test/program
-cp $1 Test/program
+
+rm -fv Test/program;
+cp $1 Test/program;
 
 cd "Test/Area";
 program="../program"
