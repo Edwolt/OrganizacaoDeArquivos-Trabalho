@@ -343,10 +343,10 @@ int indice_buscar(Indice* indice, int id) {
     return RRNNULL;
 }
 
-bool indice_inserir_recursivo(Indice* indice, int atual, int id, int rrn, Chave* promocao, int* promocaoDir) {
+bool indice_inserir(Indice* indice, int atual, int id, int rrn, Chave* promover, int* promoverDir) {
     if (!indice) return false;
 
-    int i;
+    int i, j;
     bool ok;
 
     // Variaveis com alocao dinamica
@@ -375,7 +375,7 @@ bool indice_inserir_recursivo(Indice* indice, int atual, int id, int rrn, Chave*
     Chave inserir;
     int inserirDir;
     if (pagina->subarvores[l] != RRNNULL) {  // Existe subarvore para continuar inserindo
-        ok = indice_inserir_recursivo(indice, pagina->subarvores[esq(r)], id, rrn, &inserir, &inserirDir);  // TODO virou uma busca
+        ok = indice_inserir_recursivo(indice, pagina->subarvores[esq(r)], id, rrn, &inserir, &inserirDir);
         if (!ok) goto falha;
     } else {
         inserir.id = id;
@@ -384,55 +384,7 @@ bool indice_inserir_recursivo(Indice* indice, int atual, int id, int rrn, Chave*
     }
 
     // Insere chave
-    if (pagina->n == ORDEM) {  // Nao tem espaco para inserir
-        direita = pagina_criar();
-        if (!direita) goto falha;
-        direita->nivel = pagina->nivel + 1;
-
-        esquerda = pagina_criar();
-        if (!esquerda) goto falha;
-        esquerda->nivel = pagina->nivel + 1;
-    } else {  // Tem espaco para inserir
-        // inseri Chave inserir tendo filho direito inserirDir
-        for (i = l + 1; i <= pagina->n; i++) {
-            pagina->chaves[i] = pagina->chaves[i - 1];
-            pagina->chaves[dir(i)] = pagina->chaves[dir(i)];
-        }
-        pagina->chaves[l] = inserir;
-        pagina->subarvores[dir(i)] = inserirDir;
-
-        promocao->id = RRNNULL;
-        promocao->dado = RRNNULL;
-        return true;
-    }
-
-falha:  // Falha na execucao da funcao
-    pagina_apagar(&pagina);
-    pagina_apagar(&direita);
-    pagina_apagar(&esquerda);
-    return false;
-}
-
-bool indice_inserir(Indice* indice, int id, int rrn) {  // TODO essa funcao precisa ser recursiva, pois tem que empilhar os pais na busca
-    if (!indice) return false;
-
-    int i, j;
-    bool ok;
-
-    // Variaveis com alocacao dinamica
-    Pagina* pagina = NULL;
-    Pagina* direita = NULL;  // Para a situacao que ocorre split
-    Pagina* esquerda = NULL;  // Para a situacao que ocorre split
-
-    // Buscando pagina
-    if (indice_buscar(indice, id) != RRNNULL) return false;
-
-    // Lendo pagina
-    pagina = lerPagina(indice);  // Lendo a mesma pagina de disco 2 vezes seguidas não deveria se tornar um leitura em disco
-    if (!pagina) return false;
-    indice_apontar(indice, -1, SEEK_CUR);  // Volta indice para o inicio do registro pois ele será escrito
-
-    if (pagina->n == ORDEM) {  // TODO Ocorre Split
+    if (pagina->n == ORDEM) {  // Nao tem espaco para inserir (Split)
         direita = pagina_criar();
         if (!direita) goto falha;
         direita->nivel = pagina->nivel + 1;
@@ -442,16 +394,16 @@ bool indice_inserir(Indice* indice, int id, int rrn) {  // TODO essa funcao prec
         esquerda->nivel = pagina->nivel + 1;
 
         // Distribui uniformemente
+        esquerda->subarvores[esq(i)] = pagina->subarvores[esq(i)];
         for (i = 0; i < ORDEM / 2; i++) {  // Inicio de pagina vai para esqueda
             esquerda->chaves[i] = pagina->chaves[i];
-            esquerda->subarvores[i] = pagina->subarvores[i];
+            esquerda->subarvores[dir(i)] = pagina->subarvores[dir(i)];
         }
-        esquerda->subarvores[i] = pagina->subarvores[i];
         esquerda->n = i;
 
         // Chave do meio
-        int promover = pagina->chaves[i++].id;
-        int dir = indice->proxRRN;
+        *promover = pagina->chaves[i++];
+        *promoverDir = indice->proxRRN;
 
         for (j = 0; i < ORDEM; i++, j++) {  // Final de pagina vai para direita
             direita->chaves[j] = pagina->chaves[i];
@@ -470,16 +422,24 @@ bool indice_inserir(Indice* indice, int id, int rrn) {  // TODO essa funcao prec
         pagina_apagar(&esquerda);
         pagina_apagar(&direita);
         pagina_apagar(&pagina);
-
-        // TODO Insere no nó pai dando split
-
         return true;
-    } else {
+    } else {  // Tem espaco para inserir
+        // inseri Chave inserir tendo filho direito inserirDir
+        for (i = l + 1; i <= pagina->n; i++) {
+            pagina->chaves[i] = pagina->chaves[i - 1];
+            pagina->chaves[dir(i)] = pagina->chaves[dir(i)];
+        }
+        pagina->chaves[l] = inserir;
+        pagina->subarvores[dir(i)] = inserirDir;
+
+        promover->id = RRNNULL;
+        promover->dado = RRNNULL;
+        return true;
     }
 
 falha:  // Falha na execucao da funcao
     pagina_apagar(&pagina);
-    pagina_apagar(&esquerda);
     pagina_apagar(&direita);
+    pagina_apagar(&esquerda);
     return false;
 }
