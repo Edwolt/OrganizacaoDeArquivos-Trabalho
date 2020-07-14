@@ -343,10 +343,10 @@ int indice_buscar(Indice* indice, int id) {
     return RRNNULL;
 }
 
-// TODO melhorar nome dos parametros
-bool indice_inserir_recursivo(Indice* indice, int atual, int id, int rrn, int* pid, int* prrn, int* rrndir) {
+bool indice_inserir_recursivo(Indice* indice, int atual, int id, int rrn, Chave* promocao, int* promocaoDir) {
     if (!indice) return false;
 
+    int i;
     bool ok;
 
     // Variaveis com alocao dinamica
@@ -369,30 +369,39 @@ bool indice_inserir_recursivo(Indice* indice, int atual, int id, int rrn, int* p
             r = m;
         }
     }
-    // TODO obs: l < id < r
 
-    // TODO melhorar nome das variaveis
-    int Pid;
-    int Prrn;
-    int Rrndir;
+    Chave inserir;
+    int inserirDir;
     if (pagina->subarvores[l] != RRNNULL) {  // Existe subarvore para continuar inserindo
-        indice_inserir_recursivo(indice, pagina->subarvores[esq(r)], id, rrn, &Pid, &Prrn, &Rrndir);  // TODO virou uma busca
+        ok = indice_inserir_recursivo(indice, pagina->subarvores[esq(r)], id, rrn, &inserir, &inserirDir);  // TODO virou uma busca
+        if (!ok) goto falha;
     } else {
-        Pid = id;
-        Prrn = rrn;
-        Rrndir = RRNNULL;
+        inserir.id = id;
+        inserir.dado = rrn;
+        inserirDir = RRNNULL;
     }
 
-    if (pagina->n == ORDEM) {
-        // TODO split
-    } else {
-        // TODO insere simplesmente
-        // Insere {chave: Pid; dado: Prrn} com filho direito Rrndir
+    if (pagina->n == ORDEM) {  // Nao tem espaco para inserir
+        direita = pagina_criar();
+        if (!direita) goto falha;
+        direita->nivel = pagina->nivel + 1;
+
+        esquerda = pagina_criar();
+        if (!esquerda) goto falha;
+        esquerda->nivel = pagina->nivel + 1;
+    } else {  // Tem espaco para inserir
+        // inseri Chave inserir tendo filho direito inserirDir
+        for (i = l + 1; i <= pagina->n; i++) {
+            pagina->chaves[i] = pagina->chaves[i - 1];
+            pagina->chaves[dir(i)] = pagina->chaves[dir(i)];
+        }
+        pagina->chaves[l] = inserir;
+        pagina->subarvores[dir(i)] = inserirDir;
+
+        promocao->id = RRNNULL;
+        promocao->dado = RRNNULL;
+        return true;
     }
-
-    // TODO Inserir de fato
-
-    return true;
 
 falha:
     pagina_apagar(&pagina);
@@ -463,25 +472,6 @@ bool indice_inserir(Indice* indice, int id, int rrn) {  // TODO essa funcao prec
 
         return true;
     } else {
-        for (i = 0; i < pagina->n; i++) {
-            if (id < pagina->chaves[i].id) {  // Insere ordenado
-                // Desloca chaves para dar espaco para a nova
-                for (j = pagina->n; j > i; j--) {
-                    pagina->chaves[j] = pagina->chaves[j - 1];
-                }
-                pagina->chaves[pagina->n + 1].id = RRNNULL;
-                pagina->n++;
-
-                // Insere a pagina
-                pagina->chaves[i].id = id;
-                pagina->chaves[i].dado = rrn;
-                break;
-            }
-
-            ok = escreverPagina(indice, pagina);
-            if (!ok) goto falha;
-            return true;
-        }
     }
 
 falha:  // Falha na execucao da funcao
