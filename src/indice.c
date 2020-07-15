@@ -26,8 +26,8 @@ struct Chave {
 };
 
 struct Pagina {
-    int nivel;
-    int n;
+    int nivel;  // Nivel da pagina
+    int n;  // Numero de chaves
     Chave chaves[ORDEM + 1];
     int subarvores[ORDEM];
 };
@@ -45,8 +45,8 @@ static const char LIXO[TAM_REG + 1] = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 //* ===== Métodos Privados ===== *//
 //* ============================ *//
 
-inline static esq(int i) { return i; }  // TODO essa funcao pode ser desnecessaria
-inline static dir(int i) { return i + 1; }  // TODO essa funcao pode ser desnecessaria
+inline static esq(int i) { return i; }
+inline static dir(int i) { return i + 1; }
 
 /**
  * Abri um arquivo e salva em indice
@@ -188,7 +188,7 @@ static Pagina* lerPagina(Indice* indice) {
         TRYFREAD(&pagina->chaves[i].id, int, 1, indice->file);
         TRYFREAD(&pagina->chaves[i].dado, int, 1, indice->file);
     }
-    TRYFREAD(&pagina->subarvores, int, pagina->n + 1, indice->file);  // TODO nao tenho certeza disso
+    TRYFREAD(&pagina->subarvores, int, pagina->n + 1, indice->file);
 
     return pagina;
 
