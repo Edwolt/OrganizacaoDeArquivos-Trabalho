@@ -16,7 +16,8 @@ HEADER   := $(wildcard src/*.h)
 MK       := Makefile
 
 #Flags
-CFLAGS   := -Wall -lm -Wextra -pedantic -Werror=implicit-function-declaration
+CFLAGS   := -Wall -lm -Wextra -pedantic -Werror=implicit-function-declaration 
+# CFLAGS   := CFLAGS -fsanitize=address
 RMFLAGS  := -f -v
 
 #Actions
