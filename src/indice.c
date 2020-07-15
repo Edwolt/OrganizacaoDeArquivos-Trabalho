@@ -382,7 +382,7 @@ int indice_buscar(Indice* indice, int id) {
  * promover: 
  * promoverDir: 
  */
-static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promover, int* promoverDir) {
+static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promover, int* promoverDir) { // TODO separar funcao split
     if (!indice) return false;
 
     int i, j;
@@ -486,15 +486,36 @@ bool indice_inserir(Indice* indice, int id, int dado) {
     if (!indice) return false;
     if (id == RRNNULL) return false;
 
+    bool ok;
+
+    // Variaveis com alocacao dinamica
+    Pagina* pagina = NULL;
+
+    // Inserindo chave
     Chave chave = {id, dado};
 
     Chave promover;
     int promoverDir;
-    indice_inserir0(indice, indice->proxRRN, chave, &promover, &promoverDir);
+    ok = indice_inserir0(indice, indice->proxRRN, chave, &promover, &promoverDir);
+    if (!ok) goto falha;  // Falha ao inserir chave
 
-    if (promover.id == RRNNULL) return true;
+    if (promover.id == RRNNULL) return true;  // Não houve split na raiz
 
-    // TODO situacao que ocorre split da raiz
+    pagina = pagina_criar();
+    if (!pagina) goto falha;
 
+    pagina->chaves[0] = promover;
+    pagina->filhos[esq(0)] = indice->noRaiz;
+    pagina->filhos[dir(0)] = promoverDir;
+
+    indice->noRaiz = indice->proxRRN;
+    indice_apontar(indice, indice->noRaiz, SEEK_SET);
+    escreverPagina(indice, pagina);
+
+    pagina_apagar(&pagina);
+    return true;
+
+falha:  // Falha na execucao da funcao
+    pagina_apagar(&pagina);
     return false;
 }
