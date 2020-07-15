@@ -8,6 +8,7 @@
 #include "binarioNaTela.h"
 #include "criterio.h"
 #include "csv.h"
+#include "indice.h"
 #include "registro.h"
 
 #define PATH_TAM 100  // Tamanho do nome do arquivo
