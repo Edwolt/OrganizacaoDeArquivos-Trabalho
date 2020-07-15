@@ -47,6 +47,9 @@ clean:
 test:
 	sh test.sh $(EXEC)
 
+lines:
+	sh lines.sh
+
 debug: $(OBJ)
 	$(CC) -g -o $(DEBUG) $(SRC)
 
