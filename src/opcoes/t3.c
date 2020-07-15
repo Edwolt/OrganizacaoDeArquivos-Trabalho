@@ -26,13 +26,13 @@ static void opcao8() {
     // Abre binario e cria arquivo indice
     bin = binario_abrirLeitura(src);
     if (!bin) {
-        printf("Falha no processamento do arquivo. (bin)\n");
+        printf("Falha no processamento do arquivo.\n");
         goto falha;
     }
 
     ind = indice_criar(dest);
     if (!ind) {
-        printf("Falha no processamento do arquivo. (ind)\n");
+        printf("Falha no processamento do arquivo.\n");
         goto falha;
     }
 
@@ -42,7 +42,7 @@ static void opcao8() {
         // Le registro
         reg = binario_lerRegistro(bin, &erro);
         if (erro) {  // Falha ao ler arquivo
-            printf("Falha no processamento do arquivo. (reg)\n");
+            printf("Falha no processamento do arquivo.\n");
             goto falha;
         }
 
@@ -51,7 +51,7 @@ static void opcao8() {
         // Insere registro
         ok = indice_inserir(ind, registro_getIdNascimento(reg), i);
         if (!ok) {  // Falha ao escrever no arquivo
-            printf("Falha no processamento do arquivo. (ins)\n");
+            printf("Falha no processamento do arquivo.\n");
             goto falha;
         }
 

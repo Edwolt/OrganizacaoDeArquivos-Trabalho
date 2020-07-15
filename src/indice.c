@@ -1,6 +1,6 @@
 #include "indice.h"
 
-#define ORDEM 2
+#define ORDEM 6
 #define RRNNULL -1
 
 typedef struct Pagina Pagina;
@@ -28,7 +28,7 @@ struct Chave {
 struct Pagina {
     int nivel;  // Nivel da pagina
     int n;  // Numero de chaves
-    Chave chaves[ORDEM + 1];
+    Chave chaves[ORDEM - 1];
     int filhos[ORDEM];
 };
 
@@ -182,13 +182,14 @@ static Pagina* pagina_criar() {
 
     pagina->nivel = 0;
     pagina->n = 0;
-    for (i = 0; i < ORDEM; i++) {
+    for (i = 0; i < ORDEM - 1; i++) {
         pagina->chaves[i].id = RRNNULL;
         pagina->chaves[i].dado = RRNNULL;
+    }
+
+    for (i = 0; i < ORDEM; i++) {
         pagina->filhos[i] = RRNNULL;
     }
-    pagina->chaves[ORDEM].id = RRNNULL;
-    pagina->chaves[ORDEM].dado = RRNNULL;
 
     return pagina;
 }
@@ -216,15 +217,11 @@ static Pagina* lerPagina(Indice* indice) {
 
     TRYFREAD(&pagina->nivel, int, 1, indice->file);
     TRYFREAD(&pagina->n, int, 1, indice->file);
-
-    for (i = 0; i < pagina->n; i++) {
+    for (i = 0; i < ORDEM - 1; i++) {
         TRYFREAD(&pagina->chaves[i].id, int, 1, indice->file);
         TRYFREAD(&pagina->chaves[i].dado, int, 1, indice->file);
     }
-    fseek(indice->file, (ORDEM - i) * 2 * sizeof(int), SEEK_CUR);  // Pula chaves sem valor
-
-    TRYFREAD(&pagina->filhos, int, pagina->n + 1, indice->file);
-    fseek(indice->file, (ORDEM - pagina->n + 1) * sizeof(int), SEEK_CUR);
+    TRYFREAD(&pagina->filhos, int, ORDEM, indice->file);
 
     return pagina;
 
@@ -243,15 +240,11 @@ static bool escreverPagina(Indice* indice, Pagina* pagina) {
 
     TRYFWRITE(&pagina->nivel, int, 1, indice->file);
     TRYFWRITE(&pagina->n, int, 1, indice->file);
-
-    for (i = 0; i < ORDEM; i++) {
+    for (i = 0; i < ORDEM - 1; i++) {
         TRYFWRITE(&pagina->chaves[i].id, int, 1, indice->file);
         TRYFWRITE(&pagina->chaves[i].dado, int, 1, indice->file);
     }
-    fseek(indice->file, (ORDEM - i) * 2 * sizeof(int), SEEK_CUR);  // Pula chaves sem valor
-
-    TRYFWRITE(&pagina->filhos, int, ORDEM + 1, indice->file);
-    fseek(indice->file, (ORDEM - pagina->n + 1) * sizeof(int), SEEK_CUR);
+    TRYFWRITE(&pagina->filhos, int, ORDEM, indice->file);
 
     return true;
 
@@ -386,6 +379,22 @@ int indice_buscar(Indice* indice, int id) {
     return RRNNULL;
 }
 
+static void inserirOrdenado(Pagina* pagina, Chave chave, int flihoDireito) {
+    int i, j;
+
+    for (i = 0; i < pagina->n; i++) {
+        if (pagina->chaves[i].id > chave.id) break;
+    }
+    for (j = i + 1; j < pagina->n; j++) {
+        pagina->chaves[j] = pagina->chaves[j - 1];
+        pagina->filhos[dir(j)] = pagina->filhos[dir(j - 1)];
+    }
+    pagina->chaves[i] = chave;
+    pagina->filhos[dir(i)] = flihoDireito;
+
+    pagina->n++;
+}
+
 /**
  * rrn: RRN da pagina onde esta na recursao
  * chave: chave a ser inserida
@@ -406,6 +415,7 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
     // Busca chave
     indice_apontar(indice, rrn, SEEK_SET);
     pagina = lerPagina(indice);
+    indice_apontar(indice, -1, SEEK_CUR);
     if (!pagina) goto falha;
 
     int l = 0, r = pagina->n, m;
@@ -432,7 +442,7 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
     }
 
     // Insere chave
-    if (pagina->n == ORDEM) {  // Nao tem espaco para inserir (Split)
+    if (pagina->n == ORDEM - 1) {  // Nao tem espaco para inserir (Split)
         esquerda = pagina_criar();
         if (!esquerda) goto falha;
         esquerda->nivel = pagina->nivel + 1;
@@ -443,7 +453,7 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
 
         // Distribui uniformemente
         esquerda->filhos[esq(0)] = pagina->filhos[esq(0)];
-        for (i = 0; i < ORDEM / 2; i++) {  // Inicio de pagina vai para esqueda
+        for (i = 0; i < (ORDEM - 1) / 2; i++) {  // Inicio de pagina vai para esqueda
             esquerda->chaves[i] = pagina->chaves[i];
             esquerda->filhos[dir(i)] = pagina->filhos[dir(i)];
         }
@@ -453,7 +463,7 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
         *promover = pagina->chaves[i++];
         *promoverDir = indice->proxRRN;
 
-        for (j = 0; i < ORDEM; i++, j++) {  // Final de pagina vai para direita
+        for (j = 0; i < (ORDEM - 1); i++, j++) {  // Final de pagina vai para direita
             direita->chaves[j] = pagina->chaves[i];
             direita->filhos[j] = pagina->filhos[i];
         }
@@ -471,12 +481,10 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
         pagina_apagar(&direita);
     } else {  // Tem espaco para inserir
         // inseri Chave inserir tendo filho direito inserirDir
-        for (i = l + 1; i <= pagina->n; i++) {
-            pagina->chaves[i] = pagina->chaves[i - 1];
-            pagina->chaves[dir(i)] = pagina->chaves[dir(i)];
-        }
-        pagina->chaves[l] = inserir;
-        pagina->filhos[dir(l)] = inserirDir;
+        inserirOrdenado(pagina, inserir, inserirDir);
+
+        ok = escreverPagina(indice, pagina);
+        if (!ok) goto falha;
 
         promover->id = RRNNULL;
         promover->dado = RRNNULL;
@@ -518,7 +526,10 @@ bool indice_inserir(Indice* indice, int id, int dado) {
     ok = indice_inserir0(indice, indice->noRaiz, chave, &promover, &promoverDir);
     if (!ok) goto falha;  // Falha ao inserir chave
 
-    if (promover.id == RRNNULL) return true;  // Não houve split na raiz
+    if (promover.id == RRNNULL) {
+        indice->nroChaves++;
+        return true;  // Não houve split na raiz
+    }
 
     pagina = pagina_criar();
     if (!pagina) goto falha;
@@ -531,6 +542,8 @@ bool indice_inserir(Indice* indice, int id, int dado) {
     indice_apontar(indice, indice->noRaiz, SEEK_SET);
     escreverPagina(indice, pagina);
 
+    indice->nroNiveis++;
+    indice->nroChaves++;
     pagina_apagar(&pagina);
     return true;
 
