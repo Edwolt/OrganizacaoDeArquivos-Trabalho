@@ -6,6 +6,12 @@
  * 8 bin ind
  */
 static void opcao8() {
+    /*
+    TODO Pseudo Algoritmo
+    
+    for i in bin:
+        if(i) indice.inserir(i)
+    */
 }
 
 /**
@@ -14,6 +20,12 @@ static void opcao8() {
  * 9 bin ind idNascimento valor
  */
 static void opcao9() {
+    /*
+    TODO Pseudo Algoritmo
+    
+    rrn = indice.buscar(id)
+    return binario.buscar(rrn)
+    */
 }
 
 /**
@@ -26,4 +38,12 @@ static void opcao9() {
  * dados[n]
  */
 static void opcao10() {
+    /*
+    TODO Pseudo Algoritmo
+    
+    dados = lerDados()
+    for i in dados;
+    binario.insere(i)
+        indice.insere(i)
+    */
 }
