@@ -36,6 +36,6 @@ void indice_apontar(Indice* indice, int rrn, int whence);
 
 int indice_buscar(Indice* indice, int id);
 
-bool indice_inserir(Indice* indice, int id, int rrn);
+bool indice_inserir(Indice* indice, int id, int dado);
 
 #endif

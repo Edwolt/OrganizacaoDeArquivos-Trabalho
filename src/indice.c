@@ -343,7 +343,13 @@ int indice_buscar(Indice* indice, int id) {
     return RRNNULL;
 }
 
-bool indice_inserir(Indice* indice, int atual, int id, int rrn, Chave* promover, int* promoverDir) {
+/**
+ * rrn: RRN da pagina onde esta na recursao
+ * chave: chave a ser inserida
+ * promover: 
+ * promoverDir: 
+ */
+static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promover, int* promoverDir) {
     if (!indice) return false;
 
     int i, j;
@@ -355,31 +361,30 @@ bool indice_inserir(Indice* indice, int atual, int id, int rrn, Chave* promover,
     Pagina* esquerda = NULL;
 
     // Busca chave
-    indice_apontar(indice, atual, rrn);
+    indice_apontar(indice, rrn, SEEK_SET);
     pagina = lerPagina(indice);
 
     int l = 0, r = pagina->n, m;
 
     while (r - l > 1) {
         m = (l + r) / 2;
-        if (pagina->chaves[m].id == id) {  // Chave duplicada
+        if (pagina->chaves[m].id = chave.id) {  // Chave duplicada
             pagina_apagar(&pagina);
             return false;
-        } else if (pagina->chaves[m].id < id) {
+        } else if (pagina->chaves[m].id < chave.id) {
             l = m;
         } else {
             r = m;
         }
     }
 
-    Chave inserir;
-    int inserirDir;
+    Chave inserir;  // Chave a ser inserirda em pagina
+    int inserirDir;  // Subarvore que deve estar a direita da chave a ser inserida
     if (pagina->subarvores[l] != RRNNULL) {  // Existe subarvore para continuar inserindo
-        ok = indice_inserir_recursivo(indice, pagina->subarvores[esq(r)], id, rrn, &inserir, &inserirDir);
+        ok = indice_inserir_recursivo(indice, pagina->subarvores[esq(r)], chave, &inserir, &inserirDir);
         if (!ok) goto falha;
     } else {
-        inserir.id = id;
-        inserir.dado = rrn;
+        inserir = chave;
         inserirDir = RRNNULL;
     }
 
@@ -442,4 +447,17 @@ falha:  // Falha na execucao da funcao
     pagina_apagar(&direita);
     pagina_apagar(&esquerda);
     return false;
+}
+
+bool indice_inserir(Indice* indice, int id, int dado) {
+    if (!indice) return false;
+    if (id == RRNNULL) return false;
+
+    Chave chave = {id, dado};
+
+    Chave promover;
+    int promoverDir;
+    indice_inserir0(indice, indice->proxRRN, chave, &promover, &promoverDir);
+
+    if (promover.id == RRNNULL) return true;
 }
