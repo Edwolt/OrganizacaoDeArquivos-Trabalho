@@ -52,9 +52,9 @@ inline static int dir(int i) { return i + 1; }  // Calcula indice do filho a dir
  * Abri um arquivo e salva em indice
  * Se já tiver um arquivo aberto fecha ele
  */
-inline static void abrirArquivo(Indice* binario) {
-    if (binario->file) fclose(binario->file);
-    binario->file = fopen(binario->path, binario->modes);
+inline static void abrirArquivo(Indice* indice) {
+    if (indice->file) fclose(indice->file);
+    indice->file = fopen(indice->path, indice->modes);
 }
 
 /**
@@ -210,15 +210,21 @@ static Pagina* lerPagina(Indice* indice) {
     int i;
 
     Pagina* pagina = pagina_criar();
-    if (!pagina) return NULL;
+    if (!pagina) {
+        return NULL;
+    }
 
     TRYFREAD(&pagina->nivel, int, 1, indice->file);
     TRYFREAD(&pagina->n, int, 1, indice->file);
+
     for (i = 0; i < pagina->n; i++) {
         TRYFREAD(&pagina->chaves[i].id, int, 1, indice->file);
         TRYFREAD(&pagina->chaves[i].dado, int, 1, indice->file);
     }
+    fseek(indice->file, (ORDEM - i) * 2 * sizeof(int), SEEK_CUR);  // Pula chaves sem valor
+
     TRYFREAD(&pagina->filhos, int, pagina->n + 1, indice->file);
+    fseek(indice->file, (ORDEM - pagina->n + 1) * sizeof(int), SEEK_CUR);
 
     return pagina;
 
@@ -237,11 +243,15 @@ static bool escreverPagina(Indice* indice, Pagina* pagina) {
 
     TRYFWRITE(&pagina->nivel, int, 1, indice->file);
     TRYFWRITE(&pagina->n, int, 1, indice->file);
+
     for (i = 0; i < ORDEM; i++) {
         TRYFWRITE(&pagina->chaves[i].id, int, 1, indice->file);
         TRYFWRITE(&pagina->chaves[i].dado, int, 1, indice->file);
     }
+    fseek(indice->file, (ORDEM - i) * 2 * sizeof(int), SEEK_CUR);  // Pula chaves sem valor
+
     TRYFWRITE(&pagina->filhos, int, ORDEM + 1, indice->file);
+    fseek(indice->file, (ORDEM - pagina->n + 1) * sizeof(int), SEEK_CUR);
 
     return true;
 
@@ -261,7 +271,7 @@ Indice* indice_criar(char* path) {
 
     indice->file = NULL;
     indice->path = path;
-    indice->modes = "wb";
+    indice->modes = "wb+";
 
     abrirArquivo(indice);
     if (!indice->file) {  // Falha ao abrir arquivo
@@ -271,7 +281,7 @@ Indice* indice_criar(char* path) {
 
     // Criando Cabecalho
     indice->status = '0';
-    indice->noRaiz = 0;
+    indice->noRaiz = RRNNULL;
     indice->nroNiveis = 0;
     indice->proxRRN = 0;
     indice->nroChaves = 0;
@@ -382,7 +392,7 @@ int indice_buscar(Indice* indice, int id) {
  * promover: 
  * promoverDir: 
  */
-static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promover, int* promoverDir) { // TODO separar funcao split
+static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promover, int* promoverDir) {  // TODO separar funcao split
     if (!indice) return false;
 
     int i, j;
@@ -396,9 +406,9 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
     // Busca chave
     indice_apontar(indice, rrn, SEEK_SET);
     pagina = lerPagina(indice);
+    if (!pagina) goto falha;
 
     int l = 0, r = pagina->n, m;
-
     while (r - l > 1) {
         m = (l + r) / 2;
         if (pagina->chaves[m].id == chave.id) {  // Chave duplicada
@@ -413,7 +423,7 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
 
     Chave inserir;  // Chave a ser inserirda em pagina
     int inserirDir;  // Subarvore que deve estar a direita da chave a ser inserida
-    if (pagina->filhos[l] != RRNNULL) {  // Existe subarvore para continuar inserindo
+    if (pagina->filhos[esq(r)] != RRNNULL) {  // Existe subarvore para continuar inserindo
         ok = indice_inserir0(indice, pagina->filhos[esq(r)], chave, &inserir, &inserirDir);
         if (!ok) goto falha;
     } else {
@@ -423,13 +433,13 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
 
     // Insere chave
     if (pagina->n == ORDEM) {  // Nao tem espaco para inserir (Split)
-        direita = pagina_criar();
-        if (!direita) goto falha;
-        direita->nivel = pagina->nivel + 1;
-
         esquerda = pagina_criar();
         if (!esquerda) goto falha;
         esquerda->nivel = pagina->nivel + 1;
+
+        direita = pagina_criar();
+        if (!direita) goto falha;
+        direita->nivel = pagina->nivel + 1;
 
         // Distribui uniformemente
         esquerda->filhos[esq(0)] = pagina->filhos[esq(0)];
@@ -459,8 +469,6 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
 
         pagina_apagar(&esquerda);
         pagina_apagar(&direita);
-        pagina_apagar(&pagina);
-        return true;
     } else {  // Tem espaco para inserir
         // inseri Chave inserir tendo filho direito inserirDir
         for (i = l + 1; i <= pagina->n; i++) {
@@ -468,12 +476,14 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
             pagina->chaves[dir(i)] = pagina->chaves[dir(i)];
         }
         pagina->chaves[l] = inserir;
-        pagina->filhos[dir(i)] = inserirDir;
+        pagina->filhos[dir(l)] = inserirDir;
 
         promover->id = RRNNULL;
         promover->dado = RRNNULL;
-        return true;
+        *promoverDir = RRNNULL;
     }
+    pagina_apagar(&pagina);
+    return true;
 
 falha:  // Falha na execucao da funcao
     pagina_apagar(&pagina);
@@ -494,9 +504,18 @@ bool indice_inserir(Indice* indice, int id, int dado) {
     // Inserindo chave
     Chave chave = {id, dado};
 
+    if (indice->noRaiz == RRNNULL) {  // Se nao tem no raiz
+        indice->noRaiz = indice->proxRRN++;  // Cria um novo no vazio e chama de raiz
+        pagina = pagina_criar();
+        if (!pagina) goto falha;
+
+        indice_apontar(indice, indice->noRaiz, SEEK_SET);
+        escreverPagina(indice, pagina);
+    }
+
     Chave promover;
     int promoverDir;
-    ok = indice_inserir0(indice, indice->proxRRN, chave, &promover, &promoverDir);
+    ok = indice_inserir0(indice, indice->noRaiz, chave, &promover, &promoverDir);
     if (!ok) goto falha;  // Falha ao inserir chave
 
     if (promover.id == RRNNULL) return true;  // Não houve split na raiz
