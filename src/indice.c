@@ -45,8 +45,8 @@ static const char LIXO[TAM_REG + 1] = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 //* ===== Métodos Privados ===== *//
 //* ============================ *//
 
-inline static esq(int i) { return i; }
-inline static dir(int i) { return i + 1; }
+inline static int esq(int i) { return i; }
+inline static int dir(int i) { return i + 1; }
 
 /**
  * Abri um arquivo e salva em indice
@@ -368,7 +368,7 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
 
     while (r - l > 1) {
         m = (l + r) / 2;
-        if (pagina->chaves[m].id = chave.id) {  // Chave duplicada
+        if (pagina->chaves[m].id == chave.id) {  // Chave duplicada
             pagina_apagar(&pagina);
             return false;
         } else if (pagina->chaves[m].id < chave.id) {
@@ -381,7 +381,7 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
     Chave inserir;  // Chave a ser inserirda em pagina
     int inserirDir;  // Subarvore que deve estar a direita da chave a ser inserida
     if (pagina->subarvores[l] != RRNNULL) {  // Existe subarvore para continuar inserindo
-        ok = indice_inserir_recursivo(indice, pagina->subarvores[esq(r)], chave, &inserir, &inserirDir);
+        ok = indice_inserir0(indice, pagina->subarvores[esq(r)], chave, &inserir, &inserirDir);
         if (!ok) goto falha;
     } else {
         inserir = chave;
@@ -399,7 +399,7 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
         esquerda->nivel = pagina->nivel + 1;
 
         // Distribui uniformemente
-        esquerda->subarvores[esq(i)] = pagina->subarvores[esq(i)];
+        esquerda->subarvores[esq(0)] = pagina->subarvores[esq(0)];
         for (i = 0; i < ORDEM / 2; i++) {  // Inicio de pagina vai para esqueda
             esquerda->chaves[i] = pagina->chaves[i];
             esquerda->subarvores[dir(i)] = pagina->subarvores[dir(i)];
@@ -460,4 +460,8 @@ bool indice_inserir(Indice* indice, int id, int dado) {
     indice_inserir0(indice, indice->proxRRN, chave, &promover, &promoverDir);
 
     if (promover.id == RRNNULL) return true;
+
+    // TODO situacao que ocorre split da raiz
+
+    return false;
 }
