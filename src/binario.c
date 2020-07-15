@@ -157,6 +157,13 @@ fwrite_erro:  // Falha ao escrever no arquivo
     return false;
 }
 
+/**
+ * Escreve a string de onde o binario aponta
+ * A string criada eh alocada dinamicamente
+ * 
+ * maxTam: tamanho reservado para string
+ * Retorna se a operacao foi sucedida
+ */
 static char* lerString(Binario* binario, int maxTam, bool* erro) {
     *erro = false;
 
@@ -179,7 +186,7 @@ fread_erro:
 }
 
 /**
- * Escreve um string onde o binario aponta
+ * Escreve a string onde o binario aponta
  * e preenche o espaco que faltou com lixo
  *
  * maxTam: tamanho reservado para string
@@ -215,8 +222,8 @@ fwrite_erro:  // Falha ao escrever no arquivo
 
 /**
  * Escreve um string onde o binario aponta
+ *
  * maxTam: tamanho reservado para string
-
  * Retorna se a operacao foi sucedida
  */
 static bool atualizarString(Binario* binario, char* str, int maxTam, bool* erro) {
@@ -248,6 +255,7 @@ fwrite_erro:  // Falha ao escrever no arquivo
 
 /**
  * Escreve o registro onde o binario aponta
+ * Preenchendo com lixo o espaco que sobrar
  */
 static bool binario_escreverRegistro(Binario* binario, Registro* registro) {
     if (!binario || !registro) return false;  // Objeto nao existe ou nao recebeu os paramentro
@@ -308,6 +316,9 @@ fwrite_erro:  // Falha ao escrever no arquivo
     return false;
 }
 
+/**
+ * Escreve o registro onde o binario aponta
+ */
 static bool binario_atualizarRegistro(Binario* binario, Registro* registro) {
     if (!binario || !registro) return false;  // Objeto nao existe ou nao recebeu os paramentro
 

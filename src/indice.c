@@ -29,7 +29,7 @@ struct Pagina {
     int nivel;  // Nivel da pagina
     int n;  // Numero de chaves
     Chave chaves[ORDEM + 1];
-    int subarvores[ORDEM];
+    int filhos[ORDEM];
 };
 
 //* ====================== *//
@@ -45,8 +45,8 @@ static const char LIXO[TAM_REG + 1] = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 //* ===== Métodos Privados ===== *//
 //* ============================ *//
 
-inline static int esq(int i) { return i; }
-inline static int dir(int i) { return i + 1; }
+inline static int esq(int i) { return i; }  // Calcula indice do filho a esquerda de i
+inline static int dir(int i) { return i + 1; }  // Calcula indice do filho a direita de i
 
 /**
  * Abri um arquivo e salva em indice
@@ -57,6 +57,14 @@ inline static void abrirArquivo(Indice* binario) {
     binario->file = fopen(binario->path, binario->modes);
 }
 
+/**
+ * Le o cabecalho do arquivo
+ * Se já tiver um arquivo aberto fecha ele
+ * O valor de file no final será NULL
+ * 
+ * Retorna false se houver uma falha
+ * Retorna false se o arquivo for inconsistente e para a leitura do cabecalho
+ */
 static bool cabecalhoLeitura(Indice* indice) {
     if (!indice) return false;  // Nao recebeu caminho
 
@@ -90,6 +98,14 @@ fread_erro:  // Falha ao ler do arquivo
     return false;
 }
 
+/**
+ * Le o cabecalho do arquivo e o marca como inconsistente
+ * Se já tiver um arquivo aberto fecha ele
+ * O valor de file no final será NULL
+ * 
+ * Retorna false se houver uma falha
+ * Retorna false se o arquivo ja estava inconsistente e para a leitura do cabecalho
+ */
 static bool cabecalhoEscrita(Indice* indice) {
     if (!indice) return false;  // Nao recebeu caminho
 
@@ -129,6 +145,10 @@ fread_erro:  // Falha ao ler do arquivo
     return false;
 }
 
+/**
+ * Escreve as alteracoes do cabecalho
+ * Retorna se a operacao foi bem sucedida
+ */
 static bool salvarCabecalho(Indice* indice) {
     if (!indice->file) indice->file = fopen(indice->path, "rb+");
     if (!indice->file) return false;
@@ -150,6 +170,10 @@ fwrite_erro:  // Falha ao escrever no arquivo
     return false;
 }
 
+/**
+ * Cria um novo objeto pagina com nenhum dado
+ * Retorna NULL se nao for possivel criar o objeto
+ */
 static Pagina* pagina_criar() {
     Pagina* pagina = malloc(sizeof(Pagina));
     if (!pagina) return NULL;
@@ -161,7 +185,7 @@ static Pagina* pagina_criar() {
     for (i = 0; i < ORDEM; i++) {
         pagina->chaves[i].id = RRNNULL;
         pagina->chaves[i].dado = RRNNULL;
-        pagina->subarvores[i] = RRNNULL;
+        pagina->filhos[i] = RRNNULL;
     }
     pagina->chaves[ORDEM].id = RRNNULL;
     pagina->chaves[ORDEM].dado = RRNNULL;
@@ -169,6 +193,9 @@ static Pagina* pagina_criar() {
     return pagina;
 }
 
+/**
+ * Destroi a pagina, os objetos que o pertence e desaloca variveis
+ */
 static void pagina_apagar(Pagina** pagina) {
     if (!pagina || !*pagina) return;
 
@@ -176,6 +203,9 @@ static void pagina_apagar(Pagina** pagina) {
     *pagina = NULL;
 }
 
+/**
+ * Le pagina de onde o indice aponta
+ */
 static Pagina* lerPagina(Indice* indice) {
     int i;
 
@@ -188,7 +218,7 @@ static Pagina* lerPagina(Indice* indice) {
         TRYFREAD(&pagina->chaves[i].id, int, 1, indice->file);
         TRYFREAD(&pagina->chaves[i].dado, int, 1, indice->file);
     }
-    TRYFREAD(&pagina->subarvores, int, pagina->n + 1, indice->file);
+    TRYFREAD(&pagina->filhos, int, pagina->n + 1, indice->file);
 
     return pagina;
 
@@ -197,6 +227,9 @@ fread_erro:
     return NULL;
 }
 
+/**
+ * Escreve pagina onde o indice aponta
+ */
 static bool escreverPagina(Indice* indice, Pagina* pagina) {
     if (!indice || !pagina) return false;
 
@@ -208,7 +241,7 @@ static bool escreverPagina(Indice* indice, Pagina* pagina) {
         TRYFWRITE(&pagina->chaves[i].id, int, 1, indice->file);
         TRYFWRITE(&pagina->chaves[i].dado, int, 1, indice->file);
     }
-    TRYFWRITE(&pagina->subarvores, int, ORDEM + 1, indice->file);
+    TRYFWRITE(&pagina->filhos, int, ORDEM + 1, indice->file);
 
     return true;
 
@@ -334,7 +367,7 @@ int indice_buscar(Indice* indice, int id) {
             }
         }
 
-        rrn = pagina->subarvores[esq(r)];  // dir(l) == esq(r)
+        rrn = pagina->filhos[esq(r)];  // dir(l) == esq(r)
 
         free(pagina);
         pagina = NULL;
@@ -380,8 +413,8 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
 
     Chave inserir;  // Chave a ser inserirda em pagina
     int inserirDir;  // Subarvore que deve estar a direita da chave a ser inserida
-    if (pagina->subarvores[l] != RRNNULL) {  // Existe subarvore para continuar inserindo
-        ok = indice_inserir0(indice, pagina->subarvores[esq(r)], chave, &inserir, &inserirDir);
+    if (pagina->filhos[l] != RRNNULL) {  // Existe subarvore para continuar inserindo
+        ok = indice_inserir0(indice, pagina->filhos[esq(r)], chave, &inserir, &inserirDir);
         if (!ok) goto falha;
     } else {
         inserir = chave;
@@ -399,10 +432,10 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
         esquerda->nivel = pagina->nivel + 1;
 
         // Distribui uniformemente
-        esquerda->subarvores[esq(0)] = pagina->subarvores[esq(0)];
+        esquerda->filhos[esq(0)] = pagina->filhos[esq(0)];
         for (i = 0; i < ORDEM / 2; i++) {  // Inicio de pagina vai para esqueda
             esquerda->chaves[i] = pagina->chaves[i];
-            esquerda->subarvores[dir(i)] = pagina->subarvores[dir(i)];
+            esquerda->filhos[dir(i)] = pagina->filhos[dir(i)];
         }
         esquerda->n = i;
 
@@ -412,9 +445,9 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
 
         for (j = 0; i < ORDEM; i++, j++) {  // Final de pagina vai para direita
             direita->chaves[j] = pagina->chaves[i];
-            direita->subarvores[j] = pagina->subarvores[i];
+            direita->filhos[j] = pagina->filhos[i];
         }
-        direita->subarvores[j] = pagina->subarvores[j];
+        direita->filhos[j] = pagina->filhos[j];
         direita->n = i;
 
         ok = escreverPagina(indice, esquerda);
@@ -435,7 +468,7 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
             pagina->chaves[dir(i)] = pagina->chaves[dir(i)];
         }
         pagina->chaves[l] = inserir;
-        pagina->subarvores[dir(i)] = inserirDir;
+        pagina->filhos[dir(i)] = inserirDir;
 
         promover->id = RRNNULL;
         promover->dado = RRNNULL;

@@ -24,18 +24,41 @@ typedef struct Indice Indice;
  */
 Indice* indice_criar(char* path);
 
+/**
+ * TODO colocar documentacao aqui
+ */
 Indice* indice_abrir(char* path, bool escrita);
 
-Indice* indice_abrirLeitura(char* path) { return indice_abrir(path, false); }
+/**
+ * Abre arquivo para leitura
+ * Wrapper para indice_abrir
+ */
+inline static Indice* indice_abrirLeitura(char* path) { return indice_abrir(path, false); }
 
-Indice* indice_abrirEscrita(char* path) { return indice_abrir(path, true); }
+/**
+ * Abre arquivo para escrita
+ * Wrapper para indice_abrir
+ */
+inline static Indice* indice_abrirEscrita(char* path) { return indice_abrir(path, true); }
 
+/**
+ * TODO colocar documentacao aqui
+ */
 void indice_fechar(Indice** indice);
 
+/**
+ * TODO colocar documentacao aqui
+ */
 void indice_apontar(Indice* indice, int rrn, int whence);
 
+/**
+ * TODO colocar documentacao aqui
+ */
 int indice_buscar(Indice* indice, int id);
 
+/**
+ * TODO colocar documentacao aqui
+ */
 bool indice_inserir(Indice* indice, int id, int dado);
 
 #endif
