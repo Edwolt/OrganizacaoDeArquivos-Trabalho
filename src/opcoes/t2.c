@@ -32,20 +32,19 @@ static void opcao3() {
         goto falha;
     }
 
+    // Abre arquivo e verifica cabecalho
     bin = binario_abrirLeitura(path);
     if (!bin) {  // Falha ao abrir arquivo
         printf("Falha no processamento do arquivo.\n");
         goto falha;
     }
 
-    // Verifica cabecalho
     if (binario_estaVazio(bin)) {  // O arquivo nao possui dados
         printf("Registro Inexistente.\n");
         goto falha;
     }
 
     // Busca no arquivo
-
     int numRegs = binario_getRRNProx(bin);
     bool imprimiu = false;
     bool unico = criterio_unico(criterio);  // Diz seo criterio so pode satisfazer um registro
@@ -106,13 +105,13 @@ static void opcao4() {
     int rrn;
     scanf("%d", &rrn);
 
+    // Abre arquivo e verifica cabecalho
     bin = binario_abrirLeitura(path);
     if (!bin) {  // Falha ao abrir arquivo
         printf("Falha no processamento do arquivo.\n");
         goto falha;
     }
 
-    // Verifica cabecalho
     if (rrn <= 0 || rrn > binario_getRRNProx(bin)) {  // Registro nao existe
         printf("Registro Inexistente.\n");
         goto falha;
@@ -195,7 +194,7 @@ static void opcao5() {
         }
     }
 
-    // Abri arquivo
+    // Abre arquivo
     bin = binario_abrirEscrita(path);
     if (!bin) {  // Falha ao abrir arquivo
         printf("Falha no processamento do arquivo.\n");
@@ -282,6 +281,7 @@ static void opcao6() {
         }
     }
 
+    // Abre arquivo
     bin = binario_abrirEscrita(path);
     if (!bin) {
         printf("Falha no processamento do arquivo.\n");
@@ -289,7 +289,6 @@ static void opcao6() {
     }
 
     // Insere registros no arquivo
-
     ok = binario_inserirVarios(bin, regs, n);
     if (!ok) {  // Falha ao inserir no arquivo
         printf("Falha no processamento do arquivo.\n");
@@ -336,7 +335,7 @@ falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas
  */
 static void opcao7() {
     int i;
-    bool erro, ok;
+    bool ok, erro;
 
     // Variaveis com alocacao dinamica
     Binario* bin = NULL;
@@ -372,6 +371,7 @@ static void opcao7() {
         }
     }
 
+    // Abre arquivo
     bin = binario_abrirEscrita(path);
     if (!bin) {  // Falha ao abrir arquivo
         printf("Falha no processamento do arquivo.\n");

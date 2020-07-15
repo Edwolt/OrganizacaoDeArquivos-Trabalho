@@ -21,8 +21,7 @@ static void opcao1() {
     Registro* reg = NULL;
 
     // Le opcao
-    char src[PATH_TAM];
-    char dest[PATH_TAM];
+    char src[PATH_TAM], dest[PATH_TAM];
     scanf(" %s %s", src, dest);
 
     // Criar arquivo com registro cabecalho
@@ -83,6 +82,7 @@ static void opcao2() {
     char path[PATH_TAM];
     scanf(" %s", path);
 
+    // Abre arquivo
     bin = binario_abrirLeitura(path);
     if (!bin) {  // Arquivo nao abriu
         printf("Falha no processamento do arquivo.\n");
