@@ -445,11 +445,11 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
     if (pagina->n == ORDEM - 1) {  // Nao tem espaco para inserir (Split)
         esquerda = pagina_criar();
         if (!esquerda) goto falha;
-        esquerda->nivel = pagina->nivel + 1;
+        esquerda->nivel = pagina->nivel - 1;
 
         direita = pagina_criar();
         if (!direita) goto falha;
-        direita->nivel = pagina->nivel + 1;
+        direita->nivel = pagina->nivel - 1;
 
         // Distribui uniformemente
         esquerda->filhos[esq(0)] = pagina->filhos[esq(0)];
@@ -517,6 +517,7 @@ bool indice_inserir(Indice* indice, int id, int dado) {
         pagina = pagina_criar();
         if (!pagina) goto falha;
 
+        pagina->nivel = 1;
         indice_apontar(indice, indice->noRaiz, SEEK_SET);
         escreverPagina(indice, pagina);
     }
