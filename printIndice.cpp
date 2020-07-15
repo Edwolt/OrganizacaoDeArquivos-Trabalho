@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 
+// Utilitario para imprimir o arquivo de indice de forma mais legivel
 using namespace std;
 
 struct Chave {
