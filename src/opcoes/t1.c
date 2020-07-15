@@ -1,7 +1,7 @@
 #include "../opcoes.h"
 
 /**
- * Escrevendo dados de um CSV
+ * Criando bainrio de um CSV
  * 
  * 1 csv bin
  * 
