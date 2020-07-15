@@ -1,14 +1,16 @@
 #include "../opcoes.h"
 
 /**
- * 1 src dest
+ * Escrevendo dados de um CSV
  * 
- * src: arquivo csv
- * dest:arquivo binario de registros
+ * 1 csv bin
  * 
- * Le o arquivo CSV com nome src
+ * csv: arquivo CSV
+ * bin: arquivo binario de registros
+ * 
+ * Le o arquivo CSV com nome csv
  * e armazena os dados lidos em um arquivo binario de registros,
- * salvando-o com o nome dest
+ * salvando-o com o nome bin
  */
 static void opcao1() {
     bool ok;
@@ -60,12 +62,14 @@ falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas
     registro_apagar(&reg);
 }
 
-/** 
- * 2 src
+/**
+ * Lendo dados
  * 
- * src: arquivo binario de registros
+ * 2 bin
  * 
- * Imprime os dados do arquivo binario com nome path
+ * bin: arquivo binario de registros
+ * 
+ * Imprime os dados do arquivo binario bin
  */
 static void opcao2() {
     int i;

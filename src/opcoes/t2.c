@@ -1,6 +1,8 @@
 #include "../opcoes.h"
 
 /**
+ * Busca Parametrizada
+ * 
  * 3 bin m campo[1] valor[1] ... campo[m] valor[m]
  * 
  * bin: arquivo binario de registros
@@ -9,7 +11,7 @@
  * valor[i]: depende do campo[i]
  * 
  * Faz uma busca paramentrizada pelo arquivo bin
- * que cada campo[i] tenha o valor[i]
+ * emque cada campo[i] tenha o valor[i]
  */
 static void opcao3() {
     int i;
@@ -81,12 +83,14 @@ falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas
 }
 
 /**
+ * Busca por RRN
+ * 
  * 4 bin rrn
  * 
  * bin: nome do arquivo binario
  * rrn: RRN do regitro a ser recuperado
  * 
- * Imprime o valor do regitro de RRN igual a rrn do arquivo binario bin
+ * Imprime o regitro de RRN igual a rrn do arquivo binario bin
  */
 static void opcao4() {
     bool erro;
@@ -137,6 +141,8 @@ falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas
 }
 
 /**
+ * Remocao
+ * 
  * 5 bin n
  * m[1] campo[1][1] valor[1][1] ... campo[1][m[1]] valor[1][m[1]]
  * m[2] campo[2][1] valor[2][1] ... campo[2][m[2]] valor[2][m[2]]
@@ -149,10 +155,10 @@ falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas
  * campo[i][j]: string
  * valor[i][j]: depende do campo[i][j]
  * 
- * Remove registros seguindo n criterios diferentes do arquivo binario bin
+ * Remove registros de arquivo binario bin se este satifazer um dos criterios
  * Cada linha subsequente diz o criterio de remoção
- * Para um registro passar pelo criterio e ser removido
- * No arquivo src o campo[i][j] deve valer valor[i][j]
+ * Para um registro satisfazer um criterio
+ * no arquivo bin o campo[i][j] deve valer valor[i][j]
  */
 static void opcao5() {
     /*
@@ -237,6 +243,8 @@ falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas
 }
 
 /**
+ * Insercao
+ * 
  * 6 bin n
  * dados[1]
  * dados[2]
@@ -307,6 +315,8 @@ falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas
 }
 
 /**
+ * Atualizacao
+ * 
  * 7 bin n
  * rrn[1] m[1] campo[1][1] valor[1][1] ... campo[1][m[1]] valor[1][m[1]]
  * rrn[2] m[2] campo[2][1] valor[2][1] ... campo[2][m[2]] valor[1][m[2]]
