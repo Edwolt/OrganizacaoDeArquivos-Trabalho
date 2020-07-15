@@ -2,6 +2,7 @@ Backup/
 Ignore/
 Test/
 bin/
+*.hexdump
 .vscode
 
 # Hexdumps
