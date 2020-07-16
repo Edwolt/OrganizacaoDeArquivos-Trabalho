@@ -1,28 +1,34 @@
-#Author: Eduardo Souza Rocha
+### Author: Eduardo Souza Rocha
 
-#Copilation
+### Copilation
 CC       := gcc
 
-#Output
+### Output
 EXEC     := enduser
 DEBUG    := debug
 ZIP      := $(EXEC).zip
 
-#Files
-INCLUDES := $(wildcard src/opcoes/*.c) $(wildcard src/opcoes/*.h)
-SRC      := $(wildcard src/*.c)
-OBJ      := $(SRC:src/%.c=bin/%.o)
-HEADER   := $(wildcard src/*.h)
+### Folder
+F_DEBUG := Debug
+F_SRC  := src
+F_BIN  := bin
+
+### Files
+INCLUDES := $(wildcard $(F_SRC)/opcoes/*.c) $(wildcard $(F_SRC)/opcoes/*.h)
+SRC      := $(wildcard $(F_SRC)/*.c)
+OBJ      := $(SRC:$(F_SRC)/%.c=$(F_BIN)/%.o)
+HEADER   := $(wildcard $(F_SRC)/*.h)
 MK       := Makefile
 
-#Flags
+
+### Flags
 CFLAGS   := -Wall -lm -Wextra -pedantic -Werror=implicit-function-declaration 
 # CFLAGS   := $(CFLAGS) -fsanitize=address
 RMFLAGS  := -f -v
 
-#Actions
+### Actions
 all: 
-	mkdir -p bin
+	mkdir -p $(F_BIN)
 	make $(EXEC)
 
 run: $(EXEC)
@@ -33,7 +39,7 @@ compile: clean $(EXEC)
 zip: clean_zip
 	zip $(ZIP) $(SRC) $(HEADER) $(INCLUDES) $(MK)
 
-#Clean
+### Clean
 clean_zip:
 	rm $(ZIP) $(RMFLAGS)
 
@@ -44,7 +50,7 @@ clean:
 	rm $(ZIP) $(RMFLAGS)
 
 
-#Debug
+### Debug
 test:
 	sh test.sh $(EXEC)
 
@@ -54,12 +60,15 @@ lines:
 debug: $(OBJ)
 	$(CC) -g -o $(DEBUG) $(SRC)
 
+printI:
+	cd $(F_DEBUG) && $(MAKE) printI
+
 mencheck: debug
 
 
-#Compile
+### Compile
 $(EXEC): $(OBJ)
 	$(CC) -o $(EXEC) $(OBJ) $(CFLAGS)
 
-bin/%.o: src/%.c
+$(F_BIN)/%.o: $(F_SRC)/%.c
 	$(CC) -c -o $@ $< $(CFLAGS)
