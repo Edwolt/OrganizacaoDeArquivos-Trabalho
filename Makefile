@@ -23,7 +23,7 @@ MK       := Makefile
 
 ### Flags
 CFLAGS   := -Wall -lm -Wextra -pedantic -Werror=implicit-function-declaration 
-# CFLAGS   := $(CFLAGS) -fsanitize=address
+DFLAGS   := -fsanitize=address
 RMFLAGS  := -f -v
 
 ### Actions
@@ -58,7 +58,7 @@ lines:
 	sh lines.sh
 
 debug: $(OBJ)
-	$(CC) -g -o $(DEBUG) $(SRC)
+	$(CC) -g -o $(DEBUG) $(SRC) $(CFLAGS) $(DFLAGS)
 
 printI:
 	cd $(F_DEBUG) && $(MAKE) printI
