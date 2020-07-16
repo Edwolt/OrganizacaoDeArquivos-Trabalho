@@ -207,8 +207,12 @@ static void pagina_apagar(Pagina** pagina) {
 /**
  * Le pagina de onde o indice aponta
  */
-static Pagina* lerPagina(Indice* indice) {  // TODO Uma pagina eh lida sempre a partir de um RRN
+static Pagina* lerPagina(Indice* indice, int rrn) {
+    if (!indice) return NULL;
+
     int i;
+
+    indice_apontar(indice, rrn, SEEK_SET);  // Aponta para o registro a ser lido
 
     Pagina* pagina = pagina_criar();
     if (!pagina) {
@@ -233,10 +237,12 @@ fread_erro:
 /**
  * Escreve pagina onde o indice aponta
  */
-static bool escreverPagina(Indice* indice, Pagina* pagina) {  // TODO Uma pagina eh escrita sempre a partir de um RRN
+static bool escreverPagina(Indice* indice, Pagina* pagina, int rrn) {
     if (!indice || !pagina) return false;
 
     int i;
+
+    indice_apontar(indice, rrn, SEEK_SET);  // Aponta para o registro a ser escrito
 
     TRYFWRITE(&pagina->nivel, int, 1, indice->file);
     TRYFWRITE(&pagina->n, int, 1, indice->file);
@@ -351,8 +357,7 @@ int indice_buscar(Indice* indice, int id) {
     int l, r, m;
 
     while (rrn != RRNNULL) {
-        indice_apontar(indice, rrn, SEEK_SET);
-        Pagina* pagina = lerPagina(indice);
+        Pagina* pagina = lerPagina(indice, rrn);
         if (!pagina) return RRNNULL;
 
         l = 0;
@@ -361,7 +366,6 @@ int indice_buscar(Indice* indice, int id) {
         while (r - l > 1) {
             m = (l + r) / 2;
             if (pagina->chaves[m].id == id) {
-                indice_apontar(indice, -1, SEEK_CUR);
                 return pagina->chaves[m].dado;
             } else if (pagina->chaves[m].id < id) {
                 l = m;
@@ -433,7 +437,6 @@ static void inserirOrdenado(Pagina* pagina, Chave chave, int flihoDireito) {
 static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promover, int* promoverDir) {  // TODO separar funcao split
     if (!indice) return false;
 
-    int i, j;
     bool ok;
 
     // Variaveis com alocao dinamica
@@ -442,9 +445,7 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
     Pagina* esquerda = NULL;
 
     // Busca chave
-    indice_apontar(indice, rrn, SEEK_SET);
-    pagina = lerPagina(indice);
-    indice_apontar(indice, -1, SEEK_CUR);  // Volta para o inicio do registro
+    pagina = lerPagina(indice, rrn);
     if (!pagina) goto falha;
 
     int l = 0, r = pagina->n, m;
@@ -483,11 +484,10 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
         split(pagina, esquerda, direita, promover);
         *promoverDir = indice->proxRRN;
 
-        ok = escreverPagina(indice, esquerda);
+        ok = escreverPagina(indice, esquerda, rrn);
         if (!ok) goto falha;
 
-        indice_apontar(indice, indice->proxRRN++, SEEK_SET);
-        ok = escreverPagina(indice, direita);
+        ok = escreverPagina(indice, direita, indice->proxRRN++);
         if (!ok) goto falha;
 
         pagina_apagar(&esquerda);
@@ -496,7 +496,7 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
         // inseri Chave inserir tendo filho direito inserirDir
         inserirOrdenado(pagina, inserir, inserirDir);
 
-        ok = escreverPagina(indice, pagina);
+        ok = escreverPagina(indice, pagina, rrn);
         if (!ok) goto falha;
 
         promover->id = RRNNULL;
@@ -531,8 +531,7 @@ bool indice_inserir(Indice* indice, int id, int dado) {
         if (!pagina) goto falha;
 
         pagina->nivel = 1;
-        indice_apontar(indice, indice->noRaiz, SEEK_SET);
-        escreverPagina(indice, pagina);
+        escreverPagina(indice, pagina, indice->noRaiz);
     }
 
     Chave promover;
@@ -554,8 +553,7 @@ bool indice_inserir(Indice* indice, int id, int dado) {
     pagina->filhos[dir(0)] = promoverDir;
 
     indice->noRaiz = indice->proxRRN++;
-    indice_apontar(indice, indice->noRaiz, SEEK_SET);
-    escreverPagina(indice, pagina);
+    escreverPagina(indice, pagina, indice->noRaiz);
 
     indice->nroChaves++;
     pagina_apagar(&pagina);
