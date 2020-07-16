@@ -355,26 +355,27 @@ void indice_apontar(Indice* indice, int rrn, int whence) {
 int indice_buscar(Indice* indice, int id) {
     int rrn = indice->noRaiz;
     int l, r, m;
+    int filho;
 
     while (rrn != RRNNULL) {
         Pagina* pagina = lerPagina(indice, rrn);
         if (!pagina) return RRNNULL;
 
         l = 0;
-        r = pagina->n;
-
-        while (r - l > 1) {
+        r = pagina->n - 1;
+        while (l <= r) {
             m = (l + r) / 2;
             if (pagina->chaves[m].id == id) {
                 return pagina->chaves[m].dado;
-            } else if (pagina->chaves[m].id < id) {
-                l = m;
+            } else if (pagina->chaves[m].id > id) {
+                r = m - 1;
             } else {
-                r = m;
+                l = m + 1;
             }
         }
 
-        rrn = pagina->filhos[esq(r)];  // dir(l) == esq(r)
+        filho = (pagina->chaves[m].id > id ? esq(m) : dir(m));
+        rrn = pagina->filhos[filho];
 
         free(pagina);
         pagina = NULL;
@@ -412,22 +413,6 @@ static bool split(Pagina* pagina, Pagina* esquerda, Pagina* direita, Chave* prom
     return true;
 }
 
-static void inserirOrdenado(Pagina* pagina, Chave chave, int flihoDireito) {
-    int i, j;
-
-    for (i = 0; i < pagina->n; i++) {
-        if (pagina->chaves[i].id > chave.id) break;
-    }
-    for (j = i + 1; j < pagina->n; j++) {
-        pagina->chaves[j] = pagina->chaves[j - 1];
-        pagina->filhos[dir(j)] = pagina->filhos[dir(j - 1)];
-    }
-    pagina->chaves[i] = chave;
-    pagina->filhos[dir(i)] = flihoDireito;
-
-    pagina->n++;
-}
-
 /**
  * rrn: RRN da pagina onde esta na recursao
  * chave: chave a ser inserida
@@ -448,24 +433,24 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
     pagina = lerPagina(indice, rrn);
     if (!pagina) goto falha;
 
-    int l = 0, r = pagina->n, m;
-    while (r - l > 1) {
+    int l = 0, m, r = pagina->n - 1;
+    while (l <= r) {
         m = (l + r) / 2;
         if (pagina->chaves[m].id == chave.id) {  // Chave duplicada
             pagina_apagar(&pagina);
             return false;
-        } else if (pagina->chaves[m].id < chave.id) {
-            l = m;
+        } else if (pagina->chaves[m].id > chave.id) {
+            r = m - 1;
         } else {
-            r = m;
+            l = m + 1;
         }
     }
 
     Chave inserir;  // Chave a ser inserirda em pagina
     int inserirDir;  // Subarvore que deve estar a direita da chave a ser inserida
     if (pagina->filhos[dir(m)] != RRNNULL) {  // Existe subarvore para continuar inserindo
-        int a = (pagina->chaves[m].id < chave.id ? dir(m) : esq(m));  // TODO melhorar o nome dessa variavel e explicar o que esta acontecendo
-        ok = indice_inserir0(indice, pagina->filhos[a], chave, &inserir, &inserirDir);
+        int filho = (pagina->chaves[m].id > chave.id ? esq(m) : dir(m));
+        ok = indice_inserir0(indice, filho, chave, &inserir, &inserirDir);
         if (!ok) goto falha;
     } else {
         inserir = chave;
@@ -494,7 +479,15 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave chave, Chave* promove
         pagina_apagar(&direita);
     } else {  // Tem espaco para inserir
         // inseri Chave inserir tendo filho direito inserirDir
-        inserirOrdenado(pagina, inserir, inserirDir);
+        int o = (pagina->chaves[m].id < chave.id ? m - 1 : m);  // TODO malhorar nome de variavel
+        for (int i = pagina->n; i > o; i--) {
+            pagina->chaves[i] = pagina->chaves[i - 1];
+            pagina->filhos[dir(i)] = pagina->filhos[dir(i - 1)];
+        }
+        pagina->chaves[o] = inserir;
+        pagina->filhos[dir(o)] = inserirDir;
+
+        pagina->n++;
 
         ok = escreverPagina(indice, pagina, rrn);
         if (!ok) goto falha;
