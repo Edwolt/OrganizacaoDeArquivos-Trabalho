@@ -8,11 +8,6 @@
 //* ================== *//
 //* ===== Macros ===== *//
 //* ================== *//
-
-/*
-Macros para facilitar o uso do fwrite e do fread
-*/
-
 /**
  * Tenta escrever qtde valores do tipo type a partir ponteiro ptr no arquivo file
  * Se não der certo, desvia para o label fwrite_error
