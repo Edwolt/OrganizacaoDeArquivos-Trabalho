@@ -23,15 +23,14 @@ MK       := Makefile
 ### Flags
 LIBS     := -lm
 CFLAGS   := $(LIBS)
-FFLAGS   := $(LIBS) -O3 -march=native
+FFLAGS   := $(LIBS) -O3 -march=native -w
 DFLAGS   := $(LIBS) -Wall -Wextra -pedantic -Werror=implicit-function-declaration -fsanitize=address
 RMFLAGS  := -f -v
 
 ### Actions
-all: FLAGS := $(FFLAGS)
 all:
 	mkdir -p $(F_BIN)
-	$(MAKE) $(EXEC)
+	$(MAKE) compile
 
 run: $(EXEC)
 	./$(EXEC)
