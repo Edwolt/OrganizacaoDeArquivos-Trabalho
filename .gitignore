@@ -5,6 +5,8 @@ bin/
 *.hexdump
 .vscode
 
+ignore.sh
+
 # Hexdumps
 *.hex 
 

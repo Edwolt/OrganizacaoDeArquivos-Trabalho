@@ -49,6 +49,8 @@ clean:
 	rm $(EXEC) $(RMFLAGS)
 	rm $(ZIP) $(RMFLAGS)
 
+clean_util:
+	rm printI.out $(RMFLAGS)
 
 ### Debug
 test:
