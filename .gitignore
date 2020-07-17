@@ -11,9 +11,9 @@ ignore.sh
 *.hex 
 
 # Compilado
-enduser
+program
 debug
-enduser.zip
+program.zip
 
 # Saida do programa
 *.bin
