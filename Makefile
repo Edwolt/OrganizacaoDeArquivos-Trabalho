@@ -4,12 +4,11 @@
 CC       := gcc
 
 ### Output
-EXEC     := enduser
-DEBUG    := debug
+EXEC     := program
 ZIP      := $(EXEC).zip
 
 ### Folder
-F_DEBUG := Debug
+F_UTIL := Debug
 F_SRC  := src
 F_BIN  := bin
 
@@ -22,19 +21,31 @@ MK       := Makefile
 
 
 ### Flags
-CFLAGS   := -Wall -lm -Wextra -pedantic -Werror=implicit-function-declaration 
-DFLAGS   := -fsanitize=address
+LIBS     := -lm
+CFLAGS   := $(LIBS)
+FFLAGS   := $(LIBS) -O3 -march=native
+DFLAGS   := $(LIBS) -Wall -Wextra -pedantic -Werror=implicit-function-declaration -fsanitize=address
 RMFLAGS  := -f -v
 
 ### Actions
-all: 
+all: FLAGS := $(FFLAGS)
+all:
 	mkdir -p $(F_BIN)
-	make $(EXEC)
+	$(MAKE) $(EXEC)
 
 run: $(EXEC)
 	./$(EXEC)
 
+
+### Compile
+compile: FLAGS := $(CFLAGS)
 compile: clean $(EXEC)
+
+final: FLAGS := $(FFLAGS)
+final: clean $(EXEC)
+
+debug: FLAGS := $(DFLAGS)
+debug: clean $(EXEC)
 
 zip: clean_zip
 	zip $(ZIP) $(SRC) $(HEADER) $(INCLUDES) $(MK)
@@ -52,25 +63,24 @@ clean:
 clean_util:
 	cd $(F_DEBUG) && $(MAKE) clean
 
-### Debug
+### Util
 test:
 	sh test.sh $(EXEC)
 
 lines:
 	sh lines.sh
 
-debug: $(OBJ)
-	$(CC) -g -o $(DEBUG) $(SRC) $(CFLAGS) $(DFLAGS)
-
 util:
 	cd $(F_DEBUG) && $(MAKE) all
 
-mencheck: debug
+valgrind:
+	# Perdir qual era o codigo
+	# Se eu for refazer tem que usar shell script
 
 
-### Compile
+### Exec
 $(EXEC): $(OBJ)
-	$(CC) -o $(EXEC) $(OBJ) $(CFLAGS)
+	$(CC) -o $(EXEC) $(OBJ) $(FLAGS)
 
 $(F_BIN)/%.o: $(F_SRC)/%.c
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) -c -o $@ $< $(FLAGS)
