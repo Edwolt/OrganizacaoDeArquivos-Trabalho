@@ -32,7 +32,7 @@ int li() {
 }
 
 void seek(int rrn) {
-    fseek(f, rrn + 1, SEEK_SET);
+    fseek(f, 72 * (rrn + 1), SEEK_SET);
 }
 
 void imprime(int rrn, int d) {
@@ -41,7 +41,7 @@ void imprime(int rrn, int d) {
     int n;
 
     seek(rrn);
-    for (int i = 0; i < d; i++) printf("*");
+    for (int i = 0; i < d; i++) printf("|");
     cout << rrn << ": [nivel: " << li() << " n: " << (n = li()) << "] ";
 
     Pagina p;
