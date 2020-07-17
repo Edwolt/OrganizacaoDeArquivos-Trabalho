@@ -415,10 +415,11 @@ static bool split(Pagina* pagina, Pagina* esquerda, Pagina* direita, Chave* prom
 
 static void afastar(Pagina* pagina, int pos) {
     int i;
-    for (i = pagina->n; i > pos; i++) {
+    for (i = pagina->n; i > pos; i--) {
         pagina->chaves[i] = pagina->chaves[i - 1];
         pagina->filhos[dir(i)] = pagina->filhos[dir(i - 1)];
     }
+    pagina->n++;
 }
 
 /**
@@ -470,7 +471,6 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave* chave, int* filhoDir
         chave->dado = RRNNULL;
         *filhoDir = RRNNULL;
 
-        pagina->n++;
         escreverPagina(indice, pagina, rrn);
     } else {  // Com Overflow
         esquerda = pagina_criar();
