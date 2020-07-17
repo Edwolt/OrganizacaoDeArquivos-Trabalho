@@ -1,5 +1,5 @@
-#include <fstream>
 #include <iostream>
+#include "stdio.h"
 
 // Utilitario para imprimir o arquivo de indice de forma mais legivel
 using namespace std;
@@ -14,63 +14,48 @@ struct Pagina {
     int pont[6];
 };
 
-int li(ifstream& f) {
-    int n;
+char lc(FILE* f) {
     char c;
-    for (int i = 0; i < 4; i++) {
-        f.read(&c, 1);
-        n |= c << i * 8;
-    }
-    return n;
-}
-
-char lc(ifstream& f) {
-    char c;
-    f.read(&c, 1);
+    fread(&c, sizeof(char), 1, f);
     return c;
 }
 
+int li(FILE* f) {
+    int n;
+    fread(&n, sizeof(int), 1, f);
+    return n;
+}
+
 int main(int argc, char const* argv[]) {
-    ifstream f;
-    f.open(argv[1], ios::binary);
+    FILE* f;
+    f = fopen(argv[1], "rb");
 
     char c;
+    char lixo[54];
 
     cout << "status: " << lc(f) << ", ";
     cout << "raiz: " << li(f) << ", ";
+    cout << "niveis: " << li(f) << ", ";
     cout << "prox: " << li(f) << ", ";
     cout << "chave: " << li(f) << endl;
-    for (int i = 0; i < 54; i++) f.read(&c, 1);
+    fread(&lixo, 1, 55, f);
 
-    while (!f.eof()) {
-        cout.fill(5);
-        cout << "nivel: " << li(f) << " ";
+    for (int line = 0; true; line++) {
+        int q = li(f);
+        if (feof(f)) break;
 
-        cout.fill(5);
-        cout << "n: " << li(f) << " ";
+        int t = li(f);
+        cout << line << ": [nivel: " << q << " n: " << t << "] ";
 
         Pagina p;
-        for (int i = 0; i < 5; i++) {
-            Chave k;
-            k.id = li(f);
-            k.dado = li(f);
-            p.chaves[i] = k;
-        }
+        for (int i = 0; i < 5; i++) p.chaves[i] = {li(f), li(f)};
+        for (int i = 0; i < 6; i++) p.pont[i] = li(f);
 
-        for (int i = 0; i < 6; i++) {
-            p.pont[i] = li(f);
-        }
-
-        for (int i = 0; i < 5; i++) {
-            cout.fill(5);
-            cout << p.pont[i] << " {" << p.chaves[i].id << ", " << p.chaves[i].dado << "} ";
-        }
-        cout.fill(5);
-        cout << p.pont[5];
+        cout << p.pont[0];
+        for (int i = 0; i < 5; i++) cout << (i < t ? " {" : " (") << p.chaves[i].id << ", " << p.chaves[i].dado << (i < t ? "} " : ") ") << p.pont[i + 1] << " ";
         cout << endl;
     }
 
-    f.close();
-
+    fclose(f);
     return 0;
 }
