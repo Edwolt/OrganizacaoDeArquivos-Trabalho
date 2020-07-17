@@ -50,7 +50,7 @@ clean:
 	rm $(ZIP) $(RMFLAGS)
 
 clean_util:
-	rm printI.out $(RMFLAGS)
+	cd $(F_DEBUG) && $(MAKE) clean
 
 ### Debug
 test:
@@ -62,8 +62,8 @@ lines:
 debug: $(OBJ)
 	$(CC) -g -o $(DEBUG) $(SRC) $(CFLAGS) $(DFLAGS)
 
-printI:
-	cd $(F_DEBUG) && $(MAKE) printI
+util:
+	cd $(F_DEBUG) && $(MAKE) all
 
 mencheck: debug
 
