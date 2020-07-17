@@ -27,7 +27,7 @@ static void opcao1() {
     // Criar arquivo com registro cabecalho
     bin = binario_criar(dest);
     if (!bin) {  // Falha ao criar arquivo
-        printf("Falha no carregamento do arquivo. (bin)\n");
+        printf("Falha no carregamento do arquivo.\n");
         goto falha;
     }
 
@@ -41,7 +41,7 @@ static void opcao1() {
     while ((reg = csv_lerRegistro(csv))) {  // Enquanto houver registros para ler
         ok = binario_inserir(bin, reg);
         if (!ok) {  // Falha ao escrever registro
-            printf("Falha no carregamento do arquivo. (reg)\n");
+            printf("Falha no carregamento do arquivo.\n");
             goto falha;
         }
 
