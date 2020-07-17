@@ -390,7 +390,7 @@ static bool split(Pagina* pagina, Pagina* esquerda, Pagina* direita, Chave* prom
     int i, j;
 
     esquerda->nivel = pagina->nivel - 1;
-    direita->nivel = direita->nivel - 1;
+    direita->nivel = pagina->nivel - 1;
 
     // Distribui uniformemente
     esquerda->filhos[esq(0)] = pagina->filhos[esq(0)];
@@ -431,7 +431,6 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave* chave, int* filhoDir
     if (!indice) return false;
     if (rrn == RRNNULL) return true;
 
-    int i;
     bool ok;
 
     // Variaveis com alocao dinamica
@@ -457,7 +456,7 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave* chave, int* filhoDir
     }
 
     int filho = (pagina->chaves[m].id > chave->id ? esq(m) : dir(m));
-    ok = indice_inserir0(indice, filho, chave, filhoDir);
+    ok = indice_inserir0(indice, pagina->filhos[filho], chave, filhoDir);
     if (!ok) goto falha;
 
     // Insere
@@ -465,21 +464,27 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave* chave, int* filhoDir
     } else if (pagina->n < ORDEM - 1) {  // Sem Overflow
         afastar(pagina, filho);
         pagina->chaves[filho] = *chave;
-        pagina->filhos[dir(filho)] = filhoDir;
+        pagina->filhos[dir(filho)] = *filhoDir;
 
         chave->id = RRNNULL;
         chave->dado = RRNNULL;
         *filhoDir = RRNNULL;
 
         pagina->n++;
+        escreverPagina(indice, pagina, rrn);
     } else {  // Com Overflow
+        esquerda = pagina_criar();
+        if (!esquerda) goto falha;
+        direita = pagina_criar();
+        if (!esquerda) goto falha;
+
         ok = split(pagina, esquerda, direita, chave);
         if (!ok) goto falha;
+
         *filhoDir = indice->proxRRN++;
 
         ok = escreverPagina(indice, esquerda, rrn);
         if (!ok) goto falha;
-
         ok = escreverPagina(indice, direita, *filhoDir);
         if (!ok) goto falha;
 
@@ -487,8 +492,8 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave* chave, int* filhoDir
         pagina_apagar(&esquerda);
         pagina_apagar(&direita);
     }
-    pagina_apagar(&pagina);
 
+    pagina_apagar(&pagina);
     return true;
 
 falha:
