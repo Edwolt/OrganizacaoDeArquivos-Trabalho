@@ -2,17 +2,17 @@ Backup/
 Ignore/
 Test/
 bin/
-*.hexdump
-.vscode
 
 ignore.sh
 
+# Arquivos do VS Code
+.vscode
+
 # Hexdumps
-*.hex 
+*.hexdumps
 
 # Compilado
 program
-debug
 program.zip
 
 # Saida do programa
