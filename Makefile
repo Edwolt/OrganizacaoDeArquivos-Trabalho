@@ -8,7 +8,7 @@ EXEC     := program
 ZIP      := $(EXEC).zip
 
 ### Folder
-F_UTIL := Debug
+F_UTIL := Util
 F_SRC  := src
 F_BIN  := bin
 
@@ -60,7 +60,7 @@ clean:
 	rm $(ZIP) $(RMFLAGS)
 
 clean_util:
-	cd $(F_DEBUG) && $(MAKE) clean
+	cd $(F_UTIL) && $(MAKE) clean
 
 ### Util
 test:
@@ -70,7 +70,7 @@ lines:
 	sh lines.sh
 
 util:
-	cd $(F_DEBUG) && $(MAKE) all
+	cd $(F_UTIL) && $(MAKE) all
 
 valgrind:
 	# Perdir qual era o codigo
