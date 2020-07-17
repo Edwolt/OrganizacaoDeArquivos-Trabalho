@@ -389,8 +389,8 @@ static bool split(Pagina* pagina, Pagina* esquerda, Pagina* direita, Chave* prom
 
     int i, j;
 
-    esquerda->nivel = pagina->nivel - 1;
-    direita->nivel = pagina->nivel - 1;
+    esquerda->nivel = pagina->nivel;
+    direita->nivel = pagina->nivel;
 
     // Distribui uniformemente
     esquerda->filhos[esq(0)] = pagina->filhos[esq(0)];
