@@ -6,7 +6,6 @@
 #include <stdlib.h>
 
 #include "binarioNaTela.h"
-#include "dupla.h"
 #include "util.h"
 
 #define INTNULL -1
