@@ -498,51 +498,41 @@ falha:
     return false;
 }
 
-bool indice_inserir(Indice* indice, int id, int dado) {  // TODO Reescrever
+bool indice_inserir(Indice* indice, int id, int dado) {
     if (!indice) return false;
     if (id == RRNNULL) return false;
 
-    printf("insere: %d %d\n", id, dado);
     bool ok;
 
     // Variaveis com alocacao dinamica
     Pagina* pagina = NULL;
 
     // Inserindo chave
-    if (indice->noRaiz == RRNNULL) {  // Se nao tem no raiz
-        indice->noRaiz = indice->proxRRN++;  // Cria um novo no vazio e chama de raiz
-        pagina = pagina_criar();
-        if (!pagina) goto falha;
-
-        pagina->nivel = 1;
-        escreverPagina(indice, pagina, indice->noRaiz);
-    }
-
     Chave chave = {id, dado};
     int filhoDir = RRNNULL;
     ok = indice_inserir0(indice, indice->noRaiz, &chave, &filhoDir);
-    if (!ok) goto falha;  // Falha ao inserir chave
+    if (!ok) goto falha;
 
-    if (chave.id == RRNNULL) {
-        indice->nroChaves++;
-        return true;  // Não houve split na raiz
+    if (chave.id == RRNNULL) {  // Inserção foi ok
+        return true;
+    } else {  // Overflow na raiz
+        pagina = pagina_criar();
+        if (!pagina) goto falha;
+
+        // Configurando nova pagina
+        pagina->n = 1;
+        pagina->nivel = ++indice->nroNiveis;
+        pagina->chaves[0] = chave;
+        pagina->filhos[esq(0)] = indice->noRaiz;
+        pagina->filhos[dir(0)] = filhoDir;
+
+        // Escrevendo pagina
+        indice->noRaiz = indice->proxRRN++;
+        ok = escreverPagina(indice, pagina, indice->noRaiz);
+
+        pagina_apagar(&pagina);
+        return true;
     }
-
-    pagina = pagina_criar();
-    if (!pagina) goto falha;
-    pagina->nivel = ++indice->nroNiveis;
-
-    pagina->chaves[0] = chave;
-    pagina->filhos[esq(0)] = indice->noRaiz;
-    pagina->filhos[dir(0)] = filhoDir;
-    pagina->n = 1;
-
-    indice->noRaiz = indice->proxRRN++;
-    escreverPagina(indice, pagina, indice->noRaiz);
-
-    indice->nroChaves++;
-    pagina_apagar(&pagina);
-    return true;
 
 falha:  // Falha na execucao da funcao
     pagina_apagar(&pagina);
