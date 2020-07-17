@@ -384,31 +384,52 @@ int indice_buscar(Indice* indice, int id) {
     return RRNNULL;
 }
 
-static bool split(Pagina* pagina, Pagina* esquerda, Pagina* direita, Chave* promover) {
+static bool split(Pagina* pagina, Pagina* esquerda, Pagina* direita, Chave* promover, int filhoDir, int pos) {  // TODO split falta inserir
     if (!pagina || !esquerda || !direita || !promover) return false;
 
     int i, j;
 
+    // Cria um vetor com todas as chaves ordenadas
+    Chave chaves[ORDEM];
+    int filhos[ORDEM + 1];
+
+    filhos[esq(0)] = pagina->filhos[esq(0)];
+    for (i = 0; i < pos; i++) {
+        chaves[i] = pagina->chaves[i];
+        filhos[dir(i)] = pagina->filhos[dir(i)];
+    }
+
+    chaves[pos] = *promover;
+    filhos[dir(pos)] = filhoDir;
+
+    for (i = pos + 1; i < ORDEM; i++) {
+        chaves[i] = pagina->chaves[i - 1];
+        filhos[dir(i)] = pagina->filhos[dir(i - 1)];
+    }
+
+    // Assaocia um nivel a pagina (As novas pagina estaram no mesmo nivel da que sofreu split)
     esquerda->nivel = pagina->nivel;
     direita->nivel = pagina->nivel;
 
     // Distribui uniformemente
-    esquerda->filhos[esq(0)] = pagina->filhos[esq(0)];
-    for (i = 0; i < (ORDEM - 1) / 2; i++) {  // Inicio de pagina vai para esqueda
-        esquerda->chaves[i] = pagina->chaves[i];
-        esquerda->filhos[dir(i)] = pagina->filhos[dir(i)];
+    j = 0;  // Para interar sobre as chaves ordenadas
+    esquerda->filhos[esq(0)] = filhos[esq(0)];
+    for (i = 0; j < (ORDEM) / 2; i++) {  // Inicio de pagina vai para esqueda
+        esquerda->chaves[i] = chaves[j];
+        esquerda->filhos[dir(i)] = filhos[dir(j)];
+        j++;
     }
     esquerda->n = i;
 
-    // Chave do meio
-    *promover = pagina->chaves[i++];
+    *promover = pagina->chaves[j++];  // Chave do meio
 
     direita->filhos[esq(0)] = pagina->filhos[esq(i)];
-    for (j = 0; i < (ORDEM - 1); i++, j++) {  // Final de pagina vai para direita
-        direita->chaves[j] = pagina->chaves[i];
-        direita->filhos[dir(j)] = pagina->filhos[dir(i)];
+    for (i = 0; j < (ORDEM); i++) {  // Final de pagina vai para direita
+        direita->chaves[i] = chaves[j];
+        direita->filhos[dir(i)] = filhos[dir(j)];
+        j++;
     }
-    direita->n = j;
+    direita->n = i;
 
     return true;
 }
@@ -456,7 +477,7 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave* chave, int* filhoDir
         }
     }
 
-    int filho = (pagina->chaves[m].id > chave->id ? esq(m) : dir(m));
+    int filho = (pagina->chaves[m].id > chave->id ? esq(m) : dir(m));  // Entre a chave maior e menor
     ok = indice_inserir0(indice, pagina->filhos[filho], chave, filhoDir);
     if (!ok) goto falha;
 
@@ -478,7 +499,7 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave* chave, int* filhoDir
         direita = pagina_criar();
         if (!esquerda) goto falha;
 
-        ok = split(pagina, esquerda, direita, chave);
+        ok = split(pagina, esquerda, direita, chave, *filhoDir, filho);
         if (!ok) goto falha;
 
         *filhoDir = indice->proxRRN++;
@@ -488,7 +509,6 @@ static bool indice_inserir0(Indice* indice, int rrn, Chave* chave, int* filhoDir
         ok = escreverPagina(indice, direita, *filhoDir);
         if (!ok) goto falha;
 
-        pagina->n++;
         pagina_apagar(&esquerda);
         pagina_apagar(&direita);
     }
@@ -503,6 +523,12 @@ falha:
     return false;
 }
 
+/*
+TODO esta aparecendo chaves duplicadas
+Eu acho que eh o afastar, mas tem
+Mas tambem pode ser o split
+Ou magicamente na memoria pelo inserir0 ou inserir
+*/
 bool indice_inserir(Indice* indice, int id, int dado) {
     if (!indice) return false;
     if (id == RRNNULL) return false;
@@ -519,7 +545,6 @@ bool indice_inserir(Indice* indice, int id, int dado) {
     if (!ok) goto falha;
 
     if (chave.id == RRNNULL) {  // Inserção foi ok
-        return true;
     } else {  // Overflow na raiz
         pagina = pagina_criar();
         if (!pagina) goto falha;
@@ -534,10 +559,12 @@ bool indice_inserir(Indice* indice, int id, int dado) {
         // Escrevendo pagina
         indice->noRaiz = indice->proxRRN++;
         ok = escreverPagina(indice, pagina, indice->noRaiz);
+        if (!ok) goto falha;
 
         pagina_apagar(&pagina);
-        return true;
     }
+    indice->nroChaves++;
+    return true;
 
 falha:  // Falha na execucao da funcao
     pagina_apagar(&pagina);
