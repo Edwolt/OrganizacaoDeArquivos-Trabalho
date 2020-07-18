@@ -49,7 +49,7 @@ void imprime(int rrn, int d) {
     for (int i = 0; i < 6; i++) p.pont[i] = li();
 
     cout << p.pont[0];
-    for (int i = 0; i < 5; i++) cout << (i < n ? " {" : " (") << p.chaves[i].id << ", " << p.chaves[i].dado << (i < n ? "} " : ") ") << p.pont[i + 1] << " ";
+    for (int i = 0; i < n; i++) cout << (i < n ? " {" : " (") << p.chaves[i].id << ", " << p.chaves[i].dado << (i < n ? "} " : ") ") << p.pont[i + 1] << " ";
     cout << endl;
 
     for (int i = 0; i <= n; i++) {
