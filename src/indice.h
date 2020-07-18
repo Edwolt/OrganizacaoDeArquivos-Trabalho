@@ -56,7 +56,7 @@ void indice_apontar(Indice* indice, int rrn, int whence);
 /**
  * TODO colocar documentacao aqui
  */
-int indice_buscar(Indice* indice, int id);
+int indice_buscar(Indice* indice, int id, int* acessos, bool* erro);
 
 /**
  * TODO colocar documentacao aqui

@@ -351,14 +351,18 @@ void indice_apontar(Indice* indice, int rrn, int whence) {
     }
 }
 
-int indice_buscar(Indice* indice, int id) {
+int indice_buscar(Indice* indice, int id, int* acessos, bool* erro) {
+    *erro = false;
+    *acessos = 0;
+
     int rrn = indice->noRaiz;
     int l, r, m;
     int filho;
 
     while (rrn != RRNNULL) {
         Pagina* pagina = lerPagina(indice, rrn);
-        if (!pagina) return RRNNULL;
+        if (!pagina) goto falha;
+        (*acessos)++;
 
         l = 0;
         r = pagina->n - 1;
@@ -380,6 +384,10 @@ int indice_buscar(Indice* indice, int id) {
         pagina = NULL;
     }
 
+    return RRNNULL;
+
+falha:
+    *erro = true;
     return RRNNULL;
 }
 
