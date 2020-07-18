@@ -530,12 +530,6 @@ falha:
     return false;
 }
 
-/*
-TODO esta aparecendo chaves duplicadas
-Eu acho que eh o afastar, mas tem
-Mas tambem pode ser o split
-Ou magicamente na memoria pelo inserir0 ou inserir
-*/
 bool indice_inserir(Indice* indice, int id, int dado) {
     if (!indice) return false;
     if (id == RRNNULL) return false;
