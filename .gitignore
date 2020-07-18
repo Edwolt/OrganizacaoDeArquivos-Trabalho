@@ -3,8 +3,6 @@ Ignore/
 Test/
 bin/
 
-ignore.sh
-
 # Arquivos do VS Code
 .vscode
 
