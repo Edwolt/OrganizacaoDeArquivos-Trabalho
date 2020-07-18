@@ -391,6 +391,10 @@ falha:
     return RRNNULL;
 }
 
+//* =================== *//
+//* ===== Inserir ===== *//
+//* =================== *//
+
 static bool split(Pagina* pagina, Pagina* esquerda, Pagina* direita, Chave* promover, int filhoDir, int pos) {
     if (!pagina || !esquerda || !direita || !promover) return false;
 
