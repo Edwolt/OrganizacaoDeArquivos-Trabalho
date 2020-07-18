@@ -428,9 +428,9 @@ static bool split(Pagina* pagina, Pagina* esquerda, Pagina* direita, Chave* prom
     }
     esquerda->n = i;
 
-    *promover = pagina->chaves[j++];  // Chave do meio
+    *promover = chaves[j++];  // Chave do meio
 
-    direita->filhos[esq(0)] = pagina->filhos[esq(j)];
+    direita->filhos[esq(0)] = filhos[esq(j)];
     for (i = 0; j < (ORDEM); i++) {  // Final de pagina vai para direita
         direita->chaves[i] = chaves[j];
         direita->filhos[dir(i)] = filhos[dir(j)];
@@ -542,6 +542,7 @@ bool indice_inserir(Indice* indice, int id, int dado) {
     // Inserindo chave
     Chave chave = {id, dado};
     int filhoDir = RRNNULL;
+
     ok = indice_inserir0(indice, indice->noRaiz, &chave, &filhoDir);
     if (!ok) goto falha;
 
