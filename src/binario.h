@@ -51,12 +51,13 @@ inline static Binario* binario_abrirEscrita(char* path) { return binario_abrir(p
 /**
  * Fecha o arquivo (depois disso as escritas certamente estaram salvas no disco)
  * Se o arquivo estiver no modo escrita também atualiza o cabecalho
- * marcando o arquivo como inconsistente
+ * marcando o arquivo como consistente
  */
 void binario_fechar(Binario** binario);
 
 /**
- * Faz o binario passar a apontar para o rrn dado
+ * Wrapper para o fseek
+ * Faz o binario apontar para o rrn dado
  * 
  * whence usa as mesmas constantes que o fseek:
  * * SEEK_SET: Vai para o registro com o rrn passado (Desconsidera na contagem o registro cabecalho)
