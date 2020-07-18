@@ -93,13 +93,6 @@ Registro* binario_buscar(Binario* binario, int rrn, bool* erro);
 bool binario_inserir(Binario* binario, Registro* registro);
 
 /**
- * Insere n registros no final do arquivo binario
- * Retorna se a operacao foi bem sucedida
- * Obs: Operacao requer escrita
- */
-bool binario_inserirVarios(Binario* binario, Registro** registros, int n);
-
-/**
  * Atualiza o registro para o qual o arquivo aponta
  * O binario passa a apontar para o registro seguinte
  * Obs: Operacao requer escrita

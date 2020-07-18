@@ -264,22 +264,12 @@ static void opcao6() {
 
     // Variaveis com alocacao dinamica
     Binario* bin = NULL;
-    Registro** regs = NULL;
+    Registro* reg = NULL;
 
     // Le opcao
     char path[PATH_TAM];
     int n;
     scanf(" %s %d", path, &n);
-
-    regs = malloc(n * sizeof(Registro*));
-    if (!regs) return;  // Falha ao alocar vetor
-    for (i = 0; i < n; i++) {
-        regs[i] = registro_criarDoStdin();
-        if (!regs[i]) {
-            printf("Falha no processamento do arquivo.\n");
-            goto falha;
-        }
-    }
 
     // Abre arquivo
     bin = binario_abrirEscrita(path);
@@ -289,15 +279,21 @@ static void opcao6() {
     }
 
     // Insere registros no arquivo
-    ok = binario_inserirVarios(bin, regs, n);
-    if (!ok) {  // Falha ao inserir no arquivo
-        printf("Falha no processamento do arquivo.\n");
-        goto falha;
-    }
+    for (i = 0; i < n; i++) {
+        reg = registro_criarDoStdin();
+        if (!reg) {
+            printf("Falha no processamento do arquivo.\n");
+            goto falha;
+        }
 
-    for (i = 0; i < n; i++) registro_apagar(&regs[i]);
-    free(regs);
-    regs = NULL;
+        ok = binario_inserir(bin, reg);
+        if (!ok) {
+            printf("Falha no processamento do arquivo.\n");
+            goto falha;
+        }
+
+        registro_apagar(&reg);
+    }
 
     binario_fechar(&bin);
 
@@ -307,10 +303,7 @@ static void opcao6() {
 
 falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas devem se NULL)
     binario_fechar(&bin);
-    if (regs) {
-        for (i = 0; i < n; i++) registro_apagar(&regs[i]);
-        free(regs);
-    }
+    registro_apagar(&reg);
 }
 
 /**

@@ -574,20 +574,6 @@ bool binario_inserir(Binario* binario, Registro* registro) {
     return true;
 }
 
-bool binario_inserirVarios(Binario* binario, Registro** registros, int n) {
-    if (!binario || !registros) return false;  // Objeto nao existe ou nao recebeu parametros
-
-    int i;
-    bool ok;
-
-    for (i = 0; i < n; i++) {
-        ok = binario_inserir(binario, registros[i]);
-        if (!ok) return false;
-    }
-
-    return true;
-}
-
 bool binario_atualizar(Binario* binario, Registro* registro) {
     bool ok = binario_atualizarRegistro(binario, registro);
     if (!ok) return false;
