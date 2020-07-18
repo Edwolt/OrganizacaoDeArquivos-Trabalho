@@ -27,7 +27,13 @@ typedef struct Indice Indice;
 Indice* indice_criar(char* path);
 
 /**
- * TODO colocar documentacao aqui
+ * Abre arquivo de indice com nome path
+ * Pode ser aberto para leitra ou para escrita dependendo da variavel escrita
+ * Se for aberto para escrita ainda sera possivel ler dados do arquivo
+ * O arquivo aponta para o primeiro registro de dados
+ * 
+ * Retorna NULL se nao for possivel abrir o arquivo
+ * Retorna NULL se o arquivo estiver inconsistente
  */
 Indice* indice_abrir(char* path, bool escrita);
 
@@ -44,22 +50,38 @@ inline static Indice* indice_abrirLeitura(char* path) { return indice_abrir(path
 inline static Indice* indice_abrirEscrita(char* path) { return indice_abrir(path, true); }
 
 /**
- * TODO colocar documentacao aqui
+ * Fecha o arquivo (depois disso as escritas certamente estaram salvas no disco)
+ * Se o arquivo estiver no modo escrita também atualiza o cabecalho
+ * marcando o arquivo como consistente
  */
 void indice_fechar(Indice** indice);
 
 /**
- * TODO colocar documentacao aqui
+ * Wrapper para o fseek
+ * Faz o indice apontar para o rrn dado
+ * 
+ * whence usa as mesmas constantes que o fseek:
+ * * SEEK_SET: Vai para o registro com o rrn passado (Desconsidera na contagem o registro cabecalho)
+ * * SEEK_CUR: Anda rrn registros a partir do registro dado
+ * * SEEK_END: Anda rrn registros a partir do fim do arquivo
  */
 void indice_apontar(Indice* indice, int rrn, int whence);
 
 /**
- * TODO colocar documentacao aqui
+ * Retorna o rrn do arquivo de dados onde esta a chave com o id passado
+ * O indice passa a apontar para o registro seguinte
+ * 
+ * Retorna RRNNULL se o registro nao foi encontrado
+ * Retorna RRNNULL se ocorrer um erro
+ * Retorna em acessos o numero de vezes que aconteceu um acesso a uma pagina
+ * Retorna em erro se ocorreu um erro
  */
 int indice_buscar(Indice* indice, int id, int* acessos, bool* erro);
 
 /**
- * TODO colocar documentacao aqui
+ * Insere o registro na Arvore B
+ * Retorna se a operacao foi bem sucedida
+ * Obs: Operacao requer escrita
  */
 bool indice_inserir(Indice* indice, int id, int dado);
 
