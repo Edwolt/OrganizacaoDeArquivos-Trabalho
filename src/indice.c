@@ -391,7 +391,7 @@ falha:
     return RRNNULL;
 }
 
-static bool split(Pagina* pagina, Pagina* esquerda, Pagina* direita, Chave* promover, int filhoDir, int pos) {  // TODO split falta inserir
+static bool split(Pagina* pagina, Pagina* esquerda, Pagina* direita, Chave* promover, int filhoDir, int pos) {
     if (!pagina || !esquerda || !direita || !promover) return false;
 
     int i, j;
@@ -430,7 +430,7 @@ static bool split(Pagina* pagina, Pagina* esquerda, Pagina* direita, Chave* prom
 
     *promover = pagina->chaves[j++];  // Chave do meio
 
-    direita->filhos[esq(0)] = pagina->filhos[esq(i)];
+    direita->filhos[esq(0)] = pagina->filhos[esq(j)];
     for (i = 0; j < (ORDEM); i++) {  // Final de pagina vai para direita
         direita->chaves[i] = chaves[j];
         direita->filhos[dir(i)] = filhos[dir(j)];
