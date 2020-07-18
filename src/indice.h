@@ -8,6 +8,8 @@
 #include "registro.h"
 #include "util.h"
 
+#define RRNNULL -1
+
 /**
  * TAD Indices para arquivo binario
  * Implementa um arquivo de indices com Arvore B

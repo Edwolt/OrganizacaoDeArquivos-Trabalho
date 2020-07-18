@@ -1,7 +1,6 @@
 #include "indice.h"
 
 #define ORDEM 6
-#define RRNNULL -1
 
 typedef struct Pagina Pagina;
 typedef struct Chave Chave;
