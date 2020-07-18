@@ -8,7 +8,7 @@
  * bin: arquivo binario de registros
  * ind: arquivo binario de indices
  * 
- * 
+ * Cria um arquivo de indices para idNascimento a partir de um arquivo binario
  */
 static void opcao8() {
     int i;
@@ -63,7 +63,7 @@ static void opcao8() {
     binarioNaTela(dest);
     return;
 
-falha:
+falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas devem se NULL)
     binario_fechar(&bin);
     indice_fechar(&ind);
     registro_apagar(&reg);
@@ -75,12 +75,73 @@ falha:
  * 9 bin ind idNascimento valor
  */
 static void opcao9() {
-    /*
-    TODO Pseudo Algoritmo
-    
-    rrn = indice.buscar(id)
-    return binario.buscar(rrn)
-    */
+    bool erro;
+
+    // Variaveis com alocao dinamica
+    Binario* bin = NULL;
+    Indice* ind = NULL;
+    Registro* reg = NULL;
+
+    // Le opcao
+    int id;
+    char pathBin[PATH_TAM], pathInd[PATH_TAM];
+    scanf(" %s %s %*s %d", pathBin, pathInd, &id);
+
+    // Abre binario
+    bin = binario_abrirLeitura(pathBin);
+    if (!bin) {  // Falha ao abrir arquivo
+        printf("Falha no processamento do arquivo.");
+        goto falha;
+    }
+
+    if (binario_estaVazio(bin)) {  // Binario nao possui registros
+        printf("Registro inexistente.");
+        goto falha;
+    }
+
+    // Abre indice
+    ind = indice_abrirLeitura(pathInd);
+    if (!ind) {  // Falha ao abrir arquivo
+        printf("Falha no processamento do arquivo.");
+        goto falha;
+    }
+
+    // Busca registro
+    int acessos;
+    int rrn = indice_buscar(ind, id, &acessos, &erro);
+    if (erro) {  // Erro ao ler do indice
+        printf("Falha no processamento do arquivo.");
+        goto falha;
+    }
+
+    if (rrn == RRNNULL) {  // Registro nao encontrado no indice
+        printf("Registro inexistente.");
+        goto falha;
+    }
+
+    reg = binario_buscar(bin, rrn, &erro);
+    if (erro) {  // Erro ao ler do binario
+        goto falha;
+    }
+
+    if (!reg) {  // Registro esta apagado
+        printf("Registro inexistente.");
+        goto falha;
+    }
+
+    // Imprime registro
+    registro_imprimir(reg);
+    printf("Quantidade de paginas da arvore-B acessadas: %d\n", acessos);
+
+    binario_fechar(&bin);
+    indice_fechar(&ind);
+    registro_apagar(&reg);
+    return;
+
+falha:  // Ocorreu um erro e tem que desalocar variaveis (variaveis nao alocadas devem se NULL)
+    binario_fechar(&bin);
+    indice_fechar(&ind);
+    registro_apagar(&reg);
 }
 
 /**
@@ -91,14 +152,73 @@ static void opcao9() {
  * dados[1]
  * ...
  * dados[n]
+ * 
+ * dados[i]: composto por valores de cada campo do registro, deve ficar assim:
+ * cidadeMae[i] cidadeBebe[i] idNascimento[i] idadeMae[i] dataNascimento[i] se
+ * 
+ * Insere n registros no arquivo binario bin e atualizando o indice ind
+ * O conteudo de cada registro inserido eh dados[i]
  */
 static void opcao10() {
-    /*
-    TODO Pseudo Algoritmo
-    
-    dados = lerDados()
-    for i in dados;
-    binario.insere(i)
-        indice.insere(i)
-    */
+    int i;
+    bool ok;
+
+    // Variaveis com alocacao dinamica
+    Binario* bin = NULL;
+    Indice* ind = NULL;
+    Registro* reg = NULL;
+
+    // Le opcao
+    char pathBin[PATH_TAM], pathInd[PATH_TAM];
+    int n;
+    scanf(" %s %s %d", pathBin, pathInd, &n);
+
+    // Abre binario
+    bin = binario_abrirEscrita(pathBin);
+    if (!bin) {
+        printf("Falha no processamento do arquivo.\n");
+        goto falha;
+    }
+
+    // Abre indices
+    ind = indice_abrirEscrita(pathInd);
+    if (!ind) {
+        printf("Falha no processamento do arquivo.\n");
+        goto falha;
+    }
+
+    // Insere registros no arquivo
+    for (i = 0; i < n; i++) {
+        reg = registro_criarDoStdin();
+        if (!reg) {
+            printf("Falha no processamento do arquivo.\n");
+            goto falha;
+        }
+
+        ok = binario_inserir(bin, reg);
+        if (!ok) {
+            printf("Falha no processamento do arquivo.\n");
+            goto falha;
+        }
+
+        ok = indice_inserir(ind, registro_getIdNascimento(reg), binario_getRRNProx(bin) - 1);
+        if (!ok) {
+            printf("Falha no processamento do arquivo.\n");
+            goto falha;
+        }
+
+        registro_apagar(&reg);
+    }
+
+    indice_fechar(&ind);
+    binario_fechar(&bin);
+
+    // Imprimindo resultado
+    binarioNaTela(pathInd);
+    return;
+
+falha:
+    binario_fechar(&bin);
+    indice_fechar(&ind);
+    registro_apagar(&reg);
 }
